@@ -1,0 +1,31 @@
+\documentclass[a4paper,11pt]{report}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subfig}
+\usepackage{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{amsthm}
+\usepackage{bbold}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage{booktabs}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[english]{babel}
+\usepackage{lipsum}
+\usepackage{setspace}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm}
+
+\begin{document}
+	
+	\chapter*{Es.1}
+	Hilbert matrices becomes numerically singular starting from $N=6$, but the LU factorization is still possible (maybe).
+	The LU factorization breaks down for $N=21$ (if one compares the absolute value of the element $A_{kk}$ at the step $k-1$, namely $A_{kk}^{k-1}$, with the machine precision), while it breaks down for $N=15$ if one compares the same two values without considering the absolute value for the first one. What does it mean for us that the LU factorization breaks down? We are comparing the element $A_{kk}^{k-1}$ with the machine precision but maybe this is not the best strategy possible as the relative backward error is still zero, even for larger $N$ values. This is probably due to the fact that such numbers can still be represented in the computer. In fact, the algorithm gives us the correct (maybe) matrices $L$ and $U$ such that $A=LU$f(k).
+	
+	
+	
+	
+\end{document}
