@@ -1,4 +1,7 @@
-''' docstring '''
+''' This program serves as a library. It contains all the basic functions needed to solve the first
+    Project of the "Numerical Analysis and Optimization" course. In particular, this file contains
+    the functions used to create a dataset of square matrices of different types, and the functions
+    used to compute the LU factorization and the relative backward error associated to it. '''
 
 import numpy as np
 import pandas as pd
@@ -8,8 +11,13 @@ import tenpy
 import qutip
 import matplotlib.pyplot as plt
 
+# Define global parameters
+num_matr = 500
+dim_matr_max = 6
+common_path = "C:\\Users\\cerra\\Documents\\GitHub\\Numerical_Analysis_Optimization\\Project_1"
+
 def lufact(A):
-    r''' This function computes the LU factorization of a non-singular (?) matrix A
+    r''' This function computes the LU factorization of a non-singular matrix A
         without pivoting, giving as output the matrices L and U and the growth factor g,
         here defined as :math:`\frac{ max_{ij} (|L||U|)_{ij} }{ max_{ij} (|A|)_{ij} }`.
 
@@ -45,7 +53,7 @@ def lufact(A):
     # Compute the dimension of the input square matrix
     n = dim[0]
 
-    # Create a copy of the input matrix to be modified
+    # Create a copy of the input matrix to be modified in order to obatin the matrices L and U
     B = np.copy(A)
     for k in range(0,n-1):
         for i in range(k+1,n):
@@ -65,6 +73,7 @@ def lufact(A):
     # Compute the growth factor
     LU_abs = np.abs(L)@np.abs(U)
     g = np.amax(LU_abs)/np.amax(np.abs(A))
+    
     return L, U, g, out
 
 def relative_backward_error(A,L,U):
@@ -102,13 +111,20 @@ def diagonally_dominant_matrix(N):
               Diagonally dominant matrix
     
     '''
-
+    # The following steps are made to decide the sign of the diagonal element of the output matrix
+    
+    # Obtain N random numbers in [0,1) and apply the sign function to this values, shifted by 0.5
     diag_sign = np.random.rand(N)
     diag_sign = np.sign(diag_sign - 0.5)
-    diag_sign[diag_sign == 0] = 1
+    diag_sign[diag_sign == 0] = 1 # Set to 1 the (vary improbable) values equal to 0
+    
+    # Obtain a matrix of dimension (NxN) whose entries are normally distributed
     M = np.random.normal(loc=0.0, scale=1.0, size=(N,N))
+    # Substitute all the diagonal elements in this matrix with the sum of the absolute values of all
+    # the elements in the corresponding row
     for i in range(N):
         M[i,i] = sum(np.abs(M[i,:])) * diag_sign[i]
+    
     return M
 
 def create_dataset(num_matr,dim_matr):
@@ -132,7 +148,7 @@ def create_dataset(num_matr,dim_matr):
     # Set the seeds to have reproducibility of the results
     np.random.seed(1)
 
-
+    # Create arrays to store the final matrices
     Random = np.zeros((num_matr,dim_matr,dim_matr))
     Ginibre = np.zeros((num_matr,dim_matr,dim_matr), dtype=complex)
     GOE = np.zeros((num_matr,dim_matr,dim_matr))
@@ -140,10 +156,11 @@ def create_dataset(num_matr,dim_matr):
     Wishart = np.zeros((num_matr,dim_matr,dim_matr), dtype=complex)
     Diag_dom = np.zeros((num_matr,dim_matr,dim_matr))
 
+    # Define a dictionary to keep track of the types of matrices chosen
     dataset = {'Random':Random, 'Ginibre':Ginibre, 'GOE':GOE, 'GUE':GUE, 'Wishart':Wishart,\
-               'Diag_dom':Diag_dom}
+               'Diagonally dominant':Diag_dom}
     
-    # Random matrices
+    # Random matrices: matrices whose entries are in [0,1)
     i = 0
     while i < num_matr:  
         matrix = np.random.rand(dim_matr,dim_matr)
@@ -154,7 +171,7 @@ def create_dataset(num_matr,dim_matr):
             i = i + 1
     logging.info('Random matrices generated')
 
-    # Ginibre matrices
+    # Ginibre matrices: matrices whose entries are indipendent, complex, and normally distributed
     i = 0
     while i < num_matr:  
         matrix = np.random.normal(loc=0.0, scale=1.0, size=(dim_matr,dim_matr)) + \
@@ -166,7 +183,7 @@ def create_dataset(num_matr,dim_matr):
             i = i + 1
     logging.info('Ginibre matrices generated')
 
-    # GOE matrices 
+    # GOE matrices: Real symmetric matrices sampled from the Gaussian Orthogonal Ensemble 
     i = 0
     while i < num_matr:  
         matrix = tenpy.linalg.random_matrix.GOE((dim_matr,dim_matr))
@@ -177,7 +194,7 @@ def create_dataset(num_matr,dim_matr):
             i = i + 1
     logging.info('GOE matrices generated')
 
-    # GUE matrices
+    # GUE matrices: Complex Hermitian matrices sampled from the Gaussian Unitary Ensemble
     i = 0
     while i < num_matr:  
         matrix = tenpy.linalg.random_matrix.GUE((dim_matr,dim_matr))
@@ -188,7 +205,9 @@ def create_dataset(num_matr,dim_matr):
             i = i + 1
     logging.info('GUE matrices generated')
 
-    # Wishart matrices
+    # Wishart matrices: matrices of the form A^{\dagger}A, with A sampled from the Ginibre Ensemble.
+    # This choice ensures the matrices to be positive semidefinite. Discarding the singular matrices
+    # we obtain positive definite matrices.
     i = 0
     while i < num_matr:  
         matrix = np.array(qutip.rand_dm_ginibre((dim_matr), rank=None))
@@ -199,14 +218,15 @@ def create_dataset(num_matr,dim_matr):
             i = i + 1
     logging.info('Wishart matrices generated')
 
-    # Diagonally dominant matrices
+    # Diagonally dominant matrices: matrices whose diagonal entries are, in modulus, greater or
+    # equal to the sum of the absolute values of the entries in the corresponding row.
     i = 0
     while i < num_matr:  
         matrix = diagonally_dominant_matrix(dim_matr)
         if np.abs(np.linalg.det(matrix)) < np.finfo(float).tiny:
             pass
         else:
-            dataset['Diag_dom'][i,:,:] = matrix
+            dataset['Diagonally dominant'][i,:,:] = matrix
             i = i + 1
     logging.info('Diagonally dominant matrices generated')
 
