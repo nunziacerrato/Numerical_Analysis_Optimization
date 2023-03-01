@@ -34,47 +34,51 @@ def lufact(A):
             Upper triangular matrix
         g : ndarray
             growth factor
-        out : int
-              flag meaning if there has been a pivot breakdown:
-              out = 0 -> no pivot breakdown;
-              out = 1 -> pivot breakdown
     '''
-    out = 0
-    dim = A.shape
-
-    # Check that the input matrix is a square matrix
-    if dim[0] != dim[1]:
-        logging.warning("The input matrix is not a square matrix")
-    if np.abs(np.linalg.det(A)) < np.finfo(float).tiny: ### CONTROLLARE ###
-        logging.warning("The input matrix is singular")
-        # for k in range(A.shape[0]):
-        #     print(f'k={k}, det(A_{k}) = {np.linalg.det(A[:k+1,:k+1])}')
 
     # Compute the dimension of the input square matrix
+    dim = A.shape
     n = dim[0]
+
+    # Define the chosen precision
+    precision = np.finfo(float).eps
+
+    # Check that the input matrix is a square matrix
+    assert (dim[0] == dim[1]), "The input matrix is not a square matrix"
+
+    # Check if the input matrix is singular
+    if np.abs(np.linalg.det(A)) < precision:
+        logging.warning("The input matrix is singular")
+    # Check if the hypothesis of the LU factorization theorem hold
+    for k in range(n):
+        if np.abs(np.linalg.det(A[:k+1,:k+1])) < precision:
+            logging.warning(f'The {k}-th principal minor is less than the chosen precision')
 
     # Create a copy of the input matrix to be modified in order to obatin the matrices L and U
     B = np.copy(A)
     for k in range(0,n-1):
         for i in range(k+1,n):
             B_kk = B[k,k]
-            if np.abs(B_kk) < np.finfo(float).tiny:
-                out = 1
-                logging.warning(f'Division by zero - B_kk = {B_kk}, B_kk_abs = {np.abs(B_kk)}')
+            # Check if there is a division by a quantity smaller than the chosen precision
+            # and update the out variable to keep trace of this information
+            if np.abs(B_kk) < precision:
+                raise ValueError('Division by a quantity smaller than the chosen precision'\
+                                f' - B_kk = {B_kk}')
             B[i,k] = B[i,k]/B_kk
         for j in range(k+1,n):
             for l in range(k+1,n):
-                B[l,j]=B[l,j]-B[l,k]*B[k,j]
+                B[l,j] = B[l,j] - B[l,k]*B[k,j]
 
-    # Obtain the matrices L and U
-    L = np.tril(B,k=-1) + np.eye(n)
+    # Extract the matrices L and U from B using, resepctively, a strictly lower triangular mask
+    # and an upper triangular mask.
+    L = np.tril(B,k=-1) + np.eye(n) # Add the Id matrix in order for L to be unit lower triangular
     U = np.triu(B,k=0)  
 
     # Compute the growth factor
     LU_abs = np.abs(L)@np.abs(U)
     g = np.amax(LU_abs)/np.amax(np.abs(A))
     
-    return L, U, g, out
+    return L, U, g
 
 def relative_backward_error(A,L,U):
     r''' This function computes the relative backward error of the LU factorization, defined as
@@ -98,7 +102,8 @@ def relative_backward_error(A,L,U):
     return np.linalg.norm(A - L@U, ord=np.inf)/np.linalg.norm(A, ord=np.inf)
 
 def diagonally_dominant_matrix(N):
-    ''' This function returns a diagonally dominant matrix of dimension :math:`(N\times N)`
+    ''' This function returns a diagonally dominant matrix of dimension :math:`(N\times N)`, whose
+        non-diagonal entries are normally distributed.
         
         Parameters
         ----------
@@ -112,7 +117,6 @@ def diagonally_dominant_matrix(N):
     
     '''
     # The following steps are made to decide the sign of the diagonal element of the output matrix
-    
     # Obtain N random numbers in [0,1) and apply the sign function to this values, shifted by 0.5
     diag_sign = np.random.rand(N)
     diag_sign = np.sign(diag_sign - 0.5)
@@ -129,7 +133,10 @@ def diagonally_dominant_matrix(N):
 
 def create_dataset(num_matr,dim_matr):
     ''' This function creates the dataset, taking as input the number of matrices of each type
-        and their relative dimension.
+        and their relative dimension and giving as output a dictionary whose keys represent the 
+        different types of matrices considered and whose values are 3-dimensional arrays, where the
+        first index cycles on the number of matrices considered.
+        The output matrices are chosen to be nonsingular.
 
         Parameters
         ----------
@@ -145,26 +152,30 @@ def create_dataset(num_matr,dim_matr):
               of the dictionary is an array of shape (num_matr,dim_matr,dim_matr).
     '''
     
+    # Define the minimum value of the determinant of the dataset matrices
+    precision_zero = np.finfo(float).tiny
+    
     # Set the seeds to have reproducibility of the results
     np.random.seed(1)
 
     # Create arrays to store the final matrices
     Random = np.zeros((num_matr,dim_matr,dim_matr))
     Ginibre = np.zeros((num_matr,dim_matr,dim_matr), dtype=complex)
-    GOE = np.zeros((num_matr,dim_matr,dim_matr))
+    CUE = np.zeros((num_matr,dim_matr,dim_matr), dtype=complex)
     GUE = np.zeros((num_matr,dim_matr,dim_matr), dtype=complex)
     Wishart = np.zeros((num_matr,dim_matr,dim_matr), dtype=complex)
     Diag_dom = np.zeros((num_matr,dim_matr,dim_matr))
 
     # Define a dictionary to keep track of the types of matrices chosen
-    dataset = {'Random':Random, 'Ginibre':Ginibre, 'GOE':GOE, 'GUE':GUE, 'Wishart':Wishart,\
+    dataset = {'Random':Random, 'Ginibre':Ginibre, 'CUE':CUE, 'GUE':GUE, 'Wishart':Wishart,\
                'Diagonally dominant':Diag_dom}
     
+    ### Compare the backward stability of the two following matrix types-->should they be both real?
     # Random matrices: matrices whose entries are in [0,1)
     i = 0
     while i < num_matr:  
         matrix = np.random.rand(dim_matr,dim_matr)
-        if np.abs(np.linalg.det(matrix)) < np.finfo(float).tiny:
+        if np.abs(np.linalg.det(matrix)) < precision_zero:
             pass
         else:
             dataset['Random'][i,:,:] = matrix
@@ -176,29 +187,32 @@ def create_dataset(num_matr,dim_matr):
     while i < num_matr:  
         matrix = np.random.normal(loc=0.0, scale=1.0, size=(dim_matr,dim_matr)) + \
                          1j*np.random.normal(loc=0.0, scale=1.0, size=(dim_matr,dim_matr))
-        if np.abs(np.linalg.det(matrix)) < np.finfo(float).tiny:
+        if np.abs(np.linalg.det(matrix)) < precision_zero:
             pass
         else:
             dataset['Ginibre'][i,:,:] = matrix
             i = i + 1
     logging.info('Ginibre matrices generated')
 
-    # GOE matrices: Real symmetric matrices sampled from the Gaussian Orthogonal Ensemble 
+
+    # CUE matrices: Unitary matrices sampled from the Circular Unitary Ensemble
     i = 0
     while i < num_matr:  
-        matrix = tenpy.linalg.random_matrix.GOE((dim_matr,dim_matr))
-        if np.abs(np.linalg.det(matrix)) < np.finfo(float).tiny:
+        matrix = tenpy.linalg.random_matrix.CUE((dim_matr,dim_matr))
+        if np.abs(np.linalg.det(matrix)) < precision_zero:
             pass
         else:
-            dataset['GOE'][i,:,:] = matrix
+            dataset['CUE'][i,:,:] = matrix
             i = i + 1
-    logging.info('GOE matrices generated')
+    logging.info('CUE matrices generated')
+
 
     # GUE matrices: Complex Hermitian matrices sampled from the Gaussian Unitary Ensemble
+    ####  Real eigenvalues but not necessarily positive: are they backward stable or not?
     i = 0
     while i < num_matr:  
         matrix = tenpy.linalg.random_matrix.GUE((dim_matr,dim_matr))
-        if np.abs(np.linalg.det(matrix)) < np.finfo(float).tiny:
+        if np.abs(np.linalg.det(matrix)) < precision_zero:
             pass
         else:
             dataset['GUE'][i,:,:] = matrix
@@ -208,10 +222,11 @@ def create_dataset(num_matr,dim_matr):
     # Wishart matrices: matrices of the form A^{\dagger}A, with A sampled from the Ginibre Ensemble.
     # This choice ensures the matrices to be positive semidefinite. Discarding the singular matrices
     # we obtain positive definite matrices.
+    #### Real AND positive eigenvalues: they are supposed to be backward stable.
     i = 0
     while i < num_matr:  
         matrix = np.array(qutip.rand_dm_ginibre((dim_matr), rank=None))
-        if np.abs(np.linalg.det(matrix)) < np.finfo(float).tiny:
+        if np.abs(np.linalg.det(matrix)) < precision_zero:
             pass
         else:
             dataset['Wishart'][i,:,:] = matrix
@@ -223,7 +238,7 @@ def create_dataset(num_matr,dim_matr):
     i = 0
     while i < num_matr:  
         matrix = diagonally_dominant_matrix(dim_matr)
-        if np.abs(np.linalg.det(matrix)) < np.finfo(float).tiny:
+        if np.abs(np.linalg.det(matrix)) < precision_zero:
             pass
         else:
             dataset['Diagonally dominant'][i,:,:] = matrix
@@ -238,50 +253,49 @@ def create_dataset(num_matr,dim_matr):
 
 if __name__ == '__main__' :
 
-    if True:
-        num_matr = 500
-        dim_matr_max = 20
+    dim_matr_max = 20
+    keys = create_dataset(1,2).keys()
 
-        common_path = "C:\\Users\\cerra\\Documents\\GitHub\\Numerical_Analysis_Optimization\\Project_1"
+    # logging.basicConfig(level=logging.INFO)
 
-        for dim_matr in range(2,dim_matr_max+1):
-            dataset = create_dataset(num_matr, dim_matr)
+    df_fails = pd.DataFrame(0, columns = keys, index = range(2,dim_matr_max+1))
+    
+    for dim_matr in range(2,dim_matr_max+1):
+        print(f'Dimension = {dim_matr}')
 
-            keys = dataset.keys()
+        # Create the dataset
+        dataset = create_dataset(num_matr, dim_matr)
 
-            g_dict = {}
-            rel_back_err_dict = {}
-            for key in keys:
-                g_dict[key] = np.zeros(num_matr)
-                rel_back_err_dict[key] = np.zeros(num_matr)
+        # Create DataFrames in which the growth factor and the relative backward error are stored
+        df_g = pd.DataFrame(columns = keys)
+        df_rel_back_err = pd.DataFrame(columns = keys)
 
+        # Cycle on the different types of matrices considered
+        for matrix_type in keys:
 
-            for matrix_type in keys:
-                
-                for i in range(num_matr):
-                    A = dataset[matrix_type][i,:,:]
-                    L, U, g_dict[matrix_type][i], out = lufact(A)
-                    rel_back_err_dict[matrix_type][i] = relative_backward_error(A, L, U)
-            
-            df_g = pd.DataFrame(data = g_dict)
-            df_rel_back_err = pd.DataFrame(data = rel_back_err_dict)
-
-
-            writer = pd.ExcelWriter(f'{common_path}\\Data\\'
+            # Cycle on the number of matrices of each type 
+            for i in range(num_matr):
+                # Select the matrix and compute the LU factorization, the growth factor,
+                # and the relative backward error
+                A = dataset[matrix_type][i,:,:]
+                try:
+                    L, U, df_g.at[i,matrix_type] = lufact(A)
+                    df_rel_back_err.at[i,matrix_type] = relative_backward_error(A, L, U)
+                except ValueError:
+                    df_fails.at[dim_matr,matrix_type] = df_fails.at[dim_matr,matrix_type] + 1
+        
+        # Save the growth factor and the relative backward error in Excel files
+        writer = pd.ExcelWriter(f'{common_path}\\Data\\'
                                     f'Statistics_for_{num_matr}_matrices_of_dim_{dim_matr}.xlsx')
-            df_g.to_excel(writer, 'growth_factor', index = False)
-            df_rel_back_err.to_excel(writer, 'rel_back_err', index = False)
-            writer.save()
-
-
-        # grafico di media, min, max, varianza di growth factor e di rel_back_err per ogni 
-        # tipo di matrice al variare di N - saranno punti da fittare eventualmente 
-        # box plot per i diversi tipi di matrice di growth factor e rel_back_err
-
-
-
-
-
+        df_g.to_excel(writer, 'growth_factor', index = False)
+        df_rel_back_err.to_excel(writer, 'rel_back_err', index = False)
+        writer.save()
+ 
+    # Save the failues of the LU factorization in an Excel file
+    writer = pd.ExcelWriter(f'{common_path}\\Data\\'
+                                f'Failures_LUfact_for_{num_matr}_matrices.xlsx')
+    df_fails.to_excel(writer, 'Fails', index = False)
+    writer.save()
 
 
 
