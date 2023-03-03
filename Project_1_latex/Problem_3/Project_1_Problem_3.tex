@@ -1,0 +1,179 @@
+\documentclass[a4paper]{report}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{lipsum} % genera testo fittizio
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{braket}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subfig}
+\usepackage{wrapfig}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\newcommand{\R}{\mathbb{R}}
+\usepackage{bbold}
+\usepackage{setspace}
+\geometry{a4paper,top=2.5cm,bottom=2.5cm,left=3cm,right=2.5cm,%
+	heightrounded,bindingoffset=5mm}
+\numberwithin{equation}{chapter}
+\setcounter{tocdepth}{3}
+\begin{document}
+	\author{Nunzia Cerrato, Giuseppe Catalano}
+	\title{Report}
+	\date{}
+	\maketitle         
+	
+	
+	
+\section*{Problem 3}
+Suppose that $A \in \R^{n \times n}$ is a nonsingular matrix and the LU factorization of $A$ exists and has been computed. Consider two given vectors $\textbf{u},\textbf{v}\in \R^n$, we can define the matrix $\tilde{A} = A + \textbf{u}\textbf{v}^T$\\
+\textbf{(1a)} Prove that $\tilde{A}$ is nonsingular if and only if $\textbf{v}^TA^{-1}\textbf{u} \neq 1$.\\
+Proof: We start proving that $\det(\tilde{A})\neq 0 $ implies that $\textbf{v}^TA^{-1}\textbf{u} \neq 1$. We can choose an orthonormal basis $\mathcal{B} =\{\mathbf{e}_i\}_{i=1,\dots,n}$ of $\R^n$ such that $\mathbf{u} = \alpha_1 \mathbf{e}_1$ and $\mathbf{v} = \beta_1 \mathbf{e}_1 + \beta_2 \mathbf{e}_2$ with $\alpha_1, \beta_1, \beta_2 \in \R$. We can represent the matrix $A$ with respect to the basis $\mathcal{B}$, denoting with $a_{ij} = \textbf{e}^T_i A \textbf{e}_j $  the element of the $i-th$ row and $j-th$ column of the matrix $A$ written in the basis $\mathcal{B}$. We can represent the matrix $ \textbf{u}\textbf{v}^T$ with respect to the basis $\mathcal{B}$, obtaining $\textbf{u}\textbf{v}^T = \alpha_1 \beta_1 \textbf{e}_1 \textbf{e}_1^T +  \alpha_1 \beta_2 \textbf{e}_1 \textbf{e}_2^T$. Knowing that we can compute the determinant of a matrix $M$ $n\times n$ using the formula:
+\begin{equation}\label{key}
+	\det(M) = \sum_{j=1}^{n} m_{ij} C_{ij}(M),
+\end{equation}
+where $C_{ij}$ is the cofactor of the element $(i,j)$ of the matrix $M$, the determinant of $\tilde{A}$ is:
+\begin{equation}\label{key}
+	\det(\tilde{A}) = \det(A) + \alpha_1 \beta_1 C_{11}(A) + \alpha_1 \beta_2 C_{12}(A).
+\end{equation}
+Since we know that $ \det(\tilde{A}) \neq 0$, we can write:
+\begin{equation}\label{key}
+	 \det(A) + \alpha_1 \beta_1 C_{11}(A) + \alpha_1 \beta_2 C_{12}(A) \neq 0,
+\end{equation}
+and, therefore:
+\begin{equation}\label{key}
+	 \alpha_1 \beta_1 \frac{C_{11}(A)}{\det(A)} + \alpha_1 \beta_2 \frac{C_{12}(A)}{\det(A)} \neq -1,
+\end{equation}
+where we divided for $\det(A)$ both sides of the equation, knowing that $\det(A) \neq 0$. At this point, it is straightforward to verify that 
+\begin{equation}\label{key}
+	\textbf{v}^T A^{-1} \textbf{u} = \alpha_1 \beta_1 \frac{C_{11}(A)}{\det(A)} + \alpha_1 \beta_2 \frac{C_{12}(A)}{\det(A)}
+\end{equation}
+writing $\textbf{u}$ and $\textbf{v}$ in terms of $\textbf{e}_1$ and $\textbf{e}_2$ and $A^{-1} = \frac{1}{\det(A)} (cof(A))^T$, where $cof(A)$ is the matrix of cofactors of $A$. This proves that:
+\begin{equation}\label{key}
+	\textbf{v}^T A^{-1} \textbf{u} \neq -1.
+\end{equation}
+
+\noindent In order to prove the converse implication, we consider again the expression for the determinant of $\tilde{A}$:
+\begin{equation}\label{key}
+	\det(\tilde{A}) = \det(A) + \alpha_1 \beta_1 C_{11}(A) + \alpha_1 \beta_2 C_{12}(A) = \det(A) \left( 1+ \alpha_1 \beta_1 \frac{C_{11}(A)}{\det(A)} + \alpha_1 \beta_2 \frac{C_{12}(A)}{\det(A)}\right).
+\end{equation}
+Here we can recognize the expression of $\textbf{v}^T A^{-1} \textbf{u}$, obtaining:
+\begin{equation}\label{key}
+	\det(\tilde{A}) = \det(A) (1 + \textbf{v}^T A^{-1} \textbf{u}).
+\end{equation}
+Now, knowing that $\det(A)\neq 0 $ and $\textbf{v}^T A^{-1} \textbf{u} \neq -1$, we obtain
+\begin{equation}\label{key}
+	\det(\tilde{A}) \neq 0
+\end{equation}
+and this concludes the proof.\\
+\\
+\noindent \textbf{(1b)} Show that:
+\begin{equation}\label{eq: A tilde ^-1}
+	\tilde{A}^{-1} = A^{-1}  - \alpha A^{-1} \textbf{u}\textbf{v}^T A^{-1},\ \ \ \text{where } \alpha = \frac{1}{\textbf{v}^T A^{-1}\textbf{u} + 1}.
+\end{equation}
+Proof: We start noticing that the last expression is well defined since $\tilde{A}$ invertible implies $\textbf{v}^T A^{-1} \textbf{u} + 1 \neq 0$. Now we can manipulate the \eqref{eq: A tilde ^-1} multiplying both sides to the left for $A$ and to the right for $\tilde{A}$, obtaining:
+\begin{equation}\label{key}
+\begin{split}
+	A &= \tilde{A} - \alpha \textbf{u} \textbf{v}^T A^{-1} \tilde{A} \\
+	&= A + \textbf{u}\textbf{v}^T - \alpha \textbf{u} \textbf{v}^T A^{-1} (A + \textbf{u}\textbf{v}^T )\\
+	&= A + (1-\alpha) \textbf{u}\textbf{v}^T - \alpha \textbf{u}\textbf{v}^TA^{-1} \textbf{u}\textbf{v}^T.
+\end{split}
+\end{equation}
+Subtracting $A$ from each side and dividing both sides for $\alpha$ (that is nonzero $\forall \textbf{v}^T A^{-1}\textbf{u} \in \R$) we obtain:
+\begin{equation}\label{eq: identity theorem 1b}
+	\textbf{u}\textbf{v}^T A^{-1} \textbf{u}\textbf{v}^T = \textbf{u}\textbf{v}^T(\alpha^{-1}-1).
+\end{equation}
+Finally, since $\textbf{v}^T A^{-1} \textbf{u} = \alpha^{-1} - 1$, the identity \eqref{eq: identity theorem 1b} is verified and this concludes the proof.\\
+\\
+\textbf{(1c)} Assuming that LU factorization of $A$ is already available, describe an $\mathcal{O}(n^2)$ algorithm to solve $\tilde{A} \tilde{\textbf{x}} = \tilde{\textbf{b}}$ for any right-hand side $\tilde{\textbf{b}}$.\\
+Supposing that $\tilde{A}$ is invertible, we can write the solution $\tilde{\textbf{x}}$ using the Sherman-Morrison formula for $\tilde{A}$:
+\begin{equation}\label{key}
+	\tilde{\textbf{x}} = \tilde{A}^{-1} \tilde{\textbf{b}} =  A^{-1} \tilde{\textbf{b}}  - \frac{A^{-1}\textbf{u}\textbf{v}^T A^{-1}\tilde{\textbf{b}} }{\textbf{v}^T A^{-1} \textbf{u} + 1 }
+\end{equation}
+
+\noindent Algorithm: 
+\begin{itemize}
+	\item Compute \textbf{x} s.t. $A\textbf{x} = \tilde{\textbf{b}}$ and \textbf{y} s.t. $A\textbf{y} = \textbf{u}$ using backward and forward substitutions. This requires $\mathcal{O}(n^2)$ operations.
+	\item Compute $\gamma = \frac{\textbf{v}^T \textbf{x}}{\textbf{v}^T \textbf{y} + 1}$. This requires $\mathcal{O}(n)$ operations.
+	\item Compute $\tilde{\textbf{x}} = \textbf{x} - \gamma \textbf{y}$. This requires $\mathcal{O}(n)$ operations.
+\end{itemize}
+
+
+\noindent \textbf({2)} Assuming again that the LU factorization of $A$ existes and has been computed, describe an efficient algorithm for solving the \textit{bordered system}
+\begin{equation}\label{key}
+\begin{bmatrix}
+	A &  \textbf{u} \\ 
+	\textbf{v}^T & \beta 
+\end{bmatrix}
+\begin{bmatrix}
+\textbf{x} \\ 
+z
+\end{bmatrix}
+=
+\begin{bmatrix}
+	\textbf{b} \\ 
+	c
+\end{bmatrix},
+\end{equation}
+where $z$ is unknown and $\beta$ and $c$ are given scalars. When does this system have a unique solution?
+
+\noindent Solution: \\
+Putting 
+\begin{equation}\label{key}
+	A' = 
+\begin{bmatrix}
+	A &  \textbf{u} \\ 
+	\textbf{v}^T & \beta 
+\end{bmatrix}, 
+\textbf{x}' = \begin{bmatrix}
+	\textbf{x} \\ 
+	z
+\end{bmatrix}, 
+\textbf{b}' = 
+\begin{bmatrix}
+	\textbf{b} \\ 
+	c
+\end{bmatrix},
+\end{equation}
+the system above rewrites as:
+\begin{equation}\label{key}
+	A' \textbf{x}' = \textbf{b}'.
+\end{equation}
+The LU factorization of the matrix $A' = L' U'$ exists and the matrices $L'$ and $U'$ take the following form:
+\begin{equation}\label{key}
+	L' = 
+	\begin{bmatrix}
+		L &  \textbf{0} \\ 
+		\textbf{f}^T & 1 
+	\end{bmatrix}, 	
+U' = 
+\begin{bmatrix}
+U&  \textbf{g} \\ 
+\textbf{0} & \gamma
+\end{bmatrix}.
+\end{equation}
+In order to get the values of $\textbf{f}, \textbf{g}\in \R^n$ and $\gamma \in \R$, we impose $ A' = L' U'$, obtaining the following system:
+\begin{equation}\label{key}
+	\left\lbrace 
+	\begin{split}
+		& L\textbf{g} = \textbf{u}\\
+		& U^T \textbf{f} = \textbf{v}\\
+		&\textbf{f}^T \textbf{g} + \gamma = \beta
+	\end{split} \right.  .
+\end{equation}
+Here we can find $\textbf{f}$ and $\textbf{g}$ with forward substitutions with $\mathcal{O}(n^2)$ operations. Therefore, we can rewrite the last equation as:
+\begin{equation}\label{key}
+	 \gamma = \beta - \textbf{v}^T A^{-1} \textbf{u} .
+\end{equation}
+In order to impose that the bordered system has a unique solution, we have to require that $\det(A') \neq 0$, that is true if and only if all the diagonal elements of $U'$ are nonzero and, given that $\det(A)\neq 0$, this means requiring that $\gamma \neq 0 $. Therefore, the condition for ne uniquenes of the solution becomes:
+\begin{equation}\label{key}
+	\gamma = \beta - \textbf{v}^T A^{-1} \textbf{u} \neq 0 \Rightarrow \ \ \textbf{v}^T A^{-1} \textbf{u} \neq \beta.
+\end{equation}
+
+
+	
+\end{document} 
