@@ -10,7 +10,7 @@ Welcome to Numerical Analysis and Optimization - Projects's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: Project_1
+.. automodule:: Project_1.Project_1
    :members:
 
 Indices and tables
