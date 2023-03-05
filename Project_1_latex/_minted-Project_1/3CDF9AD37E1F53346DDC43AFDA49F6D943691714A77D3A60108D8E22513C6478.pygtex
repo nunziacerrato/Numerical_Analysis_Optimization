@@ -1,0 +1,99 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{def} \PYG{n+nf}{create\PYGZus{}dataset}\PYG{p}{(}\PYG{n}{num\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{):}
+ \PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{} This function creates the dataset, taking as input the number of matrices of each type and their relative dimension and giving as output a dictionary whose keys represent the different types of matrices considered and whose values are 3\PYGZhy{}dimensional arrays, where the first index cycles on the number of matrices considered. The output matrices are chosen to be nonsingular.}
+
+\PYG{l+s+sd}{ Parameters}
+\PYG{l+s+sd}{ \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{ num\PYGZus{}matr : int}
+\PYG{l+s+sd}{            Number of matrices for each type}
+\PYG{l+s+sd}{ dim matr : int}
+\PYG{l+s+sd}{            Dimension of the (square) matrices}
+
+\PYG{l+s+sd}{ Returns}
+\PYG{l+s+sd}{ \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{ out : dictionary}
+\PYG{l+s+sd}{       Dictionary whose keys represent the different types of matrices considered. Each value of the dictionary is an array of shape (num\PYGZus{}matr,dim\PYGZus{}matr,dim\PYGZus{}matr).}
+\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+
+ \PYG{c+c1}{\PYGZsh{} Define the minimum value of the determinant of the dataset matrices}
+ \PYG{n}{precision\PYGZus{}zero} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{finfo}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{)}\PYG{o}{.}\PYG{n}{tiny}
+
+ \PYG{c+c1}{\PYGZsh{} Set the seeds to have reproducibility of the results}
+ \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{seed}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{)}
+
+ \PYG{c+c1}{\PYGZsh{} Create arrays to store the final matrices}
+ \PYG{n}{Random} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{num\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{))}
+ \PYG{n}{Ginibre} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{num\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{),} \PYG{n}{dtype}\PYG{o}{=}\PYG{n+nb}{complex}\PYG{p}{)}
+ \PYG{n}{CUE} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{num\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{),} \PYG{n}{dtype}\PYG{o}{=}\PYG{n+nb}{complex}\PYG{p}{)}
+ \PYG{n}{GUE} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{num\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{),} \PYG{n}{dtype}\PYG{o}{=}\PYG{n+nb}{complex}\PYG{p}{)}
+ \PYG{n}{Wishart} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{num\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{),} \PYG{n}{dtype}\PYG{o}{=}\PYG{n+nb}{complex}\PYG{p}{)}
+ \PYG{n}{Diag\PYGZus{}dom} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{num\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{))}
+
+ \PYG{c+c1}{\PYGZsh{} Define a dictionary to keep track of the types of matrices chosen}
+ \PYG{n}{dataset} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}Random\PYGZsq{}}\PYG{p}{:}\PYG{n}{Random}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}Ginibre\PYGZsq{}}\PYG{p}{:}\PYG{n}{Ginibre}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}CUE\PYGZsq{}}\PYG{p}{:}\PYG{n}{CUE}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}GUE\PYGZsq{}}\PYG{p}{:}\PYG{n}{GUE}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}Wishart\PYGZsq{}}\PYG{p}{:}\PYG{n}{Wishart}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}Diagonally dominant\PYGZsq{}}\PYG{p}{:}\PYG{n}{Diag\PYGZus{}dom}\PYG{p}{\PYGZcb{}}
+
+ \PYG{c+c1}{\PYGZsh{} Random matrices: matrices whose entries are in [0,1)}
+ \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}
+ \PYG{k}{while} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{num\PYGZus{}matr}\PYG{p}{:}
+  \PYG{n}{matrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{rand}\PYG{p}{(}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{)}
+  \PYG{k}{if} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{det}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{))} \PYG{o}{\PYGZlt{}} \PYG{n}{precision\PYGZus{}zero}\PYG{p}{:}
+     \PYG{k}{pass}
+  \PYG{k}{else}\PYG{p}{:}
+     \PYG{n}{dataset}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}Random\PYGZsq{}}\PYG{p}{][}\PYG{n}{i}\PYG{p}{,:,:]} \PYG{o}{=} \PYG{n}{matrix}
+  \PYG{n}{i} \PYG{o}{=} \PYG{n}{i} \PYG{o}{+} \PYG{l+m+mi}{1}
+ \PYG{n}{logging}\PYG{o}{.}\PYG{n}{info}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Random matrices generated\PYGZsq{}}\PYG{p}{)}
+
+ \PYG{c+c1}{\PYGZsh{} Ginibre matrices: matrices whose entries are independent, complex, and normally distributed}
+ \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}
+ \PYG{k}{while} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{num\PYGZus{}matr}\PYG{p}{:}
+  \PYG{n}{matrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{normal}\PYG{p}{(}\PYG{n}{loc}\PYG{o}{=}\PYG{l+m+mf}{0.0}\PYG{p}{,} \PYG{n}{scale}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{size}\PYG{o}{=}\PYG{p}{(}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{))} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{n}{j}\PYG{o}{*}\PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{normal}\PYG{p}{(}\PYG{n}{loc}\PYG{o}{=}\PYG{l+m+mf}{0.0}\PYG{p}{,} \PYG{n}{scale}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{size}\PYG{o}{=}\PYG{p}{(}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{))}
+  \PYG{k}{if} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{det}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{))} \PYG{o}{\PYGZlt{}} \PYG{n}{precision\PYGZus{}zero}\PYG{p}{:}
+     \PYG{k}{pass}
+  \PYG{k}{else}\PYG{p}{:}
+     \PYG{n}{dataset}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}Ginibre\PYGZsq{}}\PYG{p}{][}\PYG{n}{i}\PYG{p}{,:,:]} \PYG{o}{=} \PYG{n}{matrix}
+   \PYG{n}{i} \PYG{o}{=} \PYG{n}{i} \PYG{o}{+} \PYG{l+m+mi}{1}
+ \PYG{n}{logging}\PYG{o}{.}\PYG{n}{info}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Ginibre matrices generated\PYGZsq{}}\PYG{p}{)}
+
+
+ \PYG{c+c1}{\PYGZsh{} CUE matrices: Unitary matrices sampled from the Circular Unitary Ensemble}
+ \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{num\PYGZus{}matr}\PYG{p}{):}
+  \PYG{n}{matrix} \PYG{o}{=} \PYG{n}{tenpy}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{random\PYGZus{}matrix}\PYG{o}{.}\PYG{n}{CUE}\PYG{p}{((}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{))}
+  \PYG{n}{dataset}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}CUE\PYGZsq{}}\PYG{p}{][}\PYG{n}{i}\PYG{p}{,:,:]} \PYG{o}{=} \PYG{n}{matrix}
+ \PYG{n}{logging}\PYG{o}{.}\PYG{n}{info}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}CUE matrices generated\PYGZsq{}}\PYG{p}{)}
+
+
+ \PYG{c+c1}{\PYGZsh{} GUE matrices: Complex Hermitian matrices sampled from the Gaussian Unitary Ensemble}
+ \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}
+ \PYG{k}{while} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{num\PYGZus{}matr}\PYG{p}{:}
+  \PYG{n}{matrix} \PYG{o}{=} \PYG{n}{tenpy}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{random\PYGZus{}matrix}\PYG{o}{.}\PYG{n}{GUE}\PYG{p}{((}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{))}
+  \PYG{k}{if} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{det}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{))} \PYG{o}{\PYGZlt{}} \PYG{n}{precision\PYGZus{}zero}\PYG{p}{:}
+     \PYG{k}{pass}
+  \PYG{k}{else}\PYG{p}{:}
+     \PYG{n}{dataset}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}GUE\PYGZsq{}}\PYG{p}{][}\PYG{n}{i}\PYG{p}{,:,:]} \PYG{o}{=} \PYG{n}{matrix}
+  \PYG{n}{i} \PYG{o}{=} \PYG{n}{i} \PYG{o}{+} \PYG{l+m+mi}{1}
+ \PYG{n}{logging}\PYG{o}{.}\PYG{n}{info}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}GUE matrices generated\PYGZsq{}}\PYG{p}{)}
+
+ \PYG{c+c1}{\PYGZsh{} Wishart matrices: matrices of the form A\PYGZca{}\PYGZob{}\PYGZbs{}dagger\PYGZcb{}A, with A sampled from the Ginibre Ensemble. This choice ensures the matrices to be positive semidefinite. Discarding the singular matrices we obtain positive definite matrices.}
+ \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}
+ \PYG{k}{while} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{num\PYGZus{}matr}\PYG{p}{:}
+  \PYG{n}{matrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{qutip}\PYG{o}{.}\PYG{n}{rand\PYGZus{}dm\PYGZus{}ginibre}\PYG{p}{((}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{),} \PYG{n}{rank}\PYG{o}{=}\PYG{k+kc}{None}\PYG{p}{))}
+  \PYG{k}{if} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{det}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{))} \PYG{o}{\PYGZlt{}} \PYG{n}{precision\PYGZus{}zero}\PYG{p}{:}
+     \PYG{k}{pass}
+  \PYG{k}{else}\PYG{p}{:}
+     \PYG{n}{dataset}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}Wishart\PYGZsq{}}\PYG{p}{][}\PYG{n}{i}\PYG{p}{,:,:]} \PYG{o}{=} \PYG{n}{matrix}
+  \PYG{n}{i} \PYG{o}{=} \PYG{n}{i} \PYG{o}{+} \PYG{l+m+mi}{1}
+ \PYG{n}{logging}\PYG{o}{.}\PYG{n}{info}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Wishart matrices generated\PYGZsq{}}\PYG{p}{)}
+
+ \PYG{c+c1}{\PYGZsh{} Diagonally dominant matrices: matrices whose diagonal entries are, in modulus, greater or equal to the sum of the absolute values of the entries in the corresponding row.}
+ \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}
+ \PYG{k}{while} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{num\PYGZus{}matr}\PYG{p}{:}
+  \PYG{n}{matrix} \PYG{o}{=} \PYG{n}{diagonally\PYGZus{}dominant\PYGZus{}matrix}\PYG{p}{(}\PYG{n}{dim\PYGZus{}matr}\PYG{p}{)}
+  \PYG{k}{if} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{det}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{))} \PYG{o}{\PYGZlt{}} \PYG{n}{precision\PYGZus{}zero}\PYG{p}{:}
+     \PYG{k}{pass}
+  \PYG{k}{else}\PYG{p}{:}
+     \PYG{n}{dataset}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}Diagonally dominant\PYGZsq{}}\PYG{p}{][}\PYG{n}{i}\PYG{p}{,:,:]} \PYG{o}{=} \PYG{n}{matrix}
+  \PYG{n}{i} \PYG{o}{=} \PYG{n}{i} \PYG{o}{+} \PYG{l+m+mi}{1}
+ \PYG{n}{logging}\PYG{o}{.}\PYG{n}{info}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Diagonally dominant matrices generated\PYGZsq{}}\PYG{p}{)}
+
+ \PYG{k}{return} \PYG{n}{dataset}
+\end{Verbatim}

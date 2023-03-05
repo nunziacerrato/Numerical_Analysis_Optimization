@@ -1,0 +1,21 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{def} \PYG{n+nf}{relative\PYGZus{}backward\PYGZus{}error}\PYG{p}{(}\PYG{n}{A}\PYG{p}{,}\PYG{n}{L}\PYG{p}{,}\PYG{n}{U}\PYG{p}{):}
+ \PYG{l+s+sa}{r}\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{} This function computes the relative backward error of the LU factorization, defined as :math:`\PYGZbs{}frac\PYGZob{}\PYGZbs{}lVert A \PYGZhy{}LU \PYGZbs{}rVert\PYGZus{}\PYGZob{}\PYGZbs{}infty\PYGZcb{}\PYGZcb{}\PYGZob{}\PYGZbs{}lVert A \PYGZbs{}rVert\PYGZus{}\PYGZob{}\PYGZbs{}infty\PYGZcb{}\PYGZcb{}`}
+
+\PYG{l+s+sd}{ Parameters}
+\PYG{l+s+sd}{ \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{ A : ndarray}
+\PYG{l+s+sd}{     Input matrix}
+\PYG{l+s+sd}{ L : ndarray}
+\PYG{l+s+sd}{     Unit lower triangular matrix, obtained from the LU factorization of the input matrix A.}
+\PYG{l+s+sd}{ U : ndarray}
+\PYG{l+s+sd}{     Upper triangular matrix, obtained from the LU factorization of the input matrix A.}
+
+\PYG{l+s+sd}{ Returns}
+\PYG{l+s+sd}{ \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{ out : float}
+\PYG{l+s+sd}{       Relative backward error}
+\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+
+ \PYG{k}{return} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{A} \PYG{o}{\PYGZhy{}} \PYG{n}{L} \PYG{o}{@} \PYG{n}{U}\PYG{p}{,} \PYG{n+nb}{ord}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{inf}\PYG{p}{)}\PYG{o}{/}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{A}\PYG{p}{,} \PYG{n+nb}{ord}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{inf}\PYG{p}{)}
+\end{Verbatim}

@@ -5,7 +5,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from Project_1_2 import *
+from Project_1 import *
 
 # Set size parameters for the plots
 tickparams_size = 15
@@ -14,9 +14,9 @@ suptitle_size = 25
 title_size = 18
 legend_size = 15
 
-Histograms = True
+Histograms = False
 
-dim_matr_max = 2
+# dim_matr_max = 20
 
 # Extract the types of matrices considered
 # types_matrices = [key for key in create_dataset(1,2).keys()]
@@ -69,14 +69,17 @@ for dim_matr in range(2,dim_matr_max+1):
     # Create boxplot to obtain a summary of the caracteristic values of the growth factor and the
     # relative backward error considering as fixed the dimension of the matrices - useful for
     # comparing the different types of matrices taken into consideration (ouliers discarded).
-    fig_boxplot_matrices, ax_boxplot_matrices = plt.subplots(figsize=(15,10), nrows = 1, ncols = 2)
+    fig_boxplot_matrices, ax_boxplot_matrices = plt.subplots(figsize=(22,10), nrows = 1, ncols = 2, constrained_layout = True)
     fig_boxplot_matrices.suptitle(fr'Matrices of dimension $({dim_matr}\times{dim_matr})$', fontsize = 25)
     ax_boxplot_matrices[0].boxplot(df_growth_factor, labels = df_growth_factor.columns,
                                    showfliers=False)
     ax_boxplot_matrices[0].set_title('Growth factor', fontsize = title_size)
+    ax_boxplot_matrices[0].tick_params(labelsize = tickparams_size)
     ax_boxplot_matrices[1].boxplot(df_rel_back_err, labels = df_rel_back_err.columns,
                                    showfliers=False)
     ax_boxplot_matrices[1].set_title('Relative backward error', fontsize = title_size)
+    ax_boxplot_matrices[1].tick_params(labelsize = tickparams_size)
+    fig_boxplot_matrices.savefig(f'{common_path}_latex\\Plot\\Boxplot_dim_matr={dim_matr}')
     # plt.show()
 
     # For each matrix type considered add the mean value of the growth factor and the
@@ -114,18 +117,18 @@ for dim_matr in range(2,dim_matr_max+1):
         mean_growth_factor.at[dim_matr,matrix_type] = np.mean(df_growth_factor[matrix_type])
         min_growth_factor.at[dim_matr,matrix_type] = np.min(df_growth_factor[matrix_type])
         max_growth_factor.at[dim_matr,matrix_type] = np.max(df_growth_factor[matrix_type])
-        var_growth_factor.at[dim_matr,matrix_type] = np.var(df_growth_factor[matrix_type])
+        var_growth_factor.at[dim_matr,matrix_type] = np.std(df_growth_factor[matrix_type])
 
         mean_rel_back_err.at[dim_matr,matrix_type] = np.mean(df_rel_back_err[matrix_type])
         min_rel_back_err.at[dim_matr,matrix_type] = np.min(df_rel_back_err[matrix_type])
         max_rel_back_err.at[dim_matr,matrix_type] = np.max(df_rel_back_err[matrix_type])
-        var_rel_back_err.at[dim_matr,matrix_type] = np.var(df_rel_back_err[matrix_type])
+        var_rel_back_err.at[dim_matr,matrix_type] = np.std(df_rel_back_err[matrix_type])
 
 
 # Scatterplot of the characteristic values of the growth factor and the relative backward error
 # cycling on the types of matrices considered.
 for matrix_type in types_matrices:
-    fig_scatter, ax_scatter= plt.subplots(figsize=(15,10), nrows = 1, ncols = 2)
+    fig_scatter, ax_scatter= plt.subplots(figsize=(18,10), nrows = 1, ncols = 2, constrained_layout = True)
     fig_scatter.suptitle(f'{matrix_type} matrices', fontsize = suptitle_size)
 
     # Growth factor
@@ -140,7 +143,7 @@ for matrix_type in types_matrices:
                           label = r'max($\gamma$)')
     ax_scatter[0].scatter(var_growth_factor.index,
                           np.log10(var_growth_factor[matrix_type].astype('float64')),
-                          label = r'var($\gamma$)')
+                          label = r'std($\gamma$)')
     ax_scatter[0].tick_params(labelsize = tickparams_size)
     ax_scatter[0].set_xlabel('N', fontsize = xylabel_size)
     ax_scatter[0].set_ylabel(r'$\log_{10}(\gamma)$',fontsize = xylabel_size)
@@ -166,8 +169,54 @@ for matrix_type in types_matrices:
     ax_scatter[1].set_title(f'Characteristic values of the relative backward error',
                             fontsize = title_size)
     ax_scatter[1].legend(fontsize = legend_size)
+    fig_scatter.savefig(f'{common_path}_latex\\Plot\\Scatterplot_charact_values_for_{matrix_type}_matrices')
+    # plt.show()
 
-    plt.show()
+
+
+# Plot Histograms
+if False:
+
+    types_matrices = create_dataset(1,2).keys()
+    dim_matr_list = [2,25,50]
+    num_matr = 500
+
+    # Cycle on the dimension of the input matrices
+    for dim_matr in dim_matr_list:
+
+        # Access the data: growth factor and relative backward error for all the considered types of
+        # matrices of a given dimension - data read from Excel files and stored in DataFrames
+        df_growth_factor = pd.read_excel(f'{common_path}\\Data\\'
+                                        f'Statistics_for_{num_matr}_matrices_of_dim_{dim_matr}.xlsx',
+                                        sheet_name = 'growth_factor')
+        
+        df_rel_back_err = pd.read_excel(f'{common_path}\\Data\\'
+                                        f'Statistics_for_{num_matr}_matrices_of_dim_{dim_matr}.xlsx',
+                                        sheet_name = 'rel_back_err')
+
+
+        for matrix_type in types_matrices:
+            # Create the figures for the histograms
+            fig_hist, ax_hist = plt.subplots(figsize=(15,10), nrows = 1, ncols = 2)
+            fig_hist.suptitle(f'{matrix_type}', fontsize = suptitle_size)
+
+            # Plot of the distribution of the growth factor
+            ax_hist[0].hist(df_growth_factor[matrix_type], bins = 'auto',\
+                                        histtype='step', fill = False, label = matrix_type, log = True)
+            ax_hist[0].set_xlabel(fr'$\gamma$', fontsize = xylabel_size)
+            ax_hist[0].set_ylabel(r'$\log_{10}(f)$', fontsize = xylabel_size)
+            ax_hist[0].set_title(f'Distribution of the growth factor')
+            ax_hist[0].legend(fontsize = legend_size)
+
+            # Plot of the distribution of the relative backward error
+            ax_hist[1].hist(df_rel_back_err[matrix_type], bins = 'auto',\
+                                        histtype='step', fill = False, label = matrix_type, log = True)
+            ax_hist[1].set_xlabel(fr'$\gamma$', fontsize = xylabel_size)
+            ax_hist[1].set_ylabel(r'$\log_{10}(f)$', fontsize = xylabel_size)
+            ax_hist[1].set_title(f'Distribution of the relative backward error')
+            ax_hist[1].legend(fontsize = legend_size)
+
+            
 
 
 

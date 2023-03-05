@@ -1,0 +1,66 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{def} \PYG{n+nf}{lufact}\PYG{p}{(}\PYG{n}{A}\PYG{p}{):}
+	\PYG{l+s+sa}{r}\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{} This function computes the LU factorization of a non\PYGZhy{}singular matrix A}
+\PYG{l+s+sd}{	without pivoting, giving as output the matrices L and U and the growth factor g,}
+\PYG{l+s+sd}{	here defined as :math:`\PYGZbs{}frac\PYGZob{} max\PYGZus{}\PYGZob{}ij\PYGZcb{} (|L||U|)\PYGZus{}\PYGZob{}ij\PYGZcb{} \PYGZcb{}\PYGZob{} max\PYGZus{}\PYGZob{}ij\PYGZcb{} (|A|)\PYGZus{}\PYGZob{}ij\PYGZcb{} \PYGZcb{}`.}
+\PYG{l+s+sd}{	}
+\PYG{l+s+sd}{	Paramters:}
+\PYG{l+s+sd}{	\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{	A : ndarray}
+\PYG{l+s+sd}{		input matrix of dimension :math:`(N\PYGZbs{}times N)`}
+\PYG{l+s+sd}{	}
+\PYG{l+s+sd}{	Returns}
+\PYG{l+s+sd}{	\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{	L : ndarray}
+\PYG{l+s+sd}{		Unit lower triagular matrix}
+\PYG{l+s+sd}{	U : ndarray}
+\PYG{l+s+sd}{		Upper triangular matrix}
+\PYG{l+s+sd}{	g : ndarray}
+\PYG{l+s+sd}{		growth factor}
+\PYG{l+s+sd}{	\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+	
+	\PYG{c+c1}{\PYGZsh{} Compute the dimension of the input square matrix}
+	\PYG{n}{dim} \PYG{o}{=} \PYG{n}{A}\PYG{o}{.}\PYG{n}{shape}
+	\PYG{n}{n} \PYG{o}{=} \PYG{n}{dim}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}
+	
+	\PYG{c+c1}{\PYGZsh{} Define the chosen precision}
+	\PYG{n}{precision} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{finfo}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{)}\PYG{o}{.}\PYG{n}{eps}
+	
+	\PYG{c+c1}{\PYGZsh{} Check that the input matrix is a square matrix}
+	\PYG{k}{assert} \PYG{p}{(}\PYG{n}{dim}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{==} \PYG{n}{dim}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]),} \PYG{l+s+s2}{\PYGZdq{}The input matrix is not a square matrix\PYGZdq{}}
+	
+	\PYG{c+c1}{\PYGZsh{} Check if the input matrix is singular}
+	\PYG{k}{if} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{det}\PYG{p}{(}\PYG{n}{A}\PYG{p}{))} \PYG{o}{\PYGZlt{}} \PYG{n}{precision}\PYG{p}{:}
+		\PYG{n}{logging}\PYG{o}{.}\PYG{n}{warning}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}The input matrix is singular\PYGZdq{}}\PYG{p}{)}
+	\PYG{c+c1}{\PYGZsh{} Check if the hypothesis of the LU factorization theorem hold}
+	\PYG{k}{for} \PYG{n}{k} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{n}\PYG{p}{):}
+		\PYG{k}{if} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{det}\PYG{p}{(}\PYG{n}{A}\PYG{p}{[:}\PYG{n}{k}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,:}\PYG{n}{k}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]))} \PYG{o}{\PYGZlt{}} \PYG{n}{precision}\PYG{p}{:}
+			\PYG{n}{logging}\PYG{o}{.}\PYG{n}{warning}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}The }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{k}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZhy{}th principal minor is less than the chosen precision\PYGZsq{}}\PYG{p}{)}
+	
+	\PYG{c+c1}{\PYGZsh{} Create a copy of the input matrix to be modified in order to obatin the matrices L and U}
+	\PYG{n}{B} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{copy}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+	\PYG{k}{for} \PYG{n}{k} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{n}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{):}
+		\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{k}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{n}\PYG{p}{):}
+			\PYG{n}{B\PYGZus{}kk} \PYG{o}{=} \PYG{n}{B}\PYG{p}{[}\PYG{n}{k}\PYG{p}{,}\PYG{n}{k}\PYG{p}{]}
+			\PYG{c+c1}{\PYGZsh{} Check if there is a division by a quantity smaller than the chosen precision}
+			\PYG{c+c1}{\PYGZsh{} and update the out variable to keep trace of this information}
+			\PYG{k}{if} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{B\PYGZus{}kk}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{n}{precision}\PYG{p}{:}
+				\PYG{k}{raise} \PYG{n+ne}{ValueError}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Division by a quantity smaller than the chosen precision\PYGZsq{}}\PYGZbs{}
+				\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{} \PYGZhy{} B\PYGZus{}kk = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{B\PYGZus{}kk}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+			\PYG{n}{B}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,}\PYG{n}{k}\PYG{p}{]} \PYG{o}{=} \PYG{n}{B}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,}\PYG{n}{k}\PYG{p}{]}\PYG{o}{/}\PYG{n}{B\PYGZus{}kk}
+		\PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{k}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{n}\PYG{p}{):}
+			\PYG{k}{for} \PYG{n}{l} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{k}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{n}\PYG{p}{):}
+				\PYG{n}{B}\PYG{p}{[}\PYG{n}{l}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{n}{B}\PYG{p}{[}\PYG{n}{l}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]} \PYG{o}{\PYGZhy{}} \PYG{n}{B}\PYG{p}{[}\PYG{n}{l}\PYG{p}{,}\PYG{n}{k}\PYG{p}{]}\PYG{o}{*}\PYG{n}{B}\PYG{p}{[}\PYG{n}{k}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]}
+	
+	\PYG{c+c1}{\PYGZsh{} Extract the matrices L and U from B using, resepctively, a strictly lower triangular mask}
+	\PYG{c+c1}{\PYGZsh{} and an upper triangular mask.}
+	\PYG{n}{L} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{tril}\PYG{p}{(}\PYG{n}{B}\PYG{p}{,}\PYG{n}{k}\PYG{o}{=\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{+} \PYG{n}{np}\PYG{o}{.}\PYG{n}{eye}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{} Add the Id matrix in order for L to be unit lower triangular}
+	\PYG{n}{U} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{triu}\PYG{p}{(}\PYG{n}{B}\PYG{p}{,}\PYG{n}{k}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}
+	
+	\PYG{c+c1}{\PYGZsh{} Compute the growth factor}
+	\PYG{n}{LU\PYGZus{}abs} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{L}\PYG{p}{)}\PYG{n+nd}{@np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{U}\PYG{p}{)}
+	\PYG{n}{g} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{amax}\PYG{p}{(}\PYG{n}{LU\PYGZus{}abs}\PYG{p}{)}\PYG{o}{/}\PYG{n}{np}\PYG{o}{.}\PYG{n}{amax}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{A}\PYG{p}{))}
+	
+	\PYG{k}{return} \PYG{n}{L}\PYG{p}{,} \PYG{n}{U}\PYG{p}{,} \PYG{n}{g}
+	
+\end{Verbatim}
