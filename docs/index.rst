@@ -6,11 +6,15 @@
 Welcome to Numerical Analysis and Optimization - Projects's documentation!
 ==========================================================================
 
+This is a library born during the PhD course Numerical Analysis and Optimization at SNS, Pisa.
+In this library one can find the functions used to solve the excercisee proposed during the course.
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: Project_1.Project_1
+.. automodule:: Project_1
    :members:
 
 Indices and tables

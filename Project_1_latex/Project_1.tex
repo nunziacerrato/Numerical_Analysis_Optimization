@@ -24,7 +24,8 @@
 \begin{document}
 	
 \section*{Problem 1}
-In the first problem it is required to write a function that computes the LU factorization of a non-singular matrix $A$ without pivoting. The full code has been written using Python as programming language and it is available at the following link on GitHub **** INSERIRE LINK ****, where it is also possible to find a link to the online documentation **** INSERIRE LINK **** \footnote{The syntax used in the docstrings of the Python functions is necessary to obtain clear latex formatting of the formulas in the online documentation.}.\\
+In the first problem it is required to write a function that computes the LU factorization of a non-singular matrix $A$ without pivoting. The full code has been written using Python as programming language and it is available at the following link on GitHub \url{https://github.com/nunziacerrato/Numerical_Analysis_Optimization}.
+%\footnote{The syntax used in the docstrings of the Python functions is necessary to obtain clear latex formatting of the formulas in the documentation.}.\\
 In the following it is reported the function \mintinline{python}{lufact(A)} that can be found in the library named Project\_1.py
 
 \begin{minted}[mathescape, linenos, gobble=0, breaklines]{python}
@@ -88,7 +89,8 @@ def lufact(A):
  return L, U, g
 \end{minted}
 
-\noindent We included tests in this function in order to ensure that the input matrix has the correct characteristics to perform the LU factorization. The rationale used to insert such tests is explained in the following. We added \textit{warnings}, using the \mintinline{python}{logging} Python library, for all the checks that, if not satisfied, do not necessarily break the LU factorization, so the flow of the code does not interrupt. We expect these to be some of the cases where the LU factorization gives higher errors in terms of relative backward stability *** NON SONO SICRA CHE SIA VERAMENTE COSI' ***
+\noindent We included tests in this function in order to ensure that the input matrix has the correct characteristics to perform the LU factorization. The rationale used to insert such tests is explained in the following. We added \textit{warnings}, using the \mintinline{python}{logging} Python library, for all the checks that, if not satisfied, do not necessarily break the LU factorization, so the flow of the code does not interrupt.
+%We expect these to be some of the cases where the LU factorization gives higher errors in terms of relative backward stability *** NON SONO SICRA CHE SIA VERAMENTE COSI' ***
 For what concern most significant errors, we inserted an \textit{assertion} if the input matrix is not square (even if it is clarified in the function's docstring that it must be square), so that the flow of the code is interrupted, and a \textit{ValueError} if a division by a quantity smaller than the chosen precision occurs. In this last case, if the LU factorization fails, this information is stored in a counter in the main program (see subsection \ref{subsect:Main_Program}) and it is saved in an Excel file for all the types of matrices and the dimensions considered. The counter will be updated each time a failure occurs.\\
 
 \noindent In analyzing the results regarding the correctness of the computational LU factorization for the chosen input matrices, it is required to study the trend of the growth factor and the relative backward error with respect to the dimension of the considered matrices. While the growth factor is computed within the function \mintinline{python}{lufact(A)}, the relative backward error must be computed separately. The code that computes this value is reported below.
@@ -313,14 +315,14 @@ We considered $500$ samplings for all the types of non-singular, square matrices
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.3]{C:/Users/cerra/Documents/GitHub/Numerical_Analysis_Optimization/Project_1_latex/Plot/Scatterplot_charact_values_for_Random_matrices}
+	\includegraphics[scale=0.24]{C:/Users/cerra/Documents/GitHub/Numerical_Analysis_Optimization/Project_1_latex/Plot/Scatterplot_charact_values_for_Random_matrices}
 	\caption{Scatterplot of the characteristic values of $\gamma$ and $\delta$ as a function of $N$ for real random matrices. Logarithmic scale on the ordinate axis.}
 	\label{fig:Scatterplot_Random}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.3]{C:/Users/cerra/Documents/GitHub/Numerical_Analysis_Optimization/Project_1_latex/Plot/Scatterplot_charact_values_for_Ginibre_matrices}
+	\includegraphics[scale=0.24]{C:/Users/cerra/Documents/GitHub/Numerical_Analysis_Optimization/Project_1_latex/Plot/Scatterplot_charact_values_for_Ginibre_matrices}
 	\caption{Scatterplot of the characteristic values of $\gamma$ and $\delta$ as a function of $N$ for Ginibre matrices. Logarithmic scale on the ordinate axis.}
 	\label{fig:Scatterplot_Ginibre}
 \end{figure}
@@ -340,14 +342,14 @@ We considered $500$ samplings for all the types of non-singular, square matrices
 	\label{fig:Distributions and boxplot Ginibre Matrices N=25}
 \end{figure}
 
-\noindent It can be observed that both the growth factor and the relative backward error have a wider rage of variation, if one also consider outliers, in the case of real random matrices (for this reason we have considered a logarithmic scale on the axis), while these ranges are smaller in the case of Ginibre matrices. This is, in general, an indication of the fact that both values strongly depend on the input matrix (remember that we have done $500$ iterations), even if more careful considerations can be made to distinguish the two cases. In fact, taking into account, for example, the relative backward error and considering also the outliers, one can note that for real random matrices whose entries are uniformly distributed in $\left[0,1\right)$, this quantity ranges from a minimum value that is of order $10^{-16}$ to a maximum value of order $10^{-11}$. For what concern the Ginibre matrices, the same quantity ranges from a minimum value of order $10^{-15}$ to a maximum value that is approximatively of order $10^{-13}$. It is worth noting that the presence of outliers is more marked in the first case. However, if one discards the outliers, the range of variation of the relative backward error is approximatively the same in both cases. The differences that turn out in this comparison might be due to the fact that when considering the normal distribution to sample the entries of a random matrix, it is more likely to have matrix elements that are centred in the neighbourhood of the mean value, resulting in an ensemble of more homogeneous matrices. This, as a consequence, might reflect in relative backward errors, when computing the LU factorization of these matrices, that are similar and have a smaller range of variation. In the other case, when considering the uniform distribution to sample the entries of a random matrix, the resulting ensemble of matrices can be less homogeneous when compared to the previous one, and this might result in a wider range of variation of the quantity under examination. However, even if in both cases the relative backward errors grow with the dimension of the matrix, their values are small enough and, at least for the mean value, not that far from the machine epsilon, that is of order $10^{-16}$, so the algorithm can be considered backward stable for these types of random matrices.
+\noindent It can be observed that both the growth factor and the relative backward error have a wider rage of variation, if one also consider outliers, in the case of real random matrices (for this reason we have considered a logarithmic scale on the axis), while these ranges are smaller in the case of Ginibre matrices. This is, in general, an indication of the fact that both values strongly depend on the input matrix (remember that we have done $500$ iterations), even if more careful considerations can be made to distinguish the two cases. In fact, taking into account, for example, the relative backward error and considering also the outliers, one can note that for real random matrices whose entries are uniformly distributed in $\left[0,1\right)$, this quantity ranges from a minimum value that is of order $10^{-16}$ to a maximum value of order $10^{-11}$. For what concern the Ginibre matrices, the same quantity ranges from a minimum value of order $10^{-15}$ to a maximum value that is approximatively of order $10^{-13}$. It is worth noting that the presence of outliers is more marked in the first case. However, if one discards the outliers, the range of variation of the relative backward error is approximatively the same in both cases. The differences that turn out in this comparison might be due to the fact that when considering the normal distribution to sample the entries of a random matrix, it is more likely to have matrix elements that are centred in the neighbourhood of the mean value, resulting in an ensemble of more homogeneous matrices. This, as a consequence, might reflect in relative backward errors, when computing the LU factorization of these matrices, that are similar and have a smaller range of variation. In the other case, when considering the uniform distribution to sample the entries of a random matrix, the resulting ensemble of matrices can be less homogeneous when compared to the previous one, and this might result in a wider range of variation of the quantity under examination. However, even if in both cases the relative backward errors grow with the dimension of the matrix, their values are small enough and, at least for the mean value, not that far from the machine epsilon, that is of order $10^{-16}$, so the algorithm can be considered backward stable for these types of random matrices.\\
 
-\subsubsection*{Unitary matrices} We considered in out dataset the ensemble of unitary matrices, namely matrices $U$ such that $U^{*} = U^{-1}$, where $*$ stands for the conjugate transpose. These matrices have been sampled using the \mintinline{Python}{tenpy} Python library and they are also called \textit{CUE matrices}, as they are sampled from the circular ensemble. As in the previous case, we report in the following the scatterplot of the growth factor $\gamma$ and the relative backward error $\delta$ as a function of the dimension $N$ of the matrix.
+\noindent \textbf{Unitary matrices } We considered in out dataset the ensemble of unitary matrices, namely matrices $U$ such that $U^{*} = U^{-1}$, where $*$ stands for the conjugate transpose. These matrices have been sampled using the \mintinline{Python}{tenpy} Python library and they are also called \textit{CUE matrices}, as they are sampled from the circular ensemble. As in the previous case, we report in the following the scatterplot of the growth factor $\gamma$ and the relative backward error $\delta$ as a function of the dimension $N$ of the matrix.
 %We know from theory that the eigenvalues of these matrices are the roots of the unity and, therefore, they all have absolute value equals to one (they are said to be unimodular). 
 %For this reason, we expect the LU factorization algorithm to be backward stable
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.3]{C:/Users/cerra/Documents/GitHub/Numerical_Analysis_Optimization/Project_1_latex/Plot/Scatterplot_charact_values_for_CUE_matrices}
+	\includegraphics[scale=0.24]{C:/Users/cerra/Documents/GitHub/Numerical_Analysis_Optimization/Project_1_latex/Plot/Scatterplot_charact_values_for_CUE_matrices}
 	\caption{Scatterplot of the characteristic values of $\gamma$ and $\delta$ as a function of $N$ for unitary matrices. Logarithmic scale on the ordinate axis.}
 	\label{fig:Scatterplot_CUE}
 \end{figure}
@@ -362,7 +364,7 @@ We considered $500$ samplings for all the types of non-singular, square matrices
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.3]{C:/Users/cerra/Documents/GitHub/Numerical_Analysis_Optimization/Project_1_latex/Plot/Scatterplot_charact_values_for_GUE_matrices}
+	\includegraphics[scale=0.24]{C:/Users/cerra/Documents/GitHub/Numerical_Analysis_Optimization/Project_1_latex/Plot/Scatterplot_charact_values_for_GUE_matrices}
 	\caption{Scatterplot of the characteristic values of $\gamma$ and $\delta$ as a function of $N$ for Hermitian matrices. Logarithmic scale on the ordinate axis.}
 	\label{fig:Scatterplot_GUE}
 \end{figure}
@@ -375,7 +377,7 @@ We considered $500$ samplings for all the types of non-singular, square matrices
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.3]{C:/Users/cerra/Documents/GitHub/Numerical_Analysis_Optimization/Project_1_latex/Plot/Scatterplot_charact_values_for_Wishart_matrices}
+	\includegraphics[scale=0.24]{C:/Users/cerra/Documents/GitHub/Numerical_Analysis_Optimization/Project_1_latex/Plot/Scatterplot_charact_values_for_Wishart_matrices}
 	\caption{Scatterplot of the characteristic values of $\gamma$ and $\delta$ as a function of $N$ for positive definite matrices. Logarithmic scale on the ordinate axis.}
 	\label{fig:Scatterplot_Wishart}
 \end{figure}
@@ -387,7 +389,7 @@ In the following we report the scatterplot of the growth factor and the relative
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.3]{C:/Users/cerra/Documents/GitHub/Numerical_Analysis_Optimization/Project_1_latex/Plot/Scatterplot_charact_values_for_Diagonally dominant_matrices}
+	\includegraphics[scale=0.24]{C:/Users/cerra/Documents/GitHub/Numerical_Analysis_Optimization/Project_1_latex/Plot/Scatterplot_charact_values_for_Diagonally dominant_matrices}
 	\caption{Scatterplot of the characteristic values of $\gamma$ and $\delta$ as a function of $N$ for diagonally dominant matrices. Logarithmic scale on the ordinate axis.}
 	\label{fig:Scatterplot_Diag_dom}
 \end{figure}
