@@ -44,7 +44,7 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-autodoc_mock_imports = ['numpy','qutip','physics-tenpy']
+autodoc_mock_imports = ['numpy','pandas','scipy.linalg','logging','qutip','physics-tenpy']
 
 # -- Options for HTML output -------------------------------------------------
 

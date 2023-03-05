@@ -9,7 +9,6 @@ import scipy.linalg
 import logging
 import tenpy
 import qutip
-import matplotlib.pyplot as plt
 
 # Define global parameters
 num_matr = 500
