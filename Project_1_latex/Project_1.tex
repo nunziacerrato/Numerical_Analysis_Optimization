@@ -43,7 +43,7 @@ def lufact(A):
      Unit lower triagular matrix
  U : ndarray
      Upper triangular matrix
- g : ndarray
+ g : float
      growth factor
  '''
 
@@ -63,7 +63,7 @@ def lufact(A):
  # Check if the hypothesis of the LU factorization theorem hold
  for k in range(n):
     if np.abs(np.linalg.det(A[:k+1,:k+1])) < precision:
-	   logging.warning(f'The {k}-th principal minor is less than the chosen precision')
+       logging.warning(f'The {k}-th principal minor is less than the chosen precision')
 
  # Create a copy of the input matrix to be modified in order to obatin the matrices L and U
  B = np.copy(A)

@@ -13,7 +13,7 @@
 \PYG{l+s+sd}{     Unit lower triagular matrix}
 \PYG{l+s+sd}{ U : ndarray}
 \PYG{l+s+sd}{     Upper triangular matrix}
-\PYG{l+s+sd}{ g : ndarray}
+\PYG{l+s+sd}{ g : float}
 \PYG{l+s+sd}{     growth factor}
 \PYG{l+s+sd}{ \PYGZsq{}\PYGZsq{}\PYGZsq{}}
 
@@ -33,7 +33,7 @@
  \PYG{c+c1}{\PYGZsh{} Check if the hypothesis of the LU factorization theorem hold}
  \PYG{k}{for} \PYG{n}{k} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{n}\PYG{p}{):}
     \PYG{k}{if} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{det}\PYG{p}{(}\PYG{n}{A}\PYG{p}{[:}\PYG{n}{k}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,:}\PYG{n}{k}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]))} \PYG{o}{\PYGZlt{}} \PYG{n}{precision}\PYG{p}{:}
-	   \PYG{n}{logging}\PYG{o}{.}\PYG{n}{warning}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}The }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{k}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZhy{}th principal minor is less than the chosen precision\PYGZsq{}}\PYG{p}{)}
+       \PYG{n}{logging}\PYG{o}{.}\PYG{n}{warning}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}The }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{k}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZhy{}th principal minor is less than the chosen precision\PYGZsq{}}\PYG{p}{)}
 
  \PYG{c+c1}{\PYGZsh{} Create a copy of the input matrix to be modified in order to obatin the matrices L and U}
  \PYG{n}{B} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{copy}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
