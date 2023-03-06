@@ -1,7 +1,8 @@
 ''' This program serves as a library. It contains all the basic functions needed to solve the first
     Project of the "Numerical Analysis and Optimization" course. In particular, this file contains
     the functions used to create a dataset of square matrices of different types, and the functions
-    used to compute the LU factorization and the relative backward error associated to it. '''
+    used to compute the LU factorization and the relative backward error associated to it.
+'''
 
 import numpy as np
 import pandas as pd
@@ -31,7 +32,7 @@ def lufact(A):
             Unit lower triagular matrix
         U : ndarray
             Upper triangular matrix
-        g : ndarray
+        g : float
             growth factor
     '''
 
@@ -246,10 +247,9 @@ def create_dataset(num_matr,dim_matr):
 
 if __name__ == '__main__' :
 
-    dim_matr_max = 50
-    keys = create_dataset(1,2).keys()
+    logging.basicConfig(level=logging.ERROR)
 
-    # logging.basicConfig(level=logging.INFO)
+    keys = create_dataset(1,2).keys()
 
     # Define a DataFrame to store all the failures of the LU factorization divided by matrx types.
     df_fails = pd.DataFrame(0, columns = keys, index = range(2,dim_matr_max+1))
@@ -291,55 +291,3 @@ if __name__ == '__main__' :
                                 f'Failures_LUfact_for_{num_matr}_matrices.xlsx')
     df_fails.to_excel(writer, 'Fails', index = False)
     writer.save()
-
-
-
-
-
-        # for dim_matr in range(dim_matr_max):
-        #     diag_dom_matrices = np.zeros((num_matr,dim_matr,dim_matr))
-        #     for i in range(num_matr):
-        #         diag_dom_matrices[i,:,:] = diagonally_dominant_matrix(dim_matr)
-
-        #     g_diag_dom = np.zeros(num_matr)
-        #     rel_back_err_diag_dom = np.zeros(num_matr)
-        #     for i in range(num_matr):
-        #         A = diag_dom_matrices[i,:,:]
-        #         L, U, g_diag_dom[i], out = lufact(A)
-        #         rel_back_err_diag_dom[i] = relative_backward_error(A, L, U)
-
-
-    # CHECK THE DETERMINANT OF THE HILBERT MATRICES
-    # n_max = 100
-    # Hilbert_matr_vect = [scipy.linalg.hilbert(n) for n in range(1,n_max+1)]
-    # for i in range(len(Hilbert_matr_vect)):
-    #     print(f'n = {i+1}, det(H_{i+1}) = {np.linalg.det(Hilbert_matr_vect[i])}')
-
-    ########################### don't know what this other if does ################################
-    if False:
-        logging.basicConfig(level=logging.ERROR)
-        n_max = 1000
-        Hilbert_matr_vect = [scipy.linalg.hilbert(n) for n in range(1,n_max+1)]
-        for i in range(len(Hilbert_matr_vect)):
-            L, U, g, out = lufact(Hilbert_matr_vect[i])
-            rel_back_err = relative_backward_error(Hilbert_matr_vect[i], L, U)
-            print(f'n={i+1}, relative_back_err = {rel_back_err}, growth_factor = {g}')
-            if out == 1:
-                print(f'n={i+1}, out = {out}')
-                ### Check on the matrix elements ###
-                # u_nn = np.linalg.det(Hilbert_matr_vect[i])/np.linalg.det(Hilbert_matr_vect[i-1])
-                # print(f'pivot for n = {i+1}: {u_nn}')
-                # print(f'pivot for n = {i}: {np.linalg.det(Hilbert_matr_vect[i-1])/np.linalg.det(Hilbert_matr_vect[i-2])}')
-                # print(f'pivot for n = {i-1}: {np.linalg.det(Hilbert_matr_vect[i-2])/np.linalg.det(Hilbert_matr_vect[i-3])}')
-                # print(f'pivot for n = {i-2}: {np.linalg.det(Hilbert_matr_vect[i-3])/np.linalg.det(Hilbert_matr_vect[i-4])}')
-                # print(f'U[n,n] = {U[i,i]}')
-                break
-
-
-                
-        # for A in Hilbert_matr_vect:
-        #     L, U, g, out = lufact(A)
-        #     print(out)
-
-
-
