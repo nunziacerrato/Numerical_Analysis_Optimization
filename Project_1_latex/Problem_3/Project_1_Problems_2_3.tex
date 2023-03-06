@@ -41,8 +41,7 @@ Consider the $n \times n$ Wilkinson matrix
 \end{bmatrix}
 \end{equation}
 
-\noindent \textbf{(1)} Compute the LU factorization of $W_5$.\\
-We are interested to compute two $n \times n$ matrices, $L_5$ and $U_5$, that are, respectively, a unit lower triangular matrix and an upper triangular matrix that satisfy the identity $W_5 = L_5 U_5$. We start writing the expression of $W_5$:
+\noindent \textbf{(1)} We are interested to compute two $n \times n$ matrices, $L_5$ and $U_5$, that are, respectively, a unit lower triangular matrix and an upper triangular matrix that satisfy the identity $W_5 = L_5 U_5$. We start writing the expression of $W_5$:
 \begin{equation}\label{key}
 	W_5 = 
 	\begin{bmatrix}
@@ -252,44 +251,59 @@ U_n =
 \end{equation}
 	
 	
-\noindent \textbf{(3)} Here is the function that generates the $n \times n $ Wilkinson matrix:\\
-*** INSERIRE CODICE (funzione wilkin(n) ) ***
+\noindent \textbf{(3)} In the following, we report the function that generates the $n \times n $ Wilkinson matrix.\\
+*** INSERIRE CODICE (funzione wilkin(n) ) ***\\
 
 
-\noindent \textbf{(4-5)} Here is the code that performs the numerical experiment for each $n=2,\dots,60$:\\
+\noindent 
+
+\noindent \textbf{(4-5-6)} In the following, we report the code that performs the numerical experiment for each $n=2,\dots,60$.\\
+
 *** INSERIRE CODICE (funzione check\_when\_lufact\_W\_fails) ***\\
 
-\noindent The largest value of $n$ for which $W_n \textbf{x} = \textbf{b}$ can be solved accurately is $54$, that means that for $n=55$ the program returns an inaccurate value for the solution $\textbf{x}$. In this case, instead of computing the value $\textbf{x} = \textbf{e} = [1,\dots,1]$, it computes $\tilde{\textbf{x}} = [1,\dots,1,0,1]$. In other words we have:
+
+\noindent We have seen that the largest value of $n$ for which $W_n \textbf{x} = \textbf{b}$ can be solved accurately is $54$, that means that for $n=55$ the program returns an inaccurate value for the solution $\textbf{x}$. In particular, instead of computing the value $\textbf{x} = \textbf{e} = [1,\dots,1]^T$, it computes $\tilde{\textbf{x}} = [1,\dots,1,0,1]^T$. In other words we have:
 \begin{equation}\label{key}
-	\textbf{x}_{54} = 0 \neq \textbf{e}_{54} = 1.
+	\tilde{\textbf{x}}_{54} = 0 \neq \textbf{e}_{54} = 1.
 \end{equation}
-In order to understand the motivation uder this behavior, we verified that the matrices $L_{55}$ and $U_{55}$ were computed accurately. In the following is reported the code that verifies this computation:
+In order to understand the motivation uder this behavior, we verified that the matrices $L_{55}$ and $U_{55}$ were computed accurately. In the following is reported the code that verifies this computation.\\
+
 *** INSERIRE CODICE (funzioni expected\_LU\_wilkin, compute\_error\_lufact\_W) ***\\
 
-\noindent  Once verified that the matrices $L_{55}$ and $U_{55}$ are correct, we know that the problems is in the calculation of the forward and backward substitution. We recall that having done the LU factorization of the matrix $W_{55}$ allows us to solve the system $W_{55} \textbf{x} = \textbf{b}_{55}$, where $\textbf{b}_{55} = W_{55} \textbf{e}$, by solving (in order) the linear systems with forward and backward substitutions:
+
+\noindent  Once verified that the matrices $L_{55}$ and $U_{55}$ are correct, we know that the problem must be in the calculation of the forward and backward substitution. We recall that having performed the LU factorization of the matrix $W_{55}$ allows us to solve the system $W_{55} \textbf{x} = \textbf{b}_{55}$ by solving (in order) two linear systems with forward and backward substitutions:
 \begin{equation}\label{key}
 	\left\lbrace \begin{split}
 		& L \textbf{y} = \textbf{b} \\
 		& U \textbf{x} = \textbf{y}
-	\end{split} \right. ,
+	\end{split} \right. 
 \end{equation}
 where we named $L_{55} = L$, $U_{55} = U$ and $\textbf{b}_{55} = \textbf{b}$ for clarity.
-The solution to the first system is $\textbf{y} = [2^0 + 1, 2^1 + 1, \dots,2^{n-2}+1, 2^{n-1}]$. After that, we compute the solution of the second system starting from the bottom:
+It can be verified that the analytical solution to the first system is $\textbf{y} = [2^0 + 1, 2^1 + 1, \dots,2^{n-2}+1, 2^{n-1}]$. At this point, a very important observation arises: if we consider $\textbf{y}_{54}$ = $2^{53} + 1 $, we may notice that, when the sum $2^{53} + 1$ is performed in double precision, the result is $2^{53}$. This happens because $1$ is less than the machine precision associated to the number $2^{53}$ in double precision:
+\begin{equation}\label{key}
+	1< 2^{53} \cdot \varepsilon \simeq 2^{53} \cdot 2.22 \cdot 10^{-16} \simeq 0.9 \cdot 10^{16} \cdot 2.22 \cdot 10^{-16} \simeq 2.
+\end{equation}
+After having computed $\textbf{y}$, we can compute the solution of the second system starting from the bottom:
 \begin{equation}\label{key}
 	\textbf{x}_{55} = \textbf{y}_{55}/U_{55,55} = \frac{2^{54}}{2^{54}} = 1,
 \end{equation}
-so far so goood. Now we update the vector $\textbf{y}$ as follows:
+so far so good. Now we update the vector $\textbf{y}$ as follows:
 \begin{equation}\label{key}
 	\textbf{y}^{(1)} = \textbf{y} - \textbf{x}_{55} \textbf{u}_{55},
 \end{equation}
-where $\textbf{u}_{55}$ is the $55-th$ and last column of $U$. Here we have, considering the $54-th$ component of $\textbf{y}^{(1)}$:
+where $\textbf{u}_{55}$ is the $55-th$ and last column of $U$. The $54-th$ component of $\textbf{y}^{(1)}$ will be:
 \begin{equation}\label{key}
-	[\textbf{y}^{(1)}]_{54} = [\textbf{y}]_{54} - \textbf{x}_{55} U_{54,55} = 2^{53} + 1 - 2^{53}.
+	[\textbf{y}^{(1)}]_{54} = [\textbf{y}]_{54} - \textbf{x}_{55} U_{54,55} = 2^{53} + 1 - 2^{53},
 \end{equation}
-	
-	
-	
-	
+but, since in double precision we have $ 2^{53} + 1 = 2^{53}$, the returned value of  $[\textbf{y}^{(1)}]_{54}$ will be $0$ and not $1$. If we execute the same algorithm for bigger values of $n$, the number of elements of the solution vector that will be miscalculated will grow, starting from the penultimate element of the vector $\textbf{x}$. It is worth noting that the last element of the solution is not affected by this kind of error because it is computed via the operation:
+\begin{equation}\label{key}
+	\textbf{x}_{n} = \textbf{y}_{n}/U_{n,n} = \frac{2^{n-1}}{2^{n-1}}
+\end{equation}
+that does not lead to catastrophical cancellations. These considerations imply that the GEPP algorithm is not backward stable when the input is a Wilkinson matrix. However, it is important to say that this is a very artificial example where the growth factor $\gamma$ assumes the maximum possible value, i.e. $\gamma = 2^{n-1}$. However, in most cases, the GEPP algorithm is backward stable.\\
+The just described behavior can be observed from the execution of the function reported here.\\
+
+*** INSERIRE CODICE ***\\
+
 \section*{Problem 3}
 Suppose that $A \in \R^{n \times n}$ is a nonsingular matrix and the LU factorization of $A$ exists and has been computed. Consider two given vectors $\textbf{u},\textbf{v}\in \R^n$, we can define the matrix $\tilde{A} = A + \textbf{u}\textbf{v}^T$\\
 \textbf{(1a)} Prove that $\tilde{A}$ is nonsingular if and only if $\textbf{v}^TA^{-1}\textbf{u} \neq 1$.\\
