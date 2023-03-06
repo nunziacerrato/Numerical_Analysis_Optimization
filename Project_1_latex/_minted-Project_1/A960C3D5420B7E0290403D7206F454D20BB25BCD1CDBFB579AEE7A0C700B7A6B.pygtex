@@ -1,0 +1,18 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{def} \PYG{n+nf}{wilkin}\PYG{p}{(}\PYG{n}{n}\PYG{p}{):}
+ \PYG{l+s+sa}{r}\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{} This function computes the Wilkinson matrix of dimension :math:`(n \PYGZbs{}times n)`.}
+
+\PYG{l+s+sd}{ Parameters}
+\PYG{l+s+sd}{ \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{ n : int}
+\PYG{l+s+sd}{     Dimension of the Wilkinson matrix}
+
+\PYG{l+s+sd}{ Returns}
+\PYG{l+s+sd}{ \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{ W : ndarray}
+\PYG{l+s+sd}{     Wilkinson matrix}
+\PYG{l+s+sd}{ \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+ \PYG{n}{W} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{tril}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{n}{np}\PYG{o}{.}\PYG{n}{ones}\PYG{p}{((}\PYG{n}{n}\PYG{p}{,}\PYG{n}{n}\PYG{p}{)),}\PYG{n}{k}\PYG{o}{=\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{+} \PYG{n}{np}\PYG{o}{.}\PYG{n}{eye}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)}
+ \PYG{n}{W}\PYG{p}{[:,}\PYG{n}{n}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{1}
+ \PYG{k}{return} \PYG{n}{W}
+\end{Verbatim}

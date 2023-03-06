@@ -7,8 +7,8 @@ Welcome to Numerical Analysis and Optimization Projects's documentation!
 ========================================================================
 Here you can consult the documentation of the assigned projects of the "Numerical Analysis and 
 Optimization" course, held at the Scuola Normale Superiore in the year 2022/2023 by professor
-Michele Benzi. This document is constantly being modified and it is written by Catalano Giuseppe
-and Cerrato Nunzia.
+Michele Benzi. This document is written by Catalano Giuseppe and Cerrato Nunzia, and it will be
+modified during the course of the lectures.
 
 .. toctree::
    :maxdepth: 2

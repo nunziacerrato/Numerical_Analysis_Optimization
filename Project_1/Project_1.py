@@ -14,7 +14,7 @@ import qutip
 # Define global parameters
 num_matr = 500
 dim_matr_max = 50
-common_path = "C:\\Users\\cerra\\Documents\\GitHub\\Numerical_Analysis_Optimization\\Project_1"
+common_path = "Project_1"
 
 def lufact(A):
     r''' This function computes the LU factorization of a non-singular matrix A
@@ -24,7 +24,7 @@ def lufact(A):
         Parameters
         ---------
         A : ndarray
-            Input matrix of dimension :math:`(N\times N)`
+            Input matrix of dimension :math:`(n\times n)`
 
         Returns
         ------
@@ -41,7 +41,7 @@ def lufact(A):
     n = dim[0]
 
     # Define the chosen precision
-    precision = np.finfo(float).eps
+    precision = np.finfo(float).eps/2
 
     # Check that the input matrix is a square matrix
     assert (dim[0] == dim[1]), "The input matrix is not a square matrix"
@@ -100,13 +100,13 @@ def relative_backward_error(A,L,U):
 
     return np.linalg.norm(A - L@U, ord=np.inf)/np.linalg.norm(A, ord=np.inf)
 
-def diagonally_dominant_matrix(N):
-    r''' This function returns a diagonally dominant matrix of dimension :math:`(N \times N)`, whose
+def diagonally_dominant_matrix(n):
+    r''' This function returns a diagonally dominant matrix of dimension :math:`(n \times n)`, whose
         non-diagonal entries are normally distributed.
         
         Parameters
         ----------
-        N : int
+        n : int
             Dimension of the output matrix
 
         Returns
@@ -115,16 +115,16 @@ def diagonally_dominant_matrix(N):
               Diagonally dominant matrix
     '''
     # The following steps are made to decide the sign of the diagonal element of the output matrix
-    # Obtain N random numbers in [0,1) and apply the sign function to this values, shifted by 0.5
-    diag_sign = np.random.rand(N)
+    # Obtain n random numbers in [0,1) and apply the sign function to this values, shifted by 0.5
+    diag_sign = np.random.rand(n)
     diag_sign = np.sign(diag_sign - 0.5)
     diag_sign[diag_sign == 0] = 1 # Set to 1 the (vary improbable) values equal to 0
     
-    # Obtain a matrix of dimension (NxN) whose entries are normally distributed
-    M = np.random.normal(loc=0.0, scale=1.0, size=(N,N))
+    # Obtain a matrix of dimension (nxn) whose entries are normally distributed
+    M = np.random.normal(loc=0.0, scale=1.0, size=(n,n))
     # Substitute all the diagonal elements in this matrix with the sum of the absolute values of all
     # the elements in the corresponding row
-    for i in range(N):
+    for i in range(n):
         M[i,i] = sum(np.abs(M[i,:])) * diag_sign[i]
     
     return M
@@ -151,7 +151,7 @@ def create_dataset(num_matr,dim_matr):
     '''
     
     # Define the minimum value of the determinant of the dataset matrices
-    precision_zero = np.finfo(float).tiny
+    precision_zero = np.finfo(float).eps/2
     
     # Set the seeds to have reproducibility of the results
     np.random.seed(1)
@@ -261,7 +261,6 @@ def wilkin(n):
     W[:,n-1] = 1
     return W
 
-
 def check_when_lufact_W_fails(n_max = 60, treshold = np.finfo(float).eps):
     r''' This function checks the failures of GEPP for a Wilkinson matrix W_n with dimension less or
         equal than n_max. We define a failure as the case in which the relative error between the 
@@ -273,7 +272,7 @@ def check_when_lufact_W_fails(n_max = 60, treshold = np.finfo(float).eps):
         Parameters
         -----------
         n_max : int
-                Maximum size of the Wilkinson matrix
+                Maximum dimension of the Wilkinson matrix
 
         Returns
         --------
@@ -295,16 +294,16 @@ def check_when_lufact_W_fails(n_max = 60, treshold = np.finfo(float).eps):
         # Solve the system with GEPP
         x = np.linalg.solve(W,b)
 
-        # Compute the relative error in 1-norm and print a warning when the erroor exceedes the
-        # chosen precision
-        error = sum(np.abs(x-vect))/n
+        # Compute the error in 1-norm between the computed solution and the exact solution,
+        # and print a warning message when the erroor exceedes the chosen precision
+        error = sum(np.abs(x-vect))
         if error <= treshold:
-            logging.info(f'n = {n}')
-            logging.info(f'||x - e||_1 = {error}')
+            logging.info(f'n = {n}, ||x - e||_1 = {error}')
         elif error > treshold:
-            logging.warning(f'n = {n}')
-            logging.warning(f'||x - e||_1 = {error}')
+            logging.warning(f'n = {n}, ||x - e||_1 = {error}')
             fails.append(n)
+            # Cycle on the elements of the computed solution and print a warning message with the
+            # wrong elements of the solution
             for i in range(n):
                 x_i = x[i]
                 if abs(x_i-1) > treshold:
@@ -426,6 +425,7 @@ def step_by_step_GEPP_W(n):
     
     return out
 
+########################################à  MAIN PROGRAM  #########################################
 #################################### SAVE DATA IN EXCEL FILES ####################################
 
 if __name__ == '__main__' :
@@ -439,7 +439,7 @@ if __name__ == '__main__' :
     
     # Cycle on the different dimensions considered
     for dim_matr in range(2,dim_matr_max+1):
-        # print(f'Dimension = {dim_matr}')
+        logging.info(f'Dimension = {dim_matr}')
 
         # Create the dataset
         dataset = create_dataset(num_matr, dim_matr)

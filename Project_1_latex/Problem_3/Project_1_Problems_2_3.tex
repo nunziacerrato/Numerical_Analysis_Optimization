@@ -14,6 +14,7 @@
 \usepackage{tikz}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{mathtools}
 \newcommand{\R}{\mathbb{R}}
 \usepackage{bbold}
 \usepackage{setspace}
@@ -41,7 +42,7 @@ Consider the $n \times n$ Wilkinson matrix
 \end{bmatrix}
 \end{equation}
 
-\noindent \textbf{(1)} We are interested to compute two $n \times n$ matrices, $L_5$ and $U_5$, that are, respectively, a unit lower triangular matrix and an upper triangular matrix that satisfy the identity $W_5 = L_5 U_5$. We start writing the expression of $W_5$:
+\noindent \textbf{(1)} We are interested to compute (by hand) the LU factorization of $W_{5}$, therefore to compute two $n \times n$ matrices, $L_5$ and $U_5$, that are, respectively, a unit lower triangular matrix and an upper triangular matrix that satisfy the identity $W_5 = L_5 U_5$. We start writing the expression of $W_5$:
 \begin{equation}\label{key}
 	W_5 = 
 	\begin{bmatrix}
@@ -57,10 +58,10 @@ now we compute $\textbf{m}_1$:
 	\textbf{m}_1 = 
 	\begin{bmatrix}
 		0\\
-		{W_{21}}/{W_{11}}\\
-		{W_{31}}/{W_{11}}\\
-		{W_{41}}/{W_{11}}\\
-		{W_{51}}/{W_{11}}
+		{w_{21}}/{w_{11}}\\
+		{w_{31}}/{w_{11}}\\
+		{w_{41}}/{w_{11}}\\
+		{w_{51}}/{w_{11}}
 	\end{bmatrix}=
 	\begin{bmatrix}
 	0\\
@@ -98,9 +99,9 @@ The second iteration proceeds in a similar way:
 	\begin{bmatrix}
 		0\\
 		0\\
-		{W^{(1)}_{32}}/{W^{(1)}_{22}}\\
-		{W^{(1)}_{42}}/{W^{(1)}_{22}}\\
-		{W^{(1)}_{52}}/{W^{(1)}_{22}}
+		{w^{(1)}_{32}}/{w^{(1)}_{22}}\\
+		{w^{(1)}_{42}}/{w^{(1)}_{22}}\\
+		{w^{(1)}_{52}}/{w^{(1)}_{22}}
 	\end{bmatrix}=
 	\begin{bmatrix}
 		0\\
@@ -141,8 +142,8 @@ The second iteration proceeds in a similar way:
 		0\\
 		0\\
 		0\\
-		{W^{(2)}_{43}}/{W^{(2)}_{33}}\\
-		{W^{(2)}_{53}}/{W^{(2)}_{33}}
+		{w^{(2)}_{43}}/{w^{(2)}_{33}}\\
+		{w^{(2)}_{53}}/{w^{(2)}_{33}}
 	\end{bmatrix}=
 	\begin{bmatrix}
 		0\\
@@ -184,7 +185,7 @@ The second iteration proceeds in a similar way:
 		0\\
 		0\\
 		0\\
-		{W^{(2)}_{54}}/{W^{(2)}_{44}}
+		{w^{(2)}_{54}}/{w^{(2)}_{44}}
 	\end{bmatrix}=
 	\begin{bmatrix}
 		0\\
@@ -210,15 +211,14 @@ The second iteration proceeds in a similar way:
 \begin{equation}\label{key}
 	W_5^{(4)} = M_4 W_5^{(3)} = M_4 M_3 M_2 M_1 W_5 =
 	\begin{bmatrix}
-		1 & 0  & 0  & 0  & 1  \\
+		1 & 0  & 0  & 0  & 1 \\
 		0 & 1 & 0 & 0 & 2 \\
 		0 & 0 & 1 & 0 & 4 \\
 		0 & 0 & 0 & 1 & 8 \\
 		0 & 0 & 0 & 0 & 16 
 	\end{bmatrix} = U_5.
 \end{equation}
-	
-\noindent We can get $L_5$ from $L_5 = M_1^{-1} M_2^{-1} M_3^{-1} M_4^{-1}$ and knowing that $M_i^{-1} = \mathcal{I}_5 + \textbf{m}_i \textbf{e}_i^T$:
+Since this last matrix is upper triangular, we call it $U_{5}$ and define $L^{-1}_{5} \coloneqq M_4 M_3 M_2 M_1$, such that $L^{-1}_{5}W_{5}= U_{5}$. We can get $L_5$ from $L_5 = M_1^{-1} M_2^{-1} M_3^{-1} M_4^{-1}$ and knowing that $M_i^{-1} = \mathcal{I}_5 + \textbf{m}_i \textbf{e}_i^T$:
 \begin{equation}\label{key}
 	L_5 = M_1^{-1} M_2^{-1} M_3^{-1} M_4^{-1} = 
 	\begin{bmatrix}
