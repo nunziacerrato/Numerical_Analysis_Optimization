@@ -1,7 +1,7 @@
-''' This program serves as a library. It contains all the basic functions needed to solve the first
-    Project of the "Numerical Analysis and Optimization" course. In particular, this file contains
-    the functions used to create a dataset of square matrices of different types, and the functions
-    used to compute the LU factorization and the relative backward error associated to it.
+''' The program Project_1 serves as a library. It contains all the basic functions needed to solve
+    the first Project of the "Numerical Analysis and Optimization" course. In particular, this file
+    contains the functions used to create a dataset of square matrices of different types, and the
+    functions used to compute the LU factorization and the relative backward error associated to it.
 '''
 
 import numpy as np
@@ -21,13 +21,13 @@ def lufact(A):
         without pivoting, giving as output the matrices L and U and the growth factor g,
         here defined as :math:`\frac{ max_{ij} (|L||U|)_{ij} }{ max_{ij} (|A|)_{ij} }`.
 
-        Paramters:
-        ----------
+        Parameters
+        ---------
         A : ndarray
             input matrix of dimension :math:`(N\times N)`
 
         Returns
-        -------
+        ------
         L : ndarray
             Unit lower triagular matrix
         U : ndarray
@@ -80,28 +80,28 @@ def lufact(A):
     return L, U, g
 
 def relative_backward_error(A,L,U):
-    r''' This function computes the relative backward error of the LU factorization, defined as
-         :math:`\frac{\lVert A -LU \rVert_{\infty}}{\lVert A \rVert_{\infty}}`
-    
-        Parameters
-        ----------
-        A : ndarray
-            Input matrix
-        L : ndarray
-            Unit lower triangular matrix, obtained from the LU factorization of the input matrix A.
-        U : ndarray
-            Upper triangular matrix, obtained from the LU factorization of the input matrix A.
+    r''' This function computes the relative backward error :math:`\delta` of the LU factorization,
+    defined as :math:`\delta = \frac{\lVert A -LU \rVert_{\infty}}{\lVert A \rVert_{\infty}}`.
 
-        Returns
-        -------
-        out : float
-            Relative backward error
+    Parameters
+    ----------
+    A : ndarray
+        Input matrix
+    L : ndarray
+        Unit lower triangular matrix, obtained from the LU factorization of the input matrix A.
+    U : ndarray
+        Upper triangular matrix, obtained from the LU factorization of the input matrix A.
+
+    Returns
+    -------
+    out : float
+        Relative backward error
     '''
 
     return np.linalg.norm(A - L@U, ord=np.inf)/np.linalg.norm(A, ord=np.inf)
 
 def diagonally_dominant_matrix(N):
-    ''' This function returns a diagonally dominant matrix of dimension :math:`(N\times N)`, whose
+    r''' This function returns a diagonally dominant matrix of dimension :math:`(N \times N)`, whose
         non-diagonal entries are normally distributed.
         
         Parameters
@@ -112,8 +112,7 @@ def diagonally_dominant_matrix(N):
         Returns
         -------
         out : ndarray
-              Diagonally dominant matrix
-    
+            Diagonally dominant matrix
     '''
     # The following steps are made to decide the sign of the diagonal element of the output matrix
     # Obtain N random numbers in [0,1) and apply the sign function to this values, shifted by 0.5
