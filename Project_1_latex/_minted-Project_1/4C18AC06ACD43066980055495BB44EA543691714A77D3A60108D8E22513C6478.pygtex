@@ -11,6 +11,7 @@
 
 \PYG{c+c1}{\PYGZsh{} Cycle on the different dimensions considered}
 \PYG{k}{for} \PYG{n}{dim\PYGZus{}matr} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{n}{dim\PYGZus{}matr\PYGZus{}max}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{):}
+ \PYG{n}{logging}\PYG{o}{.}\PYG{n}{info}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}Dimension = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{dim\PYGZus{}matr}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
 
  \PYG{c+c1}{\PYGZsh{} Create the dataset}
  \PYG{n}{dataset} \PYG{o}{=} \PYG{n}{create\PYGZus{}dataset}\PYG{p}{(}\PYG{n}{num\PYGZus{}matr}\PYG{p}{,} \PYG{n}{dim\PYGZus{}matr}\PYG{p}{)}

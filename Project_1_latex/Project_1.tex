@@ -36,7 +36,7 @@ In the following it is reported the function \mintinline{python}{lufact(A)} that
 
 \begin{minted}[mathescape, linenos, gobble=0, breaklines]{python}
 def lufact(A):
- r''' This function computes the LU factorization of a non-singular matrix A without pivoting, giving as output the matrices L and U and the growth factor g, here defined as :math:`\frac{max_{ij} (|L||U|)_{ij}}{max_{ij} (|A|)_{ij}}`.
+ r''' This function computes the LU factorization of a square matrix A without pivoting, giving as output the matrices L and U and the growth factor g, here defined as :math:`\frac{max_{ij} (|L||U|)_{ij}}{max_{ij} (|A|)_{ij}}`.
 
  Paramters:
  ----------
@@ -58,14 +58,14 @@ def lufact(A):
  n = dim[0]
 
  # Define the chosen precision
- precision = np.finfo(float).eps
+ precision = np.finfo(float).eps/2
 
  # Check that the input matrix is a square matrix
  assert (dim[0] == dim[1]), "The input matrix is not a square matrix"
 
- # Check if the input matrix is singular
+ # Check if the determinant of the input matrix is less than the chosen precision
  if np.abs(np.linalg.det(A)) < precision:
-    logging.warning("The input matrix is singular")
+    logging.warning("The determinant of the input matrix is less than the chosen precisionr")
  # Check if the hypothesis of the LU factorization theorem hold
  for k in range(n):
     if np.abs(np.linalg.det(A[:k+1,:k+1])) < precision:
@@ -159,7 +159,7 @@ def diagonally_dominant_matrix(n):
  return M
 \end{minted}
 
-\noindent We have then defined a function that creates the dataset containing all the types of matrices listed before. Since that part of the code is trivial, we have decided to not report it here for brevity (it can be found \href{https://github.com/nunziacerrato/Numerical_Analysis_Optimization/blob/main/Project_1/Project_1.py}{here} in the online repository on GitHub). We do a brief description of how we organize such function. First and foremost, the function \mintinline{Python}{create_dataset} takes as input the number of matrices of each type and their relative dimension and gives as output a dictionary whose keys represent the different types of matrices considered and whose values are 3-dimensional arrays, where the first index cycles on the number of matrices considered. The output matrices are chosen to be nonsingular. We decided to use dictionaries to define the result of this function in order to have a better control the flow of the code in the main program and ensure an easily readability of the input data. Moreover, we fixed the seed in order to have reproducibility of the results (\mintinline{Python}{tenpy} and \mintinline{Python}{qutip} libraries work using \mintinline{Python}{numpy} in the background, so this choice for the seed holds for all the sampled matrices).
+\noindent We have then defined a function that creates the dataset containing all the types of matrices listed before. Since that part of the code is trivial, we have decided to not report it here for brevity (it can be found \href{https://github.com/nunziacerrato/Numerical_Analysis_Optimization/blob/main/Project_1/Project_1.py}{here} in the online repository on GitHub). We do a brief description of how we organize such function. First and foremost, the function \mintinline{Python}{create_dataset} takes as input the number of matrices of each type and their relative dimension and gives as output a dictionary whose keys represent the different types of matrices considered and whose values are 3-dimensional arrays, where the first index cycles on the number of matrices considered. We decided to use dictionaries to define the result of this function in order to have a better control the flow of the code in the main program and ensure an easily readability of the input data. Moreover, we fixed the seed in order to have reproducibility of the results (\mintinline{Python}{tenpy} and \mintinline{Python}{qutip} libraries work using \mintinline{Python}{numpy} in the background, so this choice for the seed holds for all the sampled matrices).
 %The function that creates the dataset of matrices is reported in the following. Note that we have fixed the seed to have reproducibility of the results (\mintinline{Python}{tenpy} and \mintinline{Python}{qutip} libraries work using \mintinline{Python}{numpy} in the background, so this choice for the seed holds for all the sampled matrices). We have decided to use dictionaries to define the result of this function in order to have a better control the flow of the code in the main program and ensure an easily readability of the input data.
 %\begin{minted}[mathescape, linenos, breaklines]{python}
 %def create_dataset(num_matr,dim_matr):
@@ -279,6 +279,7 @@ df_fails = pd.DataFrame(0, columns = keys, index = range(2,dim_matr_max+1))
 
 # Cycle on the different dimensions considered
 for dim_matr in range(2,dim_matr_max+1):
+ logging.info(f'Dimension = {dim_matr}')
 
  # Create the dataset
  dataset = create_dataset(num_matr, dim_matr)
@@ -317,7 +318,7 @@ writer.save()
 \noindent Choosing this approach, once having created the dataset and computed the quantity of interest, we do not have to run the algorithm again, as all the data are now stored. Different scripts are dedicated to compute the minimum and the maximum value of the growth factor and of the relative backward error, as well as the mean value and the standard deviation of such quantities. For the sake of simplicity, we do not report here such part of the code, as it is of no particular relevance. However, it can be found \href{https://github.com/nunziacerrato/Numerical_Analysis_Optimization/blob/main/Project_1/Statistics_Project_1.py}{here} in the online repository on GitHub.
 
 \subsection{Results}
-We considered $500$ samplings for all the types of non-singular, square matrices investigated, whose dimension varies from $2$ to $50$.\\
+We considered $500$ samplings for all the types of square matrices investigated, whose dimension varies from $2$ to $50$.\\
 
 \noindent \textbf{Random Matrices } We generated two different types of random matrices, namely real matrices with entries sampled uniformly in the interval $\left[0,1\right)$, which we simply call random matrices, and complex matrices with entries of the form $a+ib$, where $a$ and $b$ are independently sampled from the normal distribution. The latter are called \textit{Ginibre matrices}. We made this choice to construct a dataset as representative as possible, trying to take into consideration different types of distributions for the entries of the matrices. We report in the following the plot of the characteristic values of the growth factor $\gamma$ and the relative backward error $\delta$ as a function of the dimension $N$ of the matrix.
 
@@ -405,7 +406,7 @@ This difference in the variation range might be due to the fact that when consid
 
 \noindent In this case, considerations similar to the case of positive definite matrices can be made. In fact, it can be observed that the growth factor is of order $\mathcal{O}(1)$, while the relative backward error is of the order of the machine epsilon, with the standard deviation that suggests, as in the previous case, that the distribution of this quantity, for a fixed dimension of the input matrix, is peaked at the mean value. Therefore, the value obtained for this quantity does not strongly depend on the input matrix. It can be concluded that the LU factorization is backward stable for this class of matrices.\\
 
-\noindent \textbf{Hilbert matrices} In addition to the functions considered in the dataset, we also analyzed the trend of the growth factor and the relative backward error for the Hilbert matrices $H_{N}$, as a function of their dimension. In this case, it emerges that, when considering a precision given by the machine epsilon $\varepsilon$, the algorithm that performs the LU factorization breaks for $N\ge21$. In other words, the growth factor is identically equal to one and the relative backward error is of the order of $\varepsilon$ for $N<21$, while, as $N$ increases, a division by a quantity smaller than the machine epsilon occurs, causing the algorithm to break. This means that the problem of solving a linear system $H_{N}\textbf{x}=\textbf{b}$ is ill-conditioned for $N\ge21$ as the matrix becomes numerically singular, that is to say its condition number increases. In fact, we know from theory that the condition number of the Hilbert matrix increases exponentially with the dimension of the matrix.
+\noindent \textbf{Hilbert matrices} In addition to the functions considered in the dataset, we also analyzed the trend of the growth factor and the relative backward error for the Hilbert matrices $H_{N}$, as a function of their dimension. In this case, it emerges that, when considering a precision given by the machine epsilon $\varepsilon$, the algorithm that performs the LU factorization breaks for $N\ge26$. In other words, the growth factor is identically equal to one and the relative backward error is of the order of $\varepsilon$ for $N<26$, while, as $N$ increases, a division by a quantity smaller than the machine epsilon occurs, causing the algorithm to break. This means that the problem of solving a linear system $H_{N}\textbf{x}=\textbf{b}$ is ill-conditioned for $N\ge26$ as the matrix becomes numerically singular, that is to say its condition number increases. In fact, we know from theory that the condition number of the Hilbert matrix increases exponentially with the dimension of the matrix.
 
 \subsection{Conclusions}
 Given the classes of matrices considered in the dataset, we found that the LU factorization is backward stable in all the cases considered, with differences that emerge when comparing the last two types of matrices, namely positive definite and diagonally dominant matrices, to the other ones. In fact, in the last two cases, the values obtained for the relative backward error do not depend on the input matrix, differently from the other cases, where this happens. Moreover, we observed that the LU factorization algorithm never failed, as the DataFrame where we stored all the failures of the algorithm, divided by type of matrix considered and its relative dimension, is identically zero. Different considerations hold for the Hilbert matrices, where the LU factorization algorithm breaks for dimensions of the input matrix greater or equal to $21$ (given the chosen precision), as a consequence of the increasing condition number.
@@ -674,7 +675,7 @@ def check_when_lufact_W_fails(n_max = 60, treshold = np.finfo(float).eps):
  Parameters
  -----------
  n_max : int
-         Maximum size of the Wilkinson matrix
+         Maximum dimension of the Wilkinson matrix
 
  Returns
  --------

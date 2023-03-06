@@ -1,4 +1,7 @@
-''' '''
+''' In this program we obtain the distributions of the growth factor and the relative backward error
+    related to the LU factorization for all the types of matrices investigated and dimensions fixed
+    to the values contained in the list "dim_matr_list", defined in the beginning of the code.
+'''
 
 import numpy as np
 import pandas as pd
@@ -14,8 +17,7 @@ legend_size = 15
 
 # Set matrix parameters for the plot
 types_matrices = create_dataset(1,2).keys()
-dim_matr_list = [25]#,25,50]
-num_matr = 500
+dim_matr_list = [25]
 
 # Cycle on the dimension of the input matrices
 for dim_matr in dim_matr_list:

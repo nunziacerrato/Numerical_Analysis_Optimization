@@ -5,7 +5,7 @@
 \PYG{l+s+sd}{ Parameters}
 \PYG{l+s+sd}{ \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
 \PYG{l+s+sd}{ n\PYGZus{}max : int}
-\PYG{l+s+sd}{         Maximum size of the Wilkinson matrix}
+\PYG{l+s+sd}{         Maximum dimension of the Wilkinson matrix}
 
 \PYG{l+s+sd}{ Returns}
 \PYG{l+s+sd}{ \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}

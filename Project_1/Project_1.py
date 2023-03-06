@@ -2,6 +2,8 @@
     the first Project of the "Numerical Analysis and Optimization" course. In particular, this file
     contains the functions used to create a dataset of square matrices of different types, and the
     functions used to compute the LU factorization and the relative backward error associated to it.
+    It also contains functions used to create the Wilkinson matrix of a chosen dimension, and to
+    compute the LU factorization, investigating when the algorithm breaks.
 '''
 
 import numpy as np
@@ -17,7 +19,7 @@ dim_matr_max = 50
 common_path = "Project_1"
 
 def lufact(A):
-    r''' This function computes the LU factorization of a non-singular matrix A
+    r''' This function computes the LU factorization of a square matrix A
         without pivoting, giving as output the matrices L and U and the growth factor g,
         here defined as :math:`\frac{ max_{ij} (|L||U|)_{ij} }{ max_{ij} (|A|)_{ij} }`.
 
@@ -46,9 +48,9 @@ def lufact(A):
     # Check that the input matrix is a square matrix
     assert (dim[0] == dim[1]), "The input matrix is not a square matrix"
 
-    # Check if the input matrix is singular
+    # Check if the determinant of the input matrix is less than the chosen precision
     if np.abs(np.linalg.det(A)) < precision:
-        logging.warning("The input matrix is singular")
+        logging.warning("The determinant of the input matrix is less than the chosen precision")
     # Check if the hypothesis of the LU factorization theorem hold
     for k in range(n):
         if np.abs(np.linalg.det(A[:k+1,:k+1])) < precision:
@@ -151,7 +153,7 @@ def create_dataset(num_matr,dim_matr):
     '''
     
     # Define the minimum value of the determinant of the dataset matrices
-    precision_zero = np.finfo(float).eps/2
+    precision_zero = np.finfo(float).tiny
     
     # Set the seeds to have reproducibility of the results
     np.random.seed(1)
@@ -201,7 +203,6 @@ def create_dataset(num_matr,dim_matr):
 
 
     # GUE matrices: Complex Hermitian matrices sampled from the Gaussian Unitary Ensemble
-    ####  Real eigenvalues but not necessarily positive: are they backward stable or not?
     i = 0
     while i < num_matr:  
         matrix = tenpy.linalg.random_matrix.GUE((dim_matr,dim_matr))
@@ -215,10 +216,13 @@ def create_dataset(num_matr,dim_matr):
     # Wishart matrices: matrices of the form A^{\dagger}A, with A sampled from the Ginibre Ensemble.
     # This choice ensures the matrices to be positive semidefinite. Discarding the singular matrices
     # we obtain positive definite matrices.
-    #### Real AND positive eigenvalues: they are supposed to be backward stable.
     i = 0
     while i < num_matr:  
         matrix = np.array(qutip.rand_dm_ginibre((dim_matr), rank=None))
+        # cond_numb = np.linalg.norm(matrix, ord = 2)*np.linalg.norm(np.linalg.inv(matrix), ord = 2)
+        # if cond_numb > 1/precision_zero:
+        #     print(f'i = {i} 1/cond_numb = {1/cond_numb}')
+        #     pass
         if np.abs(np.linalg.det(matrix)) < precision_zero:
             pass
         else:
