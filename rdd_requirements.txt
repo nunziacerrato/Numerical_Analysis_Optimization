@@ -1,6 +1,5 @@
 numpy
 pandas
-logging
 scipy.linalg
 qutip
 tenpy
