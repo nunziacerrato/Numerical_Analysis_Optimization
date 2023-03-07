@@ -9,11 +9,11 @@ import matplotlib.pyplot as plt
 from Project_1 import *
 
 # Set size parameters for the plots
-tickparams_size = 15
-xylabel_size = 16
-suptitle_size = 25
-title_size = 18
-legend_size = 15
+tickparams_size = 20
+xylabel_size = 25
+suptitle_size = 35
+title_size = 20
+legend_size = 16
 
 # Set matrix parameters for the plot
 types_matrices = create_dataset(1,2).keys()
@@ -68,8 +68,9 @@ for dim_matr in dim_matr_list:
                                     histtype='step', fill = False, label = label_g, log = True)
         ax_hist[0].set_xlabel(r'$\gamma$', fontsize = xylabel_size)
         ax_hist[0].set_ylabel('f', fontsize = xylabel_size)
-        ax_hist[0].set_title(f'Distribution of the growth factor')
+        ax_hist[0].set_title(f'Distribution of the growth factor', fontsize = title_size)
         ax_hist[0].set_xscale("log")
+        ax_hist[0].tick_params(labelsize = tickparams_size)
         ax_hist[0].legend(fontsize = legend_size)
 
         # Plot of the distribution of the relative backward error
@@ -77,23 +78,26 @@ for dim_matr in dim_matr_list:
                                     histtype='step', fill = False, label = label_rbe, log = True)
         ax_hist[1].set_xlabel(fr'$\delta$', fontsize = xylabel_size)
         ax_hist[1].set_ylabel('f', fontsize = xylabel_size)
-        ax_hist[1].set_title(f'Distribution of the relative backward error')
+        ax_hist[1].set_title(f'Distribution of the relative backward error', fontsize = title_size)
         ax_hist[1].set_xscale("log")
+        ax_hist[1].tick_params(labelsize = tickparams_size)
         ax_hist[1].legend(fontsize = legend_size)
 
         fig_hist.savefig(f'{common_path}_latex\\Plot\\Distributions_for_{matrix_type}_matrices_of_dim_{dim_matr}')
 
-        if False:
+        if True:
             # Plot of the boxplots of the growth factor
             ax_boxplot[0].boxplot(df_growth_factor[matrix_type], showfliers=False)
-            ax_boxplot[0].set_title(f'Boxplot of the growth factor')
+            ax_boxplot[0].set_title(f'Boxplot of the growth factor', fontsize = title_size)
+            ax_boxplot[0].tick_params(labelsize = tickparams_size)
             # ax_boxplot[0].legend(fontsize = legend_size)
 
 
             # Plot of the boxplots of the relative backward error
             ax_boxplot[1].boxplot(df_rel_back_err[matrix_type], showfliers=False)
             ax_boxplot[1].set_yscale("log")
-            ax_boxplot[1].set_title(f'Boxplot of the relative backward error')
+            ax_boxplot[1].set_title(f'Boxplot of the relative backward error', fontsize = title_size)
+            ax_boxplot[1].tick_params(labelsize = tickparams_size)
             # ax_boxplot[1].legend(fontsize = legend_size)
 
             fig_boxplot.savefig(f'{common_path}_latex\\Plot\\Boxplot_for_{matrix_type}_matrices_of_dim_{dim_matr}')

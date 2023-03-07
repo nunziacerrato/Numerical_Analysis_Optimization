@@ -11,13 +11,12 @@ import matplotlib.pyplot as plt
 from Project_1 import *
 
 # Set size parameters for the plots
-tickparams_size = 15
-xylabel_size = 16
-suptitle_size = 25
-title_size = 18
-legend_size = 15
+tickparams_size = 16
+xylabel_size = 25
+suptitle_size = 35
+title_size = 22
+legend_size = 18
 
-Histograms = True
 
 # Extract the types of matrices considered
 types_matrices = create_dataset(1,2).keys()
