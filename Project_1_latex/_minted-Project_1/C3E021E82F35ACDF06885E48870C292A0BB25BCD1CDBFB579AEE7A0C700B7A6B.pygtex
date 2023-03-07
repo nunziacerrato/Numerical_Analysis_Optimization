@@ -1,6 +1,6 @@
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{k}{def} \PYG{n+nf}{check\PYGZus{}when\PYGZus{}lufact\PYGZus{}W\PYGZus{}fails}\PYG{p}{(}\PYG{n}{n\PYGZus{}max} \PYG{o}{=} \PYG{l+m+mi}{60}\PYG{p}{,} \PYG{n}{treshold} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{finfo}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{)}\PYG{o}{.}\PYG{n}{eps}\PYG{p}{):}
- \PYG{l+s+sa}{r}\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{} This function checks the failures of GEPP for a Wilkinson matrix W\PYGZus{}n with dimension less or equal than n\PYGZus{}max. We define a failure as the case in which the error between the solution found by the algorithm and the expected solution is higher than a chosen treshold. The default treshold is set equal to the machine epsilon. When an error is found, a warning message is printed. The function returns the list of the dimensions less then or equal to n\PYGZus{}max for which the GEPP algorithm fails.}
+\PYG{k}{def} \PYG{n+nf}{check\PYGZus{}when\PYGZus{}lufact\PYGZus{}W\PYGZus{}fails}\PYG{p}{(}\PYG{n}{n\PYGZus{}max} \PYG{o}{=} \PYG{l+m+mi}{60}\PYG{p}{,} \PYG{n}{threshold} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{finfo}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{)}\PYG{o}{.}\PYG{n}{eps}\PYG{p}{):}
+ \PYG{l+s+sa}{r}\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{} This function checks the failures of GEPP for a Wilkinson matrix W\PYGZus{}n with dimension less or equal to n\PYGZus{}max. We define a failure as a case in which the error between the solution found by the algorithm and the expected solution is higher than a chosen threshold. The default threshold is set equal to the machine epsilon. When an error is found, a warning message is printed. The function returns the list of the dimensions less than or equal to n\PYGZus{}max for which the GEPP algorithm fails.}
 
 \PYG{l+s+sd}{ Parameters}
 \PYG{l+s+sd}{ \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
@@ -27,16 +27,16 @@
     \PYG{c+c1}{\PYGZsh{} Solve the system with GEPP}
     \PYG{n}{x} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{solve}\PYG{p}{(}\PYG{n}{W}\PYG{p}{,}\PYG{n}{b}\PYG{p}{)}
 
-    \PYG{c+c1}{\PYGZsh{} Compute the error in 1\PYGZhy{}norm between the computed solution and the exact solution, and print a warning message when the error exceedes the chosen precision}
+    \PYG{c+c1}{\PYGZsh{} Compute the error in 1\PYGZhy{}norm between the computed solution and the exact solution, and print a warning message when the error exceeds the chosen precision}
     \PYG{n}{error} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{x} \PYG{o}{\PYGZhy{}} \PYG{n}{vect}\PYG{p}{))}
-    \PYG{k}{if} \PYG{n}{error} \PYG{o}{\PYGZlt{}=} \PYG{n}{treshold}\PYG{p}{:}
+    \PYG{k}{if} \PYG{n}{error} \PYG{o}{\PYGZlt{}=} \PYG{n}{threshold}\PYG{p}{:}
       \PYG{n}{logging}\PYG{o}{.}\PYG{n}{info}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}n = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{n}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{, ||x \PYGZhy{} e||\PYGZus{}1 = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{error}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
-    \PYG{k}{elif} \PYG{n}{error} \PYG{o}{\PYGZgt{}} \PYG{n}{treshold}\PYG{p}{:}
+    \PYG{k}{elif} \PYG{n}{error} \PYG{o}{\PYGZgt{}} \PYG{n}{threshold}\PYG{p}{:}
       \PYG{n}{logging}\PYG{o}{.}\PYG{n}{warning}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}n = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{n}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{, ||x \PYGZhy{} e||\PYGZus{}1 = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{error}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
       \PYG{n}{fails}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)}
       \PYG{c+c1}{\PYGZsh{} Cycle on the elements of the computed solution and print a warning message with the wrong elements of the solution.}
       \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{n}\PYG{p}{):}
-         \PYG{k}{if} \PYG{n+nb}{abs}\PYG{p}{(}\PYG{n}{x}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{n}{treshold}\PYG{p}{:}
+         \PYG{k}{if} \PYG{n+nb}{abs}\PYG{p}{(}\PYG{n}{x}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{n}{threshold}\PYG{p}{:}
             \PYG{n}{logging}\PYG{o}{.}\PYG{n}{warning}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}x[}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{] = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{x}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
 \PYG{k}{return} \PYG{n}{fails}
 
