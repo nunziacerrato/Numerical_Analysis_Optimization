@@ -669,8 +669,8 @@ def wilkin(n):
 \noindent \textbf{(4-5-6)} In the following, we report the code that performs the numerical experiment for each $n=2,\dots,60$.
 
 \begin{minted}[linenos, breaklines]{python}
-def check_when_lufact_W_fails(n_max = 60, treshold = np.finfo(float).eps):
- r''' This function checks the failures of GEPP for a Wilkinson matrix W_n with dimension less or equal than n_max. We define a failure as the case in which the error between the solution found by the algorithm and the expected solution is higher than a chosen treshold. The default treshold is set equal to the machine epsilon. When an error is found, a warning message is printed. The function returns the list of the dimensions less then or equal to n_max for which the GEPP algorithm fails.
+def check_when_lufact_W_fails(n_max = 60, threshold = np.finfo(float).eps):
+ r''' This function checks the failures of GEPP for a Wilkinson matrix W_n with dimension less or equal to n_max. We define a failure as a case in which the error between the solution found by the algorithm and the expected solution is higher than a chosen threshold. The default threshold is set equal to the machine epsilon. When an error is found, a warning message is printed. The function returns the list of the dimensions less than or equal to n_max for which the GEPP algorithm fails.
 
  Parameters
  -----------
@@ -697,26 +697,26 @@ def check_when_lufact_W_fails(n_max = 60, treshold = np.finfo(float).eps):
     # Solve the system with GEPP
     x = np.linalg.solve(W,b)
 
-    # Compute the error in 1-norm between the computed solution and the exact solution, and print a warning message when the error exceedes the chosen precision
+    # Compute the error in 1-norm between the computed solution and the exact solution, and print a warning message when the error exceeds the chosen precision
     error = sum(np.abs(x - vect))
-    if error <= treshold:
+    if error <= threshold:
       logging.info(f'n = {n}, ||x - e||_1 = {error}')
-    elif error > treshold:
+    elif error > threshold:
       logging.warning(f'n = {n}, ||x - e||_1 = {error}')
       fails.append(n)
       # Cycle on the elements of the computed solution and print a warning message with the wrong elements of the solution.
       for i in range(n):
-         if abs(x[i] - 1) > treshold:
+         if abs(x[i] - 1) > threshold:
             logging.warning(f'x[{i}] = {x[i]}')
 return fails
 
 \end{minted}
 
-\noindent We have seen that the largest value of $n$ for which $W_n \textbf{x} = \textbf{b}$ can be solved accurately is $54$, that means that for $n=55$ the program returns an inaccurate value for the solution $\textbf{x}$. In particular, instead of computing the value $\textbf{x} = \textbf{e} = [1,\dots,1]^T$, it computes $\tilde{\textbf{x}} = [1,\dots,1,0,1]^T$. In other words we have:
+\noindent We have seen that the largest value of $n$ for which $W_n \textbf{x} = \textbf{b}$ can be solved accurately is $54$, that means that for $n=55$ the program returns an inaccurate value for the solution $\textbf{x}$. In particular, instead of computing the value $\textbf{x} = \textbf{e} = [1,\dots,1]^T$, it computes $\tilde{\textbf{x}} = [1,\dots,1,0,1]^T$. In other words, we have:
 \begin{equation}\label{key}
 	\tilde{\textbf{x}}_{54} = 0 \neq \textbf{e}_{54} = 1.
 \end{equation}
-In order to understand why this happens, we have verified that the matrices $L_{55}$ and $U_{55}$ are computed accurately. This is done in the function \mintinline{Python}{compute_error_lufact_W(n)}, that can be found in the library \href{https://github.com/nunziacerrato/Numerical_Analysis_Optimization/blob/main/Project_1/Project_1.py}{Project\_1}. In this way, we know that the problem must be in the calculation of the forward and backward substitution. Note that having performed the LU factorization of the matrix $W_{55}$ allows us to solve the system $W_{55} \textbf{x} = \textbf{b}_{55}$ by solving (in order) the following two linear systems with forward and backward substitutions:
+In order to understand why this happens, we have verified that the matrices $L_{55}$ and $U_{55}$ are computed accurately. This is done in the function \mintinline{Python}{compute_error_lufact_W(n)}, which can be found in the library \href{https://github.com/nunziacerrato/Numerical_Analysis_Optimization/blob/main/Project_1/Project_1.py}{Project\_1}. In this way, we know that the problem must be in the calculation of the forward and backward substitution. Note that having performed the LU factorization of the matrix $W_{55}$ allows us to solve the system $W_{55} \textbf{x} = \textbf{b}_{55}$ by solving (in order) the following two linear systems with forward and backward substitutions:
 \begin{equation}\label{key}
 	\left\lbrace \begin{split}
 		& L \textbf{y} = \textbf{b} \\
@@ -751,7 +751,7 @@ but, since in double precision we have $ 2^{53} + 1 = 2^{53}$, the returned valu
 \end{equation}
 that does not lead to catastrophic cancellations. These considerations imply that the GEPP algorithm is not backward stable when the input is a Wilkinson matrix. However, it is important to say that this is a very artificial example where the growth factor $\gamma$ assumes the maximum possible value, i.e. $\gamma = 2^{n-1}$. However, in most cases, the GEPP algorithm is backward stable.\\
 
-\noindent For the sake of completeness, we have developed a function, named \mintinline{Python}{step_by_step_GEPP_W(n)} that calculates step by step the forward and backward substitution using the GEPP algorithm for Wikinson matrices, commented in such a way as to make each step explicit, with warnings that signal errors due to catastrophic cancellations.
+\noindent For the sake of completeness, we have developed a function, named \mintinline{Python}{step_by_step_GEPP_W(n)} that calculates step by step the forward and backward substitution using the GEPP algorithm for Wilkinson matrices, commented in such a way as to make each step explicit, with warnings that signal errors due to catastrophic cancellations.
 
 \section{Problem 3}
 Suppose that $A \in \R^{n \times n}$ is a nonsingular matrix and the LU factorization of $A$ exists and has been computed. Consider two given vectors $\textbf{u},\textbf{v}\in \R^n$, we can define the matrix $\tilde{A} = A + \textbf{u}\textbf{v}^T$.\\
@@ -829,7 +829,7 @@ Supposing that $\tilde{A}$ is invertible, we can write the solution $\tilde{\tex
 \end{itemize}
 
 
-\noindent \textbf{(2)} Assuming again that the LU factorization of $A$ existes and has been computed, describe an efficient algorithm for solving the \textit{bordered system}
+\noindent \textbf{(2)} Assuming again that the LU factorization of $A$ exists and has been computed, describe an efficient algorithm for solving the \textit{bordered system}
 \begin{equation}\label{key}
 	\begin{bmatrix}
 		A &  \textbf{u} \\ 
@@ -894,7 +894,7 @@ Here we can find $\textbf{f}$ and $\textbf{g}$ with forward substitutions with $
 \begin{equation}\label{key}
 	\gamma = \beta - \textbf{v}^T A^{-1} \textbf{u} .
 \end{equation}
-In order to impose that the bordered system has a unique solution, we have to require that $\det(A') \neq 0$, that is true if and only if all the diagonal elements of $U'$ are nonzero and, given that $\det(A)\neq 0$, this means requiring that $\gamma \neq 0 $. Therefore, the condition for the uniquenes of the solution becomes:
+In order to impose that the bordered system has a unique solution, we have to require that $\det(A') \neq 0$, that is true if and only if all the diagonal elements of $U'$ are nonzero and, given that $\det(A)\neq 0$, this means requiring that $\gamma \neq 0 $. Therefore, the condition for the uniqueness of the solution becomes:
 \begin{equation}\label{key}
 	\gamma = \beta - \textbf{v}^T A^{-1} \textbf{u} \neq 0 \Rightarrow \ \ \textbf{v}^T A^{-1} \textbf{u} \neq \beta.
 \end{equation}

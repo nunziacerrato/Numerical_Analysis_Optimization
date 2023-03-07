@@ -265,12 +265,12 @@ def wilkin(n):
     W[:,n-1] = 1
     return W
 
-def check_when_lufact_W_fails(n_max = 60, treshold = np.finfo(float).eps):
+def check_when_lufact_W_fails(n_max = 60, threshold = np.finfo(float).eps):
     r''' This function checks the failures of GEPP for a Wilkinson matrix W_n with dimension less or
-        equal than n_max. We define a failure as the case in which the relative error between the 
-        solution found by the algorithm and the expected solution is higher than a chosen treshold. 
-        The default treshold is set equal to the machine epsilon. When an error is found, a warning 
-        message is printed. The function returns the list of the dimensions less then or equal to
+        equal to n_max. We define a failure as a case in which the relative error between the 
+        solution found by the algorithm and the expected solution is higher than a chosen threshold. 
+        The default threshold is set equal to the machine epsilon. When an error is found, a warning 
+        message is printed. The function returns the list of the dimensions less than or equal to
         n_max for which the GEPP algorithm fails.
         
         Parameters
@@ -299,18 +299,18 @@ def check_when_lufact_W_fails(n_max = 60, treshold = np.finfo(float).eps):
         x = np.linalg.solve(W,b)
 
         # Compute the error in 1-norm between the computed solution and the exact solution,
-        # and print a warning message when the erroor exceedes the chosen precision
+        # and print a warning message when the erroor exceeds the chosen precision
         error = sum(np.abs(x-vect))
-        if error <= treshold:
+        if error <= threshold:
             logging.info(f'n = {n}, ||x - e||_1 = {error}')
-        elif error > treshold:
+        elif error > threshold:
             logging.warning(f'n = {n}, ||x - e||_1 = {error}')
             fails.append(n)
             # Cycle on the elements of the computed solution and print a warning message with the
             # wrong elements of the solution
             for i in range(n):
                 x_i = x[i]
-                if abs(x_i-1) > treshold:
+                if abs(x_i-1) > threshold:
                     logging.warning(f'x[{i}] = {x[i]}')
     return fails
 
