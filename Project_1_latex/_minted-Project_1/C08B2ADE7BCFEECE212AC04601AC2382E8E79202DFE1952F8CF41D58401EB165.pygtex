@@ -5,7 +5,7 @@
 \PYG{l+s+sd}{ Paramters:}
 \PYG{l+s+sd}{ \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
 \PYG{l+s+sd}{ A : ndarray}
-\PYG{l+s+sd}{     input matrix of dimension :math:`(n\PYGZbs{}times n)`}
+\PYG{l+s+sd}{     Input matrix of dimension :math:`(n\PYGZbs{}times n)`}
 \PYG{l+s+sd}{	}
 \PYG{l+s+sd}{ Returns}
 \PYG{l+s+sd}{ \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
@@ -14,7 +14,7 @@
 \PYG{l+s+sd}{ U : ndarray}
 \PYG{l+s+sd}{     Upper triangular matrix}
 \PYG{l+s+sd}{ g : float}
-\PYG{l+s+sd}{     growth factor}
+\PYG{l+s+sd}{     Growth factor}
 \PYG{l+s+sd}{ \PYGZsq{}\PYGZsq{}\PYGZsq{}}
 
  \PYG{c+c1}{\PYGZsh{} Compute the dimension of the input square matrix}
