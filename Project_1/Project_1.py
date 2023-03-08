@@ -266,12 +266,12 @@ def wilkin(n):
     return W
 
 def check_when_lufact_W_fails(n_max = 60, threshold = np.finfo(float).eps):
-    r''' This function checks the failures of GEPP for a Wilkinson matrix W_n with dimension less or
-        equal to n_max. We define a failure as a case in which the relative error between the 
-        solution found by the algorithm and the expected solution is higher than a chosen threshold. 
-        The default threshold is set equal to the machine epsilon. When an error is found, a warning 
-        message is printed. The function returns the list of the dimensions less than or equal to
-        n_max for which the GEPP algorithm fails.
+    r''' This function checks the failures of GEPP for a Wilkinson matrix :math:`W_{n}` with dimension
+        less then or equal to :math:`n_{\max}`. We define a failure as a case in which the relative
+        error between the solution found by the algorithm and the expected solution is higher than a
+        chosen threshold. The default threshold is set equal to the machine epsilon. When an error
+        is found, a warning message is printed. The function returns the list of the dimensions less
+        than or equal to math:`n_{\max}` for which the GEPP algorithm fails.
         
         Parameters
         -----------
