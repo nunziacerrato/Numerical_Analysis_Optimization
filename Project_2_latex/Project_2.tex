@@ -1,0 +1,89 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subfig}
+\usepackage{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{amsthm}
+\usepackage{bbold}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage{booktabs}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[english]{babel}
+\usepackage{lipsum}
+\usepackage{setspace}
+%\usepackage{minted}
+\usepackage{xcolor}
+\newcommand{\R}{\mathbb{R}}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm}
+
+\begin{document}
+\author{Catalano Giuseppe, Cerrato Nunzia}
+\title{Numerical Linear Algebra Homework Project 2:\\Least Squares, Orthogonalization, and the SVD}
+\date{}
+\maketitle
+
+\section{Problem 1}
+\textbf{(1)} Suppose we are given $m$ pairs of data points, $(x_1,y_1),\dots,(x_m,y_m)$. We want to find a linear combination of prescribed functions $\phi_1, \dots, \phi_n$ whose values at the points $x_i \in [a,b] $, $1\le i \le m$, approximate the values $y_1,\dots, y_m$ as well as possible. More precisely, the problem is to find a function of the form $f(x) = \alpha_1 \phi_1(x) + \dots + \alpha_n \phi_n(x) $ such that 
+\begin{equation}
+	\sum_{i=1}^{m} \left[ y_i - f(x_i) \right]^2 \le \sum_{i=1}^{m} \left[ y_i - g(x_i) \right]^2\ \ \ \forall g \in \text{Span}(\phi_1,\dots,\phi_n),
+\end{equation}
+where, usually, $m>n$. It is possible to rephrase the problem as:
+\begin{equation}\label{eq: initial definition of the minimization problem}
+	f = \arg \min_{f\in \text{Span}(\phi_1,\dots,\phi_n)} \sum_{i=1}^{m} \left[ y_i - f(x_i) \right]^2.
+\end{equation}
+Now we can define a column vector $\textbf{z} \in \R^n$ such that:
+\begin{equation}\label{key}
+	[\textbf{z}]_i = \alpha_i
+\end{equation}
+and a matrix $A$ such that:
+\begin{equation}\label{key}
+	[A\textbf{z}]_i = f(x_i) = \alpha_1 \phi_1(x_i) + \dots + \alpha_n \phi_n(x_i).
+\end{equation}
+In this way, the element of the $i-th$ row and $j-th$ column of the matrix $A$ is:
+\begin{equation}\label{key}
+	[A]_{ij} = a_{ij} = \phi_j(x_i).
+\end{equation}
+Finally, defining a column vector $\textbf{b} \in \R^n$ such that:
+\begin{equation}\label{key}
+	[\textbf{b}]_i = y_i
+\end{equation}
+we can rewrite the \eqref{eq: initial definition of the minimization problem} as follows:
+\begin{equation}\label{key}
+	\tilde{\textbf{z}} = \arg \min_{\textbf{z}\in \R^n} \lVert \textbf{b} - A \textbf{z} \rVert_2^2 =  \arg \min_{\textbf{z}\in \R^n} \lVert \textbf{b} - A \textbf{z} \rVert_2,
+\end{equation}
+where the function $f$ can be built from $\tilde{\textbf{z}}$.
+
+\noindent \textbf{(2)} Now we suppose to take $\phi_k = x^{k-1}$, $1 \le k \le n$. Under this assumption, the matrix $A$ takes the form:
+\begin{equation}\label{key}
+	A = \begin{bmatrix}
+		x_1^0 & \cdots & x_1^{n-1}  \\
+		\vdots & \ddots & \vdots \\
+		x_m^0 & \cdots  & x_m^{n-1}
+	\end{bmatrix}.
+\end{equation}
+We want to prove that, assuming that $x_i\neq x_j$ for $i \neq j$, $A$ has full rank: $\text{rank}(A) = n$.\\
+Proof: Proving that $\text{rank}(A) = n$ is equivalent to prove that $\dim(\ker(A)) = 0$, that means that $\nexists \textbf{v} \in \R^n \text{ s.t. } \textbf{v} \in \ker(A)$. We want to prove this statement by contraddiction, therefore, we look for a vector $\textbf{v} \in \R^n$, with $\textbf{v} \neq \underline{0}$, such that $A\textbf{v}=\underline{0}$, that means:
+\begin{equation}\label{key}
+	\left\lbrace 
+	\begin{split}
+		&  v_1 x_1^0 + \dots + v_n x_1^{n-1} = 0\\
+		& \vdots  \\
+		&  v_1 x_m^0 + \dots + v_n x_m^{n-1} = 0 
+	\end{split} \right.  .
+\end{equation}
+Defining the polynomial 
+\begin{equation}\label{key}
+	p^{(n-1)}_{\textbf{v}}(x) = \sum_{i=1}^{n} v_i x^{i-1}
+\end{equation}
+we can observe that, for any choice of $\textbf{v} \neq \underline{0}$, $p^{(n-1)}_{\textbf{v}}(x)$ admits at most $n-1$ different roots, therefore $\nexists \textbf{v} \neq \underline{0}$ such that $A\textbf{v}=\underline{0}$. This concludes the proof. \qedsymbol
+
+\noindent \textbf{(3)}
+
+
+\end{document}
