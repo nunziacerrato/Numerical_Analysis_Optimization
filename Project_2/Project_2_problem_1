@@ -1,0 +1,71 @@
+''' '''
+
+import numpy as np
+import scipy.linalg
+import matplotlib.pyplot as plt
+from Project_2 import *
+
+def Compute_residual(A,b,approx_solution):
+    A_transpose = np.transpose(A)
+    C = A_transpose@A
+    d = A_transpose@b
+
+    residual = d - C @ approx_solution
+    residual_norm_2 = np.linalg.norm(residual, ord=2)
+    return residual, residual_norm_2
+
+if __name__ == '__main__':
+
+    np.set_printoptions(precision=15, suppress=True)
+    plot = False
+
+    order = 2
+    points = np.array([8,10,12,16,20,30,40,60,100])
+    b = np.array([0.88,1.22,1.64,2.72,3.96,7.66,11.96,21.56,43.16])
+    
+    A = compute_A(points, order)
+    C = np.transpose(A) @ A
+
+    x_chol = Cholesky_factorization(A, b)
+    x_qr = QR_fact(A, b)
+    print(f'Solution with Cholesky: x = {format(x_chol)}')
+    print(f'Solution with QR: x = {format(x_qr)}')
+
+    if plot == True:
+        x_start = 0.9 * min(points)
+        x_stop = 1.1 * max(points)
+        x = np.linspace(x_start, x_stop, 1000)
+
+
+        y_chol = x_chol[0] + x_chol[1] * x + x_chol[2] * x**2
+        y_qr = x_qr[0] + x_qr[1] * x + x_qr[2] * x**2
+
+        fig, ax = plt.subplots()
+        ax.plot(x, y_chol, label='Fit Cholesky', color='green')  
+        ax.plot(x, y_qr, label='Fit QR',color='blue') 
+        ax.scatter(points, b, marker='o', color='red', label='Data')  
+
+        
+        ax.set_title('Fit and data')
+        ax.legend()
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+
+        plt.show()
+
+    # Computing the residual
+    approx_solution = np.array([-1.919,0.2782,0.001739])
+
+    residual, residual_norm_2 = Compute_residual(A,b,approx_solution)
+    print(f'Residual: x = {format(residual)}')
+    print(f'Norm 2 of the residual: x = {format(residual_norm_2)}')
+
+    # Computing the spectral condition number of C
+    singular_values = np.linalg.svd(C, compute_uv=False)
+    spectral_condition_num = max(singular_values)/min(singular_values)
+    print(f'Spectral condition number of C: x = {format(spectral_condition_num)}')
+
+    # Computing the relative error
+    relative_error = np.linalg.norm(x_qr - approx_solution, ord=2)/np.linalg.norm(x_qr, ord=2)
+    print(f'Relative error: x = {format(relative_error)}')
+

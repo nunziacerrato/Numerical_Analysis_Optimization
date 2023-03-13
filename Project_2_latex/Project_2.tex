@@ -83,7 +83,31 @@ Defining the polynomial
 \end{equation}
 we can observe that, for any choice of $\textbf{v} \neq \underline{0}$, $p^{(n-1)}_{\textbf{v}}(x)$ admits at most $n-1$ different roots, therefore $\nexists \textbf{v} \neq \underline{0}$ such that $A\textbf{v}=\underline{0}$. This concludes the proof. \qedsymbol
 
-\noindent \textbf{(3)}
+\noindent \textbf{(3)} Consider the problem of finding the best fit with a quadratic function $f(x) = \alpha_1 + \alpha_2 x + \alpha_3 x^2$ for the following data:\\
+\begin{center}	
+\begin{tabular}{c|c|c|c|c|c|c|c|c|c}
+	$x_i$& 8 & 10 & 12 & 16 & 20 & 30 & 40 & 60 & 100 \\
+	\hline
+	$y_i$& 0.88 & 1.22 & 1.64 & 2.72 & 3.96 & 7.66 & 11.96 & 21.56 & 43.16 \\
+\end{tabular}.
+\end{center}
+In the following we report the code that solves the normal equations:
+\begin{equation}\label{key}
+	A^T A \textbf{v} = A^T \textbf{b}
+\end{equation}
+using the Cholesky factorization algorithm and then compares the result with the one found using the QR factorization of the matrix $A$.
+
+\noindent *** INSERIRE CODICE ***
+
+\noindent \textbf{(4)}
+
+
+\section*{Problem 3}
+
+\noindent \textbf{(1)} Let $A \in \R^{m\times n}$, with singular value decomposition $A = U \Sigma V^T = \sum_{i=1}^n \sigma_i \textbf{u}_i \textbf{v}_i^T$ with $\sigma_1 \ge \sigma_2 \ge \dots \ge \sigma_n$ and $\text{rank}(A) = n$. Express the singular values and singular vectors of the following matrices in terms of those of $A$.\\
+
+\noindent \textbf{(a)} 
+
 
 
 \end{document}

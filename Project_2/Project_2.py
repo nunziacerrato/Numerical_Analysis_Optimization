@@ -35,36 +35,4 @@ def QR_fact(A, b):
     return x
 
 if __name__ == '__main__':
-
-    np.set_printoptions(precision=15, suppress=True)
-    plot = True
-
-    order = 2
-    points = np.array([8,10,12,16,20,30,40,60,100])
-    b = np.array([0.88,1.22,1.64,2.72,3.96,7.66,11.96,21.56,43.16])
-
-    A = compute_A(points, order)
-
-    x_chol = Cholesky_factorization(A, b)
-    x_qr = QR_fact(A, b)
-    print(f'Solution with Cholesky: x = {format(x_chol)}')
-    print(f'Solution with QR: x = {format(x_qr)}')
-
-    if plot == True:
-        x_start = 0.9 * min(points)
-        x_stop = 1.1 * max(points)
-        x = np.linspace(x_start, x_stop, 1000)
-
-        y = x_qr[0] + x_qr[1] * x + x_qr[2] * x**2
-
-        fig, ax = plt.subplots()
-        ax.plot(x, y, label='Best fit')  
-        ax.scatter(points, b, marker='o', color='red', label='Data')  
-
-        
-        ax.set_title('Best fit and data')
-        ax.legend()
-        ax.set_xlabel('x')
-        ax.set_ylabel('y')
-
-        plt.show()
+    pass
