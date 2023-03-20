@@ -106,8 +106,61 @@ using the Cholesky factorization algorithm and then compares the result with the
 
 \noindent \textbf{(1)} Let $A \in \R^{m\times n}$, with singular value decomposition $A = U \Sigma V^T = \sum_{i=1}^n \sigma_i \textbf{u}_i \textbf{v}_i^T$ with $\sigma_1 \ge \sigma_2 \ge \dots \ge \sigma_n$ and $\text{rank}(A) = n$. Express the singular values and singular vectors of the following matrices in terms of those of $A$.\\
 
-\noindent \textbf{(a)} 
+\textbf{(a)} $(A^{T}A)^{-1}$
+\[(A^{T}A)^{-1} = (V^{T})^{-1}\Sigma^{-2}V^{-1}=V\Sigma^{-2}V^{-1}\]
+%From this expression we can conclude that:
+\begin{itemize}
+	\item Both left and right singular vectors of $(A^{T}A)^{-1}$ are equal to the right singular vectors of $A$;
+	\item Singular values of $(A^{T}A)^{-1}$ are equal to singular values of $A$ raised to the $-2$ power.
+\end{itemize}
 
+\textbf{(b)} $(A^{T}A)^{-1}A^{T}$
+\[(A^{T}A)^{-1}A^{T} = V\Sigma^{-2}V^{T}V\Sigma U^{T}=V\Sigma^{-1}U^{-1}\]
+\begin{itemize}
+	\item Left singular vectors of $(A^{T}A)^{-1}A^{T}$ are equal to the right singular vectors of $A$;
+	\item Right singular vectors of $(A^{T}A)^{-1}$ are equal to the left singular vectors of $A$;
+	\item Singular values of $(A^{T}A)^{-1}$ are equal to the inverse of singular values of $A$.
+\end{itemize}
+
+\textbf{(c)} $A(A^{T}A)^{-1}$
+\[A(A^{T}A)^{-1} = U\Sigma V^{T}V\Sigma^{-2}V^{-T}=U\Sigma^{-1}V^{T}\]
+\begin{itemize}
+	\item Left and right singular vectors of $(A^{T}A)^{-1}$ coincide with that of $A$;
+	\item Singular values of $(A^{T}A)^{-1}$ are equal to the inverse of singular values of $A$.
+\end{itemize}
+
+\textbf{(d)} $A(A^{T}A)^{-1}A^{T}$
+\[A(A^{T}A)^{-1}A^{T} = U\Sigma (V^{T})V\Sigma^{-2}V^{T}V\Sigma U^{T}=\mathbb{1}\]
+
+
+
+\noindent \textbf{(2)}
+
+\begin{equation}
+	A = \begin{bmatrix}
+		1 & 2 \\
+		0 & 2
+	\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+	A^{T}A = \begin{bmatrix}
+		1 & 2 \\
+		2 & 8
+	\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+	\det(A^{T}A -\lambda\mathbb{1})=0
+\end{equation}
+
+\begin{equation}
+	\lambda_{1,2}=\frac{9 \pm \sqrt{65}}{2}
+\end{equation}
+
+\begin{equation}
+	k_{2}(A) = \frac{\sigma_{\max}}{\sigma_{\min}} = \sqrt{\frac{9+\sqrt{65}}{9-\sqrt{65}}}
+\end{equation}
 
 
 \end{document}
