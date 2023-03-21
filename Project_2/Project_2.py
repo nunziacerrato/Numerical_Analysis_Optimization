@@ -34,5 +34,14 @@ def QR_fact(A, b):
     x = scipy.linalg.solve_triangular(R, c, lower = False)
     return x
 
+def Compute_residual(A,b,approx_solution):
+    A_transpose = np.transpose(A)
+    C = A_transpose@A
+    d = A_transpose@b
+
+    residual = d - C @ approx_solution
+    residual_norm_2 = np.linalg.norm(residual, ord=2)
+    return residual, residual_norm_2
+
 if __name__ == '__main__':
     pass

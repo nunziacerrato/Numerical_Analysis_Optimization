@@ -5,19 +5,12 @@ import scipy.linalg
 import matplotlib.pyplot as plt
 from Project_2 import *
 
-def Compute_residual(A,b,approx_solution):
-    A_transpose = np.transpose(A)
-    C = A_transpose@A
-    d = A_transpose@b
 
-    residual = d - C @ approx_solution
-    residual_norm_2 = np.linalg.norm(residual, ord=2)
-    return residual, residual_norm_2
 
 if __name__ == '__main__':
 
     np.set_printoptions(precision=15, suppress=True)
-    plot = False
+    plot = True
 
     order = 2
     points = np.array([8,10,12,16,20,30,40,60,100])
@@ -68,4 +61,11 @@ if __name__ == '__main__':
     # Computing the relative error
     relative_error = np.linalg.norm(x_qr - approx_solution, ord=2)/np.linalg.norm(x_qr, ord=2)
     print(f'Relative error: x = {format(relative_error)}')
+
+    # Computing bounds to residual
+    d_norm = np.linalg.norm(np.transpose(A)@b, ord=2)
+    lower_bound = d_norm * relative_error / spectral_condition_num
+    upper_bound = d_norm * relative_error * spectral_condition_num
+    print(f'Lower bound to residual: {lower_bound}')
+    print(f'Upper bound to residual: {upper_bound}')
 

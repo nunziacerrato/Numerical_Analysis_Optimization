@@ -28,7 +28,7 @@
 \date{}
 \maketitle
 
-\section{Problem 1}
+\section*{Problem 1}
 \textbf{(1)} Suppose we are given $m$ pairs of data points, $(x_1,y_1),\dots,(x_m,y_m)$. We want to find a linear combination of prescribed functions $\phi_1, \dots, \phi_n$ whose values at the points $x_i \in [a,b] $, $1\le i \le m$, approximate the values $y_1,\dots, y_m$ as well as possible. More precisely, the problem is to find a function of the form $f(x) = \alpha_1 \phi_1(x) + \dots + \alpha_n \phi_n(x) $ such that 
 \begin{equation}
 	\sum_{i=1}^{m} \left[ y_i - f(x_i) \right]^2 \le \sum_{i=1}^{m} \left[ y_i - g(x_i) \right]^2\ \ \ \forall g \in \text{Span}(\phi_1,\dots,\phi_n),
@@ -99,7 +99,77 @@ using the Cholesky factorization algorithm and then compares the result with the
 
 \noindent *** INSERIRE CODICE ***
 
-\noindent \textbf{(4)}
+\noindent Using the previous functions we have computed the solution to the minimization problem, obtaining the following results:\\
+\begin{tabular}{cc}
+	Cholesky:  &$x = [-1.91914925269909,\   0.278213536291725,\ 0.001739400875055]$\\
+	QR factorization:&$x = [-1.91914925269904,\  0.278213536291722,\ 0.001739400875055]$ \\
+\end{tabular}.
+
+\noindent From these results we can observe that, for this problem, both the algorithms perform in a similar way. In fact, the results differ at most in the 15th digit. In figure \ref{fig: fit and data Cholesky QR} we show the input data and the solutions to the least square problem.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=1.1\linewidth]{../Project_2_latex/Plot/Fit_and_data.png}
+	\caption{}
+	\label{fig: fit and data Cholesky QR}
+\end{figure}
+
+
+
+\noindent \textbf{(4)} The following code computes the residual $\textbf{r} = \textbf{d} - C\hat{\textbf{x}}$ where $\hat{\textbf{x}} =  \left[  - 1.919,\  0.2782,\  0.001739\right] $ is the approximate solution of the least squares problem.
+
+\noindent ***INSERIRE CODICE***\\
+
+\noindent The results that we obtain are:\\
+\begin{tabular}{cc}
+ 	Residual: &$\textbf{r}  = [ 0.009503999999993,\  0.716895999999906,\ 62.090847999905236]$\\
+ 	Norm 2 of the residual: &$\lVert  \textbf{r}  \rVert_2 = 62.09498720144942$\\
+\end{tabular}.\\
+The value of the residual may seem strange, in fact, if we compute the relative error we find:
+\begin{equation}\label{key}
+	\frac{\lVert  \textbf{x} - \hat{\textbf{x}} \rVert_2 }{\lVert  \textbf{x} \rVert_2 }  = 7.728184292875672\text{e-05}.
+\end{equation}
+
+\noindent However, we can observe that, from the relation
+\begin{equation}\label{key}
+	\frac{1}{k_2(C)} \frac{\lVert  \textbf{r}  \rVert_2 }{\lVert  \textbf{d}  \rVert_2 } \le \frac{\lVert  \textbf{x} - \hat{\textbf{x}} \rVert_2 }{\lVert  \textbf{x} \rVert_2 } \le k_2(C) \frac{\lVert  \textbf{r}  \rVert_2 }{\lVert  \textbf{d}  \rVert_2 }
+\end{equation}
+we can obtain the following relation for $\textbf{r} $:
+\begin{equation}\label{key}
+	\frac{\lVert  \textbf{d}  \rVert_2}{k_2(C)} \frac{\lVert  \textbf{x} - \hat{\textbf{x}} \rVert_2 }{\lVert  \textbf{x} \rVert_2 }\le \lVert  \textbf{r}  \rVert_2 \le k_2(C) \lVert  \textbf{d}  \rVert_2 \frac{\lVert  \textbf{x} - \hat{\textbf{x}} \rVert_2 }{\lVert  \textbf{x} \rVert_2 }.
+\end{equation}
+
+\noindent With the following python code we have computed the bounds to the residual.
+*** INSERIRE CODICE***\\
+
+\noindent From the output of the previous code we know that:
+\begin{equation}\label{key}
+	5 \times 10^{-7} \lessapprox \lVert  \textbf{r}  \rVert_2 \lessapprox 3 \times 10^9
+\end{equation}
+this big range is due to the value of $k_2(C)  \simeq 8 \times 10^7$ that suggests us that we should not use the residual to measure the accuracy of the solution when the problem is ill-conditioned as in this case. 
+
+\section*{Problem 2}
+\textbf{(1)} Let $A \in \R^{m\times n}$, with $\text{rank}(A) = n$, let {A = QR} be the (full) QR factorization of $A$, with $Q \in \R^{m\times m} $ orthogonal and $R \in \R^{m\times n}$ upper trapezoidal. Also, let $A = Q_1 R_1$ be the reduced QR factorization of $A$ with $Q_1 \in \R^{m\times n}$ having orthonormal columns and $R_1 \in \R^{m\times m}$ upper triangular. Show that $R_1$ is nonsingular, and that the columns $\textbf{q}_1 . . . , \textbf{q}_n$ of $Q_1$ form an orthonormal basis for $\text{Ran}(A)$, the column space of $A$. Also, find an orthonormal basis for $\text{Null}(A^T)$, the null space of $A^T$ .\\
+We start showing that $R_1$ is nonsingular. Since $A$ has full rank, we know that:
+\begin{equation}\label{key}
+	A \textbf{x} = \textbf{0} \Leftrightarrow \textbf{x} = \textbf{0}
+\end{equation}
+and multiplying both sides for $Q_1^T$ knowing that $Q_1^T Q_1 = \mathcal{I}_n$ we obtain
+\begin{equation}\label{key}
+	R_1 \textbf{x} = \textbf{0} \Leftrightarrow \textbf{x} = \textbf{0},
+\end{equation}
+that concludes the proof.\\
+Now we want to show that the columns $\textbf{q}_1 . . . , \textbf{q}_n$ of $Q_1$ form an orthonormal basis for $\text{Ran}(A)$. We start observing that 
+\begin{equation}\label{key}
+	\forall \textbf{y} \in \text{Ran}(A) \exists \textbf{x} \in \R^n : \textbf{y} = A \textbf{x} = Q_1R_1\textbf{x}
+\end{equation}
+and we know this from the definition of range of a matrix. In a similar way, knowing that $R_1$ is nonsingular and therefore is a bijective map from $\R^n$ to $\R^n$, we can put $\textbf{x}' = R_i \textbf{x}$ and say that:
+\begin{equation}\label{key}
+	\forall \textbf{y} \in \text{Ran}(A) \exists \textbf{x} \in \R^n : \textbf{y} = A \textbf{x} = Q_1\textbf{x}',
+\end{equation}
+that means that $\text{Ran}(A) = \text{Ran}(Q_1) = \text{Span}\{\textbf{q}_1,\dots,\textbf{q}_n\}$.\\
+Now we want to find an orthonormal basis for $\text{Null}(A^T)$
+
 
 
 \section*{Problem 3}
