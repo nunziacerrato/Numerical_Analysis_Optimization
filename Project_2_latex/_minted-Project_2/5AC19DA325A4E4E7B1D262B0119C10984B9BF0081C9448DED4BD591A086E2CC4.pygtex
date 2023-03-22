@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+singular values of A = [1.21689895e+03 3.30829410e+00 4.21538860e\PYGZhy{}03]
+pseudoinverse of A = [[\PYGZhy{}2.50833333e+01  5.00833333e+01  2.50000000e\PYGZhy{}01]
+		     [\PYGZhy{}1.66666667e\PYGZhy{}01 \PYGZhy{}3.33333333e\PYGZhy{}01  7.57226996e\PYGZhy{}16]
+		     [\PYGZhy{}2.50833333e+01  5.00833333e+01  2.50000000e\PYGZhy{}01]
+		     [ 1.00000000e+02 \PYGZhy{}2.00000000e+02 \PYGZhy{}1.00000000e+00]]
+spectral condition number of A = 288680.1350686104
+\end{Verbatim}

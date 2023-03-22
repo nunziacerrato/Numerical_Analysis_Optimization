@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k}{as} \PYG{n+nn}{np}
+
+\PYG{n}{A} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{([[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{4.}\PYG{p}{,}\PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{2.}\PYG{p}{,}\PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{4.}\PYG{p}{,}\PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{2.}\PYG{p}{],[}\PYG{l+m+mf}{2.}\PYG{p}{,}\PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{2.}\PYG{p}{,}\PYG{l+m+mf}{2.}\PYG{p}{,}\PYG{l+m+mf}{1.}\PYG{p}{],[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{800}\PYG{p}{,}\PYG{l+m+mi}{200}\PYG{p}{,}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{800}\PYG{p}{,}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{401}\PYG{p}{]])}
+\PYG{n}{U}\PYG{p}{,} \PYG{n}{singular\PYGZus{}values}\PYG{p}{,} \PYG{n}{V\PYGZus{}transpose} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{svd}\PYG{p}{(}\PYG{n}{A}\PYG{p}{,} \PYG{n}{compute\PYGZus{}uv}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+\PYG{n}{pseudoinverse} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{pinv}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+\PYG{n}{spectral\PYGZus{}cond\PYGZus{}num} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{cond}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}singular values of A = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{singular\PYGZus{}values}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}pseudoinverse of A = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{pseudoinverse}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}spectral condition number of A = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{spectral\PYGZus{}cond\PYGZus{}num}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\end{Verbatim}

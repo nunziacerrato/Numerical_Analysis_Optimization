@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+A\PYGZus{}rank\PYGZus{}1 = [[\PYGZhy{}3.67478811e+00  9.18652344e\PYGZhy{}01 \PYGZhy{}3.67478811e+00 \PYGZhy{}1.84198740e+00]
+            [ 2.16152803e+00 \PYGZhy{}5.40355726e\PYGZhy{}01  2.16152803e+00  1.08346585e+00]
+            [\PYGZhy{}8.00001057e+02  1.99990537e+02 \PYGZhy{}8.00001057e+02 \PYGZhy{}4.01000500e+02]]
+
+A\PYGZus{}rank\PYGZus{}2 = [[  \PYGZhy{}3.99955481   \PYGZhy{}2.00000178   \PYGZhy{}3.99955481   \PYGZhy{}2.00177721]
+            [   1.99910978   \PYGZhy{}1.99999645    1.99910978    1.00355377]
+            [\PYGZhy{}800.00000445  200.00000002 \PYGZhy{}800.00000445 \PYGZhy{}400.99998223]]
+
+Spectral condition number of A\PYGZus{}rank\PYGZus{}2 = 367.8327598758788
+\end{Verbatim}
