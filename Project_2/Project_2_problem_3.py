@@ -55,7 +55,7 @@ if False:
     plt.show()
 
 
-if True:
+if False:
     n_list = [10,20,50,100]
     precision = np.finfo(float).eps
     # Compute the matrix R
@@ -93,4 +93,10 @@ if True:
     plt.legend(fontsize = legend_size)
     plt.show()
         
-    
+
+
+if True:
+    A = np.array([[1,1,0],[0,1,1]])
+    b = [1,2]
+    x = np.linalg.pinv(A) @ b
+    print(f'Minimum norm solution x = {x}')
