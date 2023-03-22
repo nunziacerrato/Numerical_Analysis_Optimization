@@ -55,9 +55,9 @@ if False:
     plt.show()
 
 
-if False:
+if True:
     n_list = [10,20,50,100]
-    precision = np.finfo(float).eps
+    precision = np.finfo(float).eps/2
     # Compute the matrix R
     def R_matrix(n):
         R = np.triu(-np.ones((n,n)),k=1) + np.eye(n)
@@ -72,30 +72,41 @@ if False:
             plt.hlines(np.log10(precision*singular_values[0]),1,n, color = 'red', label=r'$u\sigma_{1}$')
             plt.title(f'Singular values of R for n = {n}', fontsize = title_size)
             plt.tick_params(labelsize = tickparams_size)
-            plt.xlabel('n', fontsize = xylabel_size)
+            plt.xlabel('i', fontsize = xylabel_size)
+            plt.ylabel(r'$log_{10}(\sigma_{i})$', fontsize = xylabel_size)
             # plt.legend(fontsize = legend_size)
             # plt.show()
             fig.savefig(f'Project_2_latex\\Plot\\Singular_values_of_R_for_n={n}')
 
-
+    fig, ax = plt.subplots()
     for n in range(1,n_list[-1]+1):
         R = R_matrix(n)
         cond_num = np.linalg.cond(R)
 
-        plt.scatter(n,np.log10(cond_num), color = 'blue')
-    plt.title('Spectral condition number of R as a function of its dimension', fontsize = title_size)
-    plt.ylim(-1,22)
-    plt.vlines(50,-1,22, linestyle = 'dotted', color = 'gray', label = 'n=50')
-    plt.vlines(60,-1,22, linestyle = 'dotted', color = 'black', label = 'n=60')
+        singular_values = np.linalg.svd(R_matrix(n), compute_uv=False)
+
+        counter = 0
+        for s in singular_values:
+            if s < precision*singular_values[0]:
+                counter = counter + 1
+        ax.scatter(n,counter, color = 'blue')
+
+    plt.title('Number of singular values smaller than the chosen precision', fontsize = title_size)
+    #     plt.scatter(n,np.log10(cond_num), color = 'blue')
+    # plt.title('Spectral condition number of R as a function of its dimension', fontsize = title_size)
+    plt.ylim(-0.1,1.1)
+    plt.vlines(50,-0.1,1.1, linestyle = 'dotted', color = 'gray', label = 'n=50')
+    # # plt.vlines(60,-1,22, linestyle = 'dotted', color = 'black', label = 'n=60')
+    # plt.hlines(-np.log10(precision),0,100, color = 'red', label=r'$u$')
     plt.tick_params(labelsize = tickparams_size)
     plt.xlabel('n', fontsize = xylabel_size)
-    plt.ylabel(r'$k_{2}(R_{n})$', fontsize = xylabel_size)
-    plt.legend(fontsize = legend_size)
+    # plt.ylabel(r'$log_{10}(k_{2}(R_{n}))$', fontsize = xylabel_size)
+    # plt.legend(fontsize = legend_size)
     plt.show()
         
 
 
-if True:
+if False:
     A = np.array([[1,1,0],[0,1,1]])
     b = [1,2]
     x = np.linalg.pinv(A) @ b

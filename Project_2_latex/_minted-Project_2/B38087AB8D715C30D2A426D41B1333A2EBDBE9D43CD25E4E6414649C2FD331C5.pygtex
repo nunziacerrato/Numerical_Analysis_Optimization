@@ -1,0 +1,25 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k}{as} \PYG{n+nn}{np}
+\PYG{k+kn}{import} \PYG{n+nn}{scipy.linalg}
+
+\PYG{c+c1}{\PYGZsh{} Set the number of significant digits}
+\PYG{n}{np}\PYG{o}{.}\PYG{n}{set\PYGZus{}printoptions}\PYG{p}{(}\PYG{n}{precision}\PYG{o}{=}\PYG{l+m+mi}{15}\PYG{p}{,} \PYG{n}{suppress}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Set the order of the polynomial}
+\PYG{n}{order} \PYG{o}{=} \PYG{l+m+mi}{2}
+
+\PYG{c+c1}{\PYGZsh{} Write the data points in appropriate arrays}
+\PYG{n}{points} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{([}\PYG{l+m+mi}{8}\PYG{p}{,}\PYG{l+m+mi}{10}\PYG{p}{,}\PYG{l+m+mi}{12}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{,}\PYG{l+m+mi}{20}\PYG{p}{,}\PYG{l+m+mi}{30}\PYG{p}{,}\PYG{l+m+mi}{40}\PYG{p}{,}\PYG{l+m+mi}{60}\PYG{p}{,}\PYG{l+m+mi}{100}\PYG{p}{])}
+\PYG{n}{b} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{([}\PYG{l+m+mf}{0.88}\PYG{p}{,}\PYG{l+m+mf}{1.22}\PYG{p}{,}\PYG{l+m+mf}{1.64}\PYG{p}{,}\PYG{l+m+mf}{2.72}\PYG{p}{,}\PYG{l+m+mf}{3.96}\PYG{p}{,}\PYG{l+m+mf}{7.66}\PYG{p}{,}\PYG{l+m+mf}{11.96}\PYG{p}{,}\PYG{l+m+mf}{21.56}\PYG{p}{,}\PYG{l+m+mf}{43.16}\PYG{p}{])}
+
+\PYG{c+c1}{\PYGZsh{} Build the Vandermonde matrix}
+\PYG{n}{A} \PYG{o}{=} \PYG{n}{compute\PYGZus{}A}\PYG{p}{(}\PYG{n}{points}\PYG{p}{,} \PYG{n}{order}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Obtain the solution to the minimization problem}
+\PYG{n}{x\PYGZus{}chol} \PYG{o}{=} \PYG{n}{Least\PYGZus{}Square\PYGZus{}Cholesky}\PYG{p}{(}\PYG{n}{A}\PYG{p}{,} \PYG{n}{b}\PYG{p}{)}
+\PYG{n}{x\PYGZus{}qr} \PYG{o}{=} \PYG{n}{Least\PYGZus{}Square\PYGZus{}QR}\PYG{p}{(}\PYG{n}{A}\PYG{p}{,} \PYG{n}{b}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}x\PYGZus{}Cholesky = }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{format}\PYG{p}{(}\PYG{n}{x\PYGZus{}chol}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}x\PYGZus{}QR = }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{format}\PYG{p}{(}\PYG{n}{x\PYGZus{}qr}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}	
+\end{Verbatim}

@@ -54,11 +54,11 @@ Finally, defining a column vector $\textbf{b} \in \R^n$ such that:
 \begin{equation}\label{key}
 	[\textbf{b}]_i = y_i
 \end{equation}
-we can rewrite the \eqref{eq: initial definition of the minimization problem} as follows:
+we can rewrite the Eq.~\eqref{eq: initial definition of the minimization problem} as follows:
 \begin{equation}\label{key}
-	\tilde{\textbf{z}} = \arg \min_{\textbf{z}\in \R^n} \lVert \textbf{b} - A \textbf{z} \rVert_2^2 =  \arg \min_{\textbf{z}\in \R^n} \lVert \textbf{b} - A \textbf{z} \rVert_2,
+	\tilde{\textbf{z}} = \arg \min_{\textbf{z}\in \R^n} \lVert \textbf{b} - A \textbf{z} \rVert_2^2 =  \arg \min_{\textbf{z}\in \R^n} \lVert \textbf{b} - A \textbf{z} \rVert_2.
 \end{equation}
-where the function $f$ can be built from $\tilde{\textbf{z}}$.
+Note that, once having obtained $\tilde{\textbf{z}}$ it is possible to construct explicitly the function $f$.\\
 
 \noindent \textbf{(2)} Now we suppose to take $\phi_k = x^{k-1}$, $1 \le k \le n$. Under this assumption, the matrix $A$ takes the form:
 \begin{equation}\label{key}
@@ -68,114 +68,235 @@ where the function $f$ can be built from $\tilde{\textbf{z}}$.
 		x_m^0 & \cdots  & x_m^{n-1}
 	\end{bmatrix}.
 \end{equation}
-We want to prove that, assuming that $x_i\neq x_j$ for $i \neq j$, $A$ has full rank: $\text{rank}(A) = n$.\\
-Proof: Proving that $\text{rank}(A) = n$ is equivalent to prove that $\dim(\ker(A)) = 0$, that means that $\nexists \textbf{v} \in \R^n \text{ s.t. } \textbf{v} \in \ker(A)$. We want to prove this statement by contraddiction, therefore, we look for a vector $\textbf{v} \in \R^n$, with $\textbf{v} \neq \underline{0}$, such that $A\textbf{v}=\underline{0}$, that means:
+We want to prove that, assuming that $x_i\neq x_j$ for $i \neq j$, $A$ has full rank, namely $\text{rank}(A) = n$.\\
+\textit{Proof}: Proving that $\text{rank}(A) = n$ is equivalent to prove that $\dim(\ker(A)) = 0$, that means that $\nexists\, \textbf{v} \in \R^n \smallsetminus \{\textbf{0}\}, \text{ s.t. } \textbf{v} \in \ker(A)$. We want to prove this statement by contradiction. Therefore, we look for a vector $\textbf{v} \in \R^n$, with $\textbf{v} \neq \textbf{0}$, such that $A\textbf{v}=\textbf{0}$, that means:
 \begin{equation}\label{key}
 	\left\lbrace 
 	\begin{split}
 		&  v_1 x_1^0 + \dots + v_n x_1^{n-1} = 0\\
 		& \vdots  \\
 		&  v_1 x_m^0 + \dots + v_n x_m^{n-1} = 0 
-	\end{split} \right.  .
+	\end{split} \right.
 \end{equation}
 Defining the polynomial 
 \begin{equation}\label{key}
-	p^{(n-1)}_{\textbf{v}}(x) = \sum_{i=1}^{n} v_i x^{i-1}
+	p^{(n-1)}_{\textbf{v}}(x) = \sum_{i=1}^{n} v_i x^{i-1},
 \end{equation}
-we can observe that, for any choice of $\textbf{v} \neq \underline{0}$, $p^{(n-1)}_{\textbf{v}}(x)$ admits at most $n-1$ different roots, therefore $\nexists \textbf{v} \neq \underline{0}$ such that $A\textbf{v}=\underline{0}$. This concludes the proof. \qedsymbol
+we can observe that, for any choice of $\textbf{v} \neq \textbf{0}$, $p^{(n-1)}_{\textbf{v}}(x)$ admits at most $n-1$ different roots, therefore, since $m>n$, $\nexists \, \textbf{v} \neq \textbf{0}$ such that $A\textbf{v}=\textbf{0}$. This concludes the proof. \qedsymbol\\
 
 \noindent \textbf{(3)} Consider the problem of finding the best fit with a quadratic function $f(x) = \alpha_1 + \alpha_2 x + \alpha_3 x^2$ for the following data:\\
-\begin{center}	
-\begin{tabular}{c|c|c|c|c|c|c|c|c|c}
+	
+\begin{table}
+	\centering
+	\begin{tabular}{c|c|c|c|c|c|c|c|c|c}
 	$x_i$& 8 & 10 & 12 & 16 & 20 & 30 & 40 & 60 & 100 \\
 	\hline
 	$y_i$& 0.88 & 1.22 & 1.64 & 2.72 & 3.96 & 7.66 & 11.96 & 21.56 & 43.16 \\
-\end{tabular}.
-\end{center}
-In the following we report the code that solves the normal equations:
+	\end{tabular}
+	\caption{Data points $(x_{i},y_{i})$ given in the text.}
+	\label{Tab:Data_points}
+\end{table}
+
+Below is the code that solves the normal equations:
 \begin{equation}\label{key}
 	A^T A \textbf{v} = A^T \textbf{b}
 \end{equation}
-using the Cholesky factorization algorithm and then compares the result with the one found using the QR factorization of the matrix $A$.
+using the Cholesky factorization algorithm and then compares the result with the one found using the QR factorization of the matrix $A$. To begin with, we report the functions defined in the library \mintinline{python}{Project_2.py}.
 
-\noindent *** INSERIRE CODICE ***
+\begin{minted}[mathescape, linenos, breaklines]{python}
+def compute_A(points,order):
+  r'''This function computes the Vandermonde matrix A taking as inputs an array, containing the coordinates of the points, and an integer representing the order of the polynomial.
 
-\noindent Using the previous functions we have computed the solution to the minimization problem, obtaining the following results:\\
-\begin{tabular}{cc}
-	Cholesky:  &$x = [-1.91914925269909,\   0.278213536291725,\ 0.001739400875055]$\\
-	QR factorization:&$x = [-1.91914925269904,\  0.278213536291722,\ 0.001739400875055]$ \\
-\end{tabular}.
+  Parameters
+  ----------
+  points : ndarray
+           Input points
+  order : int
+          Order of the polynomial
 
-\noindent From these results we can observe that, for this problem, both the algorithms perform in a similar way. In fact, the results differ at most in the 15th digit. In figure \ref{fig: fit and data Cholesky QR} we show the input data and the solutions to the least square problem.
+  Returns
+  -------
+  A : ndarray
+      Vandermonde matrix
+  ''' 
+  m = points.shape[0]
+  n = order + 1
+  A = np.zeros((m,n))
+  for index in range(m):
+    A[index,:]=(points[index])**range(n)
 
-\begin{figure}[t]
+  return A
+	
+def LeastSquare_Cholesky(A, b):
+  r''' This function computes the Cholesky factorization of a matrix :math:`(A^{T}A)`, and solves the linear system :math:`(A^{T}Ax = A^{T}b)`, giving as output the solution of the system.
+
+  Parameters
+  ----------
+  A : ndarray
+      Input matrix of dimension :math:`(m\times n)`
+  b : ndarray
+      Input vector of dimension :math:`(m)`
+
+  Returns
+  -------
+  x : ndarray
+      Solution of the linear system
+  ''' 
+  A_transpose = np.transpose(A)
+  C = A_transpose@A
+  d = A_transpose@b
+
+  L, low = scipy.linalg.cho_factor(C)
+  x = scipy.linalg.cho_solve((L, low),d)
+  return x
+
+def LeastSquare_QR(A, b):
+  r''' This function computes the QR factorization of a matrix :math:`A`, and solves the linear system :math:`Rx = Q^{T}b`, giving as output the solution of the system.
+
+  Parameters
+  ----------
+  A : ndarray
+      Input matrix of dimension :math:`(m\times n)`
+  b : ndarray
+      Input vector of dimension :math:`(m)`
+
+  Returns
+  -------
+  x : ndarray
+      Solution of the linear system
+  ''' 
+  Q, R = np.linalg.qr(A)
+  c = np.transpose(Q) @ b 
+  x = scipy.linalg.solve_triangular(R, c, lower = False)
+  return x
+  
+\end{minted}
+
+\noindent Below is the main program.
+%we report the main program where, using the functions defined before, we computed the solution of the minimization problem
+%of the linear system $A\textbf{x} = \textbf{b}$ using both the Cholesky and the QR factorization.
+\begin{minted}[mathescape, linenos, breaklines]{python}
+
+import numpy as np
+import scipy.linalg
+
+# Set the number of significant digits
+np.set_printoptions(precision=15, suppress=True)
+
+# Set the order of the polynomial
+order = 2
+
+# Write the data points in appropriate arrays
+points = np.array([8,10,12,16,20,30,40,60,100])
+b = np.array([0.88,1.22,1.64,2.72,3.96,7.66,11.96,21.56,43.16])
+
+# Build the Vandermonde matrix
+A = compute_A(points, order)
+
+# Obtain the solution to the minimization problem
+x_chol = Least_Square_Cholesky(A, b)
+x_qr = Least_Square_QR(A, b)
+
+print(f'x_Cholesky = {format(x_chol)}')
+print(f'x_QR = {format(x_qr)}')	
+\end{minted}
+
+\noindent The results that we obtained are the following:
+%Using the previous functions we have computed the solution to the minimization problem, obtaining the following results:\\
+
+\begin{minted}{text}
+x_Cholesky = [-1.91914925269909,0.278213536291725,0.001739400875055]
+x_QR = [-1.91914925269904,0.278213536291722,0.001739400875055]
+\end{minted}
+%\begin{tabular}{cc}
+%	Cholesky:  &$x = [-1.91914925269909,\   0.278213536291725,\ 0.001739400875055]$\\
+%	QR factorization:&$x = [-1.91914925269904,\  0.278213536291722,\ 0.001739400875055]$ \\
+%\end{tabular}.
+
+\noindent We can observe that, for this problem, both the algorithms perform in a similar way. In fact, the results differ at most in the 15th digit. In Figure \ref{fig: fit and data Cholesky QR} we show the input data points, reported in Table \ref{Tab:Data_points}, and the function $f(x) = \alpha_{1} + \alpha_{2}x + \alpha_{3}x^{2}$, whose parameters are obtained by solving the least square problem.
+
+\begin{figure}[H]
 	\centering
-	\includegraphics[width=1.1\linewidth]{../Project_2_latex/Plot/Fit_and_data.png}
-	\caption{}
+	\includegraphics[scale=0.32]{../Project_2_latex/Plot/Fit_and_data.png}
+	\caption{Data points $(x_{i},y_{i})$, reported in Table \ref{Tab:Data_points}, and best fit functions $f(x) = \alpha_{1} + \alpha_{2}x + \alpha_{3}x^{2}$ obtained by using the Cholesky and QR factorization to solve the least square problem.}
 	\label{fig: fit and data Cholesky QR}
 \end{figure}
 
 
 
-\noindent \textbf{(4)} The following code computes the residual $\textbf{r} = \textbf{d} - C\hat{\textbf{x}}$ where $\hat{\textbf{x}} =  \left[  - 1.919,\  0.2782,\  0.001739\right] $ is the approximate solution of the least squares problem.
+\noindent \textbf{(4)} The following code computes the residual $\textbf{r} = \textbf{d} - C\hat{\textbf{x}}$, where $\hat{\textbf{x}} =  \left[  - 1.919,\  0.2782,\  0.001739\right] $ is the approximate solution of the least squares problem, given in the text of the exercise.
 
-\noindent ***INSERIRE CODICE***\\
+\begin{minted}[mathescape, linenos, breaklines]{python}
+# Compute A^{T}, C, and d
+A_transpose = np.transpose(A)
+C = A_transpose@A
+d = A_transpose@b
 
-\noindent The results that we obtain are:\\
-\begin{tabular}{cc}
- 	Residual: &$\textbf{r}  = [ 0.009503999999993,\  0.716895999999906,\ 62.090847999905236]$\\
- 	Norm 2 of the residual: &$\lVert  \textbf{r}  \rVert_2 = 62.09498720144942$\\
-\end{tabular}.\\
-The value of the residual may seem strange, in fact, if we compute the relative error we find:
+# Consider the approximate solution
+approx_solution = np.array([-1.919,0.2782,0.001739])
+
+# Compute the residual
+residual = d - C @ approx_solution
+residual_norm_2 = np.linalg.norm(residual, ord=2)
+print(f'Residual = {format(residual)}')
+print(f'Norm 2 of the residual = {format(residual_norm_2)}')
+\end{minted}
+
+\noindent The results that we obtain are:
+\begin{minted}{text}
+Residual = [ 0.009503999999993  0.716895999998997 62.090847999905236]
+Norm 2 of the residual = 62.09498720144941
+\end{minted}
+We can note that the value of the residual is relatively high, even though, if we compute the relative error, by using as true value the one obtained before by solving the least square problem, we find that it is approximatively
 \begin{equation}\label{key}
-	\frac{\lVert  \textbf{x} - \hat{\textbf{x}} \rVert_2 }{\lVert  \textbf{x} \rVert_2 }  = 7.728184292875672\text{e-05}.
+	\frac{\lVert  \textbf{x} - \hat{\textbf{x}} \rVert_2 }{\lVert  \textbf{x} \rVert_2 }  \simeq 7.73\text{e-05}.
 \end{equation}
-
-\noindent However, we can observe that, from the relation
+It can be observed that the relative error assumes a quite small value that may seem incompatible with the value of the residual.
+\noindent However, by manipulating the relation
 \begin{equation}\label{key}
-	\frac{1}{k_2(C)} \frac{\lVert  \textbf{r}  \rVert_2 }{\lVert  \textbf{d}  \rVert_2 } \le \frac{\lVert  \textbf{x} - \hat{\textbf{x}} \rVert_2 }{\lVert  \textbf{x} \rVert_2 } \le k_2(C) \frac{\lVert  \textbf{r}  \rVert_2 }{\lVert  \textbf{d}  \rVert_2 }
+	\frac{1}{k_2(C)} \frac{\lVert  \textbf{r}  \rVert_2 }{\lVert  \textbf{d}  \rVert_2 } \le \frac{\lVert  \textbf{x} - \hat{\textbf{x}} \rVert_2 }{\lVert  \textbf{x} \rVert_2 } \le k_2(C) \frac{\lVert  \textbf{r}  \rVert_2 }{\lVert  \textbf{d}  \rVert_2 },
 \end{equation}
 we can obtain the following relation for $\textbf{r} $:
 \begin{equation}\label{key}
 	\frac{\lVert  \textbf{d}  \rVert_2}{k_2(C)} \frac{\lVert  \textbf{x} - \hat{\textbf{x}} \rVert_2 }{\lVert  \textbf{x} \rVert_2 }\le \lVert  \textbf{r}  \rVert_2 \le k_2(C) \lVert  \textbf{d}  \rVert_2 \frac{\lVert  \textbf{x} - \hat{\textbf{x}} \rVert_2 }{\lVert  \textbf{x} \rVert_2 }.
 \end{equation}
-
-\noindent With the following python code we have computed the bounds to the residual.
-*** INSERIRE CODICE***\\
-
-\noindent From the output of the previous code we know that:
+\noindent Computing the bound for the residual this expression becomes:
 \begin{equation}\label{key}
-	5 \times 10^{-7} \lessapprox \lVert  \textbf{r}  \rVert_2 \lessapprox 3 \times 10^9
+	5 \times 10^{-7} \lesssim \lVert  \textbf{r}  \rVert_2 \lesssim 3 \times 10^9.
 \end{equation}
-this big range is due to the value of $k_2(C)  \simeq 8 \times 10^7$ that suggests us that we should not use the residual to measure the accuracy of the solution when the problem is ill-conditioned as in this case. 
+\noindent It emerges that the range in which we can find the 2-norm of the residual is, in this case, of sixteen orders of magnitude. This is due to the high condition number of $C$, that is $k_2(C)  \simeq 8 \times 10^7$. Therefore, this relation suggests not to use the residual as a measure of the accuracy of the solution when the problem is ill-conditioned (in this case, in fact, the approximate solution is quite accurate).
+%this big range is due to the value of $k_2(C)  \simeq 8 \times 10^7$ that suggests us that we should not use the residual to measure the accuracy of the solution when the problem is ill-conditioned as in this case. 
 
 \section*{Problem 2}
 \textbf{(1)} Let $A \in \R^{m\times n}$, with $\text{rank}(A) = n$, let {A = QR} be the (full) QR factorization of $A$, with $Q \in \R^{m\times m} $ orthogonal and $R \in \R^{m\times n}$ upper trapezoidal. Also, let $A = Q_1 R_1$ be the reduced QR factorization of $A$ with $Q_1 \in \R^{m\times n}$ having orthonormal columns and $R_1 \in \R^{m\times m}$ upper triangular. Show that $R_1$ is nonsingular, and that the columns $\textbf{q}_1 . . . , \textbf{q}_n$ of $Q_1$ form an orthonormal basis for $\text{Ran}(A)$, the column space of $A$. Also, find an orthonormal basis for $\text{Null}(A^T)$, the null space of $A^T$ .\\
-We start showing that $R_1$ is nonsingular. Since $A$ has full rank, we know that:
+
+\noindent We start showing that $R_1$ is nonsingular. Since $\text{rank}(A)=n$, we know, from the rank-nullity theorem, that
 \begin{equation}\label{key}
-	A \textbf{x} = \textbf{0} \Leftrightarrow \textbf{x} = \textbf{0}
+	A \textbf{x} = \textbf{0} \Leftrightarrow \textbf{x} = \textbf{0}.
 \end{equation}
-and multiplying both sides for $Q_1^T$ knowing that $Q_1^T Q_1 = \mathcal{I}_n$ we obtain
-\begin{equation}\label{key}
+Multiplying both sides for $Q_1^T$, and knowing that $Q_1^T Q_1 = \mathbb{1}_n$, we obtain
+\begin{equation}
 	R_1 \textbf{x} = \textbf{0} \Leftrightarrow \textbf{x} = \textbf{0},
 \end{equation}
 that concludes the proof.\\
-Now we want to show that the columns $\textbf{q}_1 . . . , \textbf{q}_n$ of $Q_1$ form an orthonormal basis for $\text{Ran}(A)$. We start observing that 
+Now we want to show that the columns $\{\textbf{q}_1, \dots , \textbf{q}_n\}$ of $Q_1$ form an orthonormal basis for $\text{Ran}(A)$. We start by observing that, from the definition of range of a matrix:
 \begin{equation}\label{key}
-	\forall \textbf{y} \in \text{Ran}(A) \exists \textbf{x} \in \R^n : \textbf{y} = A \textbf{x} = Q_1R_1\textbf{x}
+	\forall \, \textbf{y} \in \text{Ran}(A)\, \exists \, \textbf{x} \in \R^n : \textbf{y} = A \textbf{x} = Q_1R_1\textbf{x}.
 \end{equation}
-and we know this from the definition of range of a matrix. In a similar way, knowing that $R_1$ is nonsingular and therefore is a bijective map from $\R^n$ to $\R^n$, we can put $\textbf{x}' = R_i \textbf{x}$ and say that:
+In a similar way, knowing that $R_1$ is nonsingular and, therefore, it is a bijective map from $\R^n$ to $\R^n$, we can set $\textbf{x}' = R_i \textbf{x}$ and say that
 \begin{equation}\label{key}
-	\forall \textbf{y} \in \text{Ran}(A) \exists \textbf{x} \in \R^n : \textbf{y} = A \textbf{x} = Q_1\textbf{x}',
+	\forall \, \textbf{y} \in \text{Ran}(A) \, \exists \, \textbf{x} \in \R^n : \textbf{y} = A \textbf{x} = Q_1\textbf{x}',
 \end{equation}
-that means that $\text{Ran}(A) = \text{Ran}(Q_1) = \text{Span}\{\textbf{q}_1,\dots,\textbf{q}_n\}$.\\
-Now we want to find an orthonormal basis for $\text{Null}(A^T)$. Knowing that $\text{Null}(A^T) = (\text{Ran}(A))^\perp$ we can, immediately, find the solution. In fact:
+which means that $\text{Ran}(A) = \text{Ran}(Q_1) = \text{Span}\{\textbf{q}_1,\dots,\textbf{q}_n\}$.\\
+Finally, we want to find an orthonormal basis for $\text{Null}(A^T)$. We start by proving that $\text{Null}(A^T) = (\text{Ran}(A))^\perp$. This is equivalent to say that $(\text{Ran}(A)) \perp \text{Null}(A^T)$, that is $\forall \, \textbf{y} \in \text{Ran}(A)$ and $\forall \, \textbf{z} \in \text{Null}(A^{T})$, $\textbf{y}^{T}\textbf{z}=0$. From the definition of Ran$(A)$, for $\textbf{y}\in \text{Ran}(A), \, \exists \, \textbf{x} \in \text{Dom}(A)$ s.t. $\textbf{y}=A\textbf{x}$. Hence, $\textbf{y}^{T}\textbf{z} = \textbf{x}^{T}A^{T}\textbf{z}=0$. This leads immediately to the solution.
+%\noindent Knowing that $\text{Null}(A^T) = (\text{Ran}(A))^\perp$ we can, immediately, find the solution. 
+In fact:
 \begin{equation}\label{key}
-	(\text{Ran}(A))^\perp = \text{Span}\{\textbf{q}_1,\dots,\textbf{q}_n\}^\perp = \text{Span}\{\textbf{q}_{n+1}\dots,\textbf{q}_m\}.
+	(\text{Ran}(A))^\perp = \text{Span}\{\textbf{q}_1,\dots,\textbf{q}_n\}^\perp = \text{Span}\{\textbf{q}_{n+1}\dots,\textbf{q}_m\} =\text{Null}(A^{T}),
 \end{equation}
-This concludes the proof. \qed\\
+where $\{\textbf{q}_{n+1}\dots,\textbf{q}_m\}$ represent the remaining $m-n$ columns of the matrix $Q$. This concludes the proof. \qed\\
 
-\noindent \textbf{(2)} Given tha full rank matrix
+\noindent \textbf{(2)} Given the full rank matrix
 \begin{equation}\label{key}
 	A = \begin{bmatrix}
 		1.07 & 1.10  \\
@@ -183,23 +304,23 @@ This concludes the proof. \qed\\
 		1.07 & 1.15 
 	\end{bmatrix},
 \end{equation}
-compute $A^T A$ in $\beta = 10$, $t=3$ digit arithmetic and verify if $A^T A$ is positive definite.\\
+compute $A^T A$ in $\beta = 10$, $t=3$ digit arithmetic and check if $A^T A$ is positive definite.\\
 We performed the prescribed calculation using the rounding function
-\begin{equation}\label{key}
-	\text{fl}(x) = \arg \min_{y\in \mathbb{F}} |y-x|
+\begin{equation}\label{eq:fl(x)}
+	\text{fl}(x) = \arg \min_{y\in \mathbb{F}} |y-x|,
 \end{equation}
-where $\mathbb{F} = \{\pm(0.d_1d_2d_3)\times 10^p : d_i \in {0,\dots,9},\ -2046\le p \le 2046\}$ and, when there is ambiguity, we approximate always away from $0$. Moreover, the rounding function has been applied at each step of the calculation, meaning that, if we consider $\textbf{v}, \textbf{u} \in \R^n$
+where $\mathbb{F} = \{\pm(0.d_1d_2d_3)\times 10^p : d_i \in {0,\dots,9},\, d_{1}\neq 0, \ -2046\le p \le 2046\} \cup \{0\}$. Moreover, when there is ambiguity, we always approximate away from $0$. The rounding function has been applied at each step of the calculation, meaning that, if we consider $\textbf{v}, \textbf{u} \in \R^n$, then
 \begin{equation}\label{key}
 	\textbf{v}^T \textbf{u} = \text{fl} \left( \sum_{i=1}^{n}\text{fl} (v_i u_i)\right) .
 \end{equation}
 The result of the calculation is the following:
 \begin{equation}\label{key}
-	A^T A =  \begin{bmatrix}
+	(A^T A)_{r} =  \begin{bmatrix}
 		3.42 & 3.6  \\
 		3.6 & 3.76  \\
-	\end{bmatrix}.
+	\end{bmatrix},
 \end{equation}
-The last matrix is indefinite, in fact $\text{Det}(A^T A) = 3.42 \times 3.76 - 3.6^2 = 12.8592 -  12.96 < 0$.\\
+where $r$ stands for \textit{rounded}. We can note that, even if $A^{T}A$ must be positive definite, with the considered approximation this matrix becomes indefinite, in fact $\text{det}(A^T A) = 3.42 \times 3.76 - 3.6^2 = 12.8592 -  12.96 < 0$.\\
 
 \noindent \textbf{(3)} Compute the QR factorization of the matrix
 \begin{equation}\label{key}
@@ -209,74 +330,121 @@ The last matrix is indefinite, in fact $\text{Det}(A^T A) = 3.42 \times 3.76 - 3
 		1.07 & 1.15 
 	\end{bmatrix} = [\textbf{a}_1\ \textbf{a}_2]
 \end{equation}
-in 3 digit arithmetic, i.e. with $\beta = 10$, $t=3$. The $\text{fl}(x)$ function has been applied at each step, as in the previous exercise.\\
-We want to compute $H_1 A$:
+in 3 digit arithmetic, i.e. with $\beta = 10$, $t=3$. The $\text{fl}(x)$ function, reported in Eq. \eqref{eq:fl(x)}, has been applied at each step, as in the previous exercise.\\
+We want to compute $H_1 A$, which will assume the following form:
 \begin{equation}\label{key}
 	H_1 A = \begin{bmatrix}
-				r_{11} & \textbf{r}_1^T  \\
-		\textbf{0} & A_1  \\
-	\end{bmatrix}.
-\end{equation} 
-\begin{equation}\label{key}
-	r_{11} = -\text{sgn}(a_{11})\lVert \textbf{a}_1\rVert_2 = \lVert \textbf{a}_1\rVert_2 = \sqrt{1.14 \times 3 }= \sqrt{3.42} = -1.85
+			r_{11} & \textbf{r}_1^T  \\
+			\textbf{0} & A_1  \\
+			\end{bmatrix},
 \end{equation}
-
-\begin{equation}\label{key}
-	\hat{\textbf{u}}_1  = \textbf{a}_1 + r_{11} \textbf{e}_1 = \begin{pmatrix}
-		1.07\\
+without explicitly computing the matrix $H_{1}$. We know that $r_{11} = -\text{sgn}(a_{11})\lVert \textbf{a}_1\rVert_2 $, while the other columns of this matrix can be obtained as
+\[H_1 \textbf{a}_j = \textbf{a}_j - 2 (\textbf{u}_1^T\textbf{a}_j) \textbf{u}_1,\]
+where
+\[\hat{\textbf{u}}_{1} \coloneqq \textbf{a}_{1} + (\text{sgn}(a_{11})\lVert \textbf{a}_1\rVert_2)\textbf{e}_{1},\ \text{ and }\ \textbf{u}_{1} = \hat{\textbf{u}}_{1}/\lVert \hat{\textbf{u}}_1\rVert_2.\]
+Note that these expressions hold in general, while in this case we only have to compute the column $H_{1}a_{2}$. We will denote with tilde $\sim$ all the rounded numbers and vectors obtained using the $\text{fl}(x)$ function. We start by computing $\tilde{r}_{11}$:
+\begin{equation}\label{eq:r_11_tilde}
+	\tilde{r}_{11} = \text{fl}\left(\sqrt{\text{fl} \left( \text{fl}(a_{11})^{2} + \text{fl}(a_{21})^{2} + \text{fl}(a_{31})^{2} \right) }\right) = -1.85
+\end{equation}
+%
+%
+%\begin{equation}\label{key}
+%	\tilde{r}_{11} = -\text{sgn}(a_{11})\lVert \textbf{a}_1\rVert_2 =  - \lVert \textbf{a}_1\rVert_2 = -1.85
+%\end{equation}
+Then:
+\begin{equation}
+	\tilde{\hat{\textbf{u}}}_1 = 
+	\begin{pmatrix}
+		\text{fl}(a_{11} - \tilde{r}_{11}) \\
+		a_{21}\\
+		a_{31}
+	\end{pmatrix}
+	= \begin{pmatrix}
+		2.92\\
 		1.07\\
 		1.07
-	\end{pmatrix} + 1.85 \begin{pmatrix}
-	1\\
-	0\\
-	0
-\end{pmatrix} = \begin{pmatrix}
-2.92\\
-1.07\\
-1.07
-\end{pmatrix}
+	\end{pmatrix}
 \end{equation}
-
-\begin{equation}\label{key}
-	\lVert \hat{\textbf{u}} \rVert_2 = \sqrt{8.53 + 1.14 + 1.14} = \sqrt{10.81} = 3.29
-\end{equation}
-
-\begin{equation}\label{key}
-		\textbf{u}_1 = 	\hat{\textbf{u}}_1/\lVert \hat{\textbf{u}} \rVert_2  =  \begin{pmatrix}
-			0.888\\
-			0.325\\
-			0.325
-		\end{pmatrix} 
-\end{equation}
-
-\begin{equation}\label{key}
-	\begin{split}
-		H_1 \textbf{a}_2 &= \textbf{a}_2 - 2 (\textbf{u}_1^T\textbf{a}_2) \textbf{u}_1  \\
-		&= \begin{pmatrix}
-			1.10\\
-			1.11\\
-			1.15
-		\end{pmatrix} - 2(0.977 + 0374 + 0.374) \begin{pmatrix}
+%
+%\begin{equation}\label{key}
+%	\tilde{\hat{\textbf{u}}}_1  = \textbf{a}_1 - r_{11} \textbf{e}_1 = \begin{pmatrix}
+%		1.07\\
+%		1.07\\
+%		1.07
+%	\end{pmatrix} + 1.85 \begin{pmatrix}
+%	1\\
+%	0\\
+%	0
+%\end{pmatrix} = \begin{pmatrix}
+%2.92\\
+%1.07\\
+%1.07
+%\end{pmatrix}
+%\end{equation}
+By normalizing this vector, with the same approach that we used to compute the normalization of $\textbf{a}_{1}$ (see Eq. \eqref{eq:r_11_tilde}), one obtains:
+\begin{equation}
+	\tilde{\textbf{u}}_{1} = 
+	\begin{pmatrix}
 		0.888\\
 		0.325\\
 		0.325
-	\end{pmatrix} \\
-	&= \begin{pmatrix}
-		1.10\\
-		1.11\\
-		1.15
-	\end{pmatrix} - 3.42 \begin{pmatrix}
-		0.888\\
-		0.325\\
-		0.325
-	\end{pmatrix} = \begin{pmatrix}
-	-1.94\\
-	0\\
-	0.04
-\end{pmatrix}
-	\end{split} .
+	\end{pmatrix}.
 \end{equation}
-Therefore we have:
+%\begin{equation}\label{key}
+%	\lVert \hat{\textbf{u}_{1}} \rVert_2 = \sqrt{8.53 + 1.14 + 1.14} = \sqrt{10.81} = 3.29
+%\end{equation}
+%\begin{equation}\label{key}
+%		\textbf{u}_1 = 	\hat{\textbf{u}}_1/\lVert \hat{\textbf{u}_{1}} \rVert_2  =  \begin{pmatrix}
+%			0.888\\
+%			0.325\\
+%			0.325
+%		\end{pmatrix} 
+%\end{equation}
+Having obtained all the rounded vectors, it is possible to compute the column $H_1 \textbf{a}_2$. We first compute the rounded scalar product $\textbf{u}_1^T\textbf{a}_2$, which we called $\tilde{s}$, as:
+\begin{equation}
+	\tilde{s} = \text{fl}\left( \sum_{i=1}^{3} \text{fl}\Big( (\tilde{\textbf{u}}_{1})_{i} (\textbf{a}_{2})_{i}\Big) \right) = 1.71.
+\end{equation}
+Then:
+\begin{equation}
+	(H_1 \textbf{a}_2)_{j} = \text{fl} \Big((\textbf{a}_{2})_{j} - \text{fl}(2\tilde{s} \big(\tilde{\textbf{u}}_{1})_{j}\big)\Big) \ \text{for } j = 1,2,3.
+\end{equation}
+Therefore, the full-rounded column will be (we omit the tilde here for clarity):
+\begin{equation}
+	H_1 \textbf{a}_2  =
+	\begin{pmatrix}
+		-1.94\\
+		0\\
+		0.04
+	\end{pmatrix}.
+\end{equation}
+%\begin{equation}\label{key}
+%	\begin{split}
+%		H_1 \textbf{a}_2 &= \textbf{a}_2 - 2 (\textbf{u}_1^T\textbf{a}_2) \textbf{u}_1  \\
+%		&= \begin{pmatrix}
+%			1.10\\
+%			1.11\\
+%			1.15
+%		\end{pmatrix} - 2(0.977 + 0374 + 0.374) \begin{pmatrix}
+%		0.888\\
+%		0.325\\
+%		0.325
+%	\end{pmatrix} \\
+%	&= \begin{pmatrix}
+%		1.10\\
+%		1.11\\
+%		1.15
+%	\end{pmatrix} - 3.42 \begin{pmatrix}
+%		0.888\\
+%		0.325\\
+%		0.325
+%	\end{pmatrix} = \begin{pmatrix}
+%	-1.94\\
+%	0\\
+%	0.04
+%\end{pmatrix}
+%	\end{split} .
+%\end{equation}
+At this stage of the computation, the rounded matrix $H_{1}A$ assumes the following form:
 \begin{equation}\label{key}
 	H_1 A = \begin{pmatrix}
 		-1.85& -1.94 \\
@@ -284,76 +452,82 @@ Therefore we have:
 		0& 0.04
 	\end{pmatrix}. 
 \end{equation}
-Now we iterate the same procedure on $A_1$, with
+By following the same rounding procedure, we can compute $\tilde{r}_{22}$ and $\tilde{\textbf{u}_{2}}$, in order to obtain the rounded matrix $H_{2}H_{1}A$, which will be equal to the (rounded) matrix $\tilde{R}$ of the QR factorization of $A$. In particular, we found that $\tilde{r}_{22} = -0.04$ and the normalized vector $\tilde{\textbf{u}}_2^{T}$ is equal to $\tilde{\textbf{u}}_2^{T} = (0, 0.707, 0.707)^{T}$. Therefore, the final matrix will be:
+%Now we iterate the same procedure on $A_1$, with
+%\begin{equation}\label{key}
+%	A_1 = [\textbf{a}_2^{(1)}] = \begin{pmatrix}
+%		0\\
+%		0.04
+%	\end{pmatrix}.
+%\end{equation}
+%
+%
+%\begin{equation}\label{key}
+%	\hat{\textbf{u}}_2^{(1)} = \textbf{a}_2^{(1)} + \text{sgn}(a_{12}^{(1)}) \lVert \textbf{a}_2^{(1)} \rVert_2\textbf{e}_2^{(1)} = \begin{pmatrix}
+%		0\\
+%		0.04
+%	\end{pmatrix}+ \text{sgn}(0) 0.04 \begin{pmatrix}
+%		1\\
+%		0
+%	\end{pmatrix} = \begin{pmatrix}
+%		0.04\\
+%		0.04
+%	\end{pmatrix}
+%\end{equation}
+%
+%
+%\begin{equation}\label{key}
+%	\textbf{u}_2^{(1)} = \hat{\textbf{u}}_2^{(1)}/ \lVert \hat{\textbf{u}}_2 ^{(1)}\rVert_2 = \begin{pmatrix}
+%		0.707\\
+%		0.707
+%	\end{pmatrix}.
+%\end{equation}
+%
+%\noindent The complete vector $\textbf{u}_2$ will be:
+%\begin{equation}\label{key}
+%	\textbf{u}_2 = \begin{pmatrix}
+%		0\\
+%		0.707\\
+%		0.707
+%	\end{pmatrix}
+%\end{equation}
+%and the element $r_{22}$ willl be
+%\begin{equation}\label{key}
+%	r_{22} = - \text{sgn}(a_{12}^{(1)}) \lVert \textbf{a}_2^{(1)} \rVert_2 = -0.04
+%\end{equation}
+%so that, finally, we have
 \begin{equation}\label{key}
-	A_1 = [\textbf{a}_2^{(1)}] = \begin{pmatrix}
-		0\\
-		0.04
-	\end{pmatrix}.
-\end{equation}
-
-
-\begin{equation}\label{key}
-	\hat{\textbf{u}}_2^{(1)} = \textbf{a}_2^{(1)} + \text{sgn}(a_{12}^{(1)}) \lVert \textbf{a}_2^{(1)} \rVert_2\textbf{e}_2^{(1)} = \begin{pmatrix}
-		0\\
-		0.04
-	\end{pmatrix}+ \text{sgn}(0) 0.04 \begin{pmatrix}
-		1\\
-		0
-	\end{pmatrix} = \begin{pmatrix}
-		0.04\\
-		0.04
-	\end{pmatrix}
-\end{equation}
-
-
-\begin{equation}\label{key}
-	\textbf{u}_2^{(1)} = \hat{\textbf{u}}_2^{(1)}/ \lVert \hat{\textbf{u}}_2 ^{(1)}\rVert_2 = \begin{pmatrix}
-		0.707\\
-		0.707
-	\end{pmatrix}.
-\end{equation}
-
-\noindent The complete vector $\textbf{u}_2$ will be:
-\begin{equation}\label{key}
-	\textbf{u}_2 = \begin{pmatrix}
-		0\\
-		0.707\\
-		0.707
-	\end{pmatrix}
-\end{equation}
-and the element $r_{22}$ willl be
-\begin{equation}\label{key}
-	r_{22} = - \text{sgn}(a_{12}^{(1)}) \lVert \textbf{a}_2^{(1)} \rVert_2 = -0.04
-\end{equation}
-so that, finally, we have
-\begin{equation}\label{key}
-	H_2 H_1 A = R = \begin{pmatrix}
+	\tilde{R} =
+	\begin{pmatrix}
 		-1.85& -1.94 \\
 		0& -0.04  \\
 		0& 0
 	\end{pmatrix}.
 \end{equation}
-We can observe that the matrix $R$ is full rank, therefore it is possible to use the QR factorization to solve the least square problem. It is important to stress that, as $A^T A$ is indefinite in $3$ digit precision, using Cholesky is not possible.\\
+%We can observe that the matrix $\tilde{R}$ is full rank, therefore it is possible to use the QR factorization to solve the least square problem. It is important to stress that, as $A^T A$ is indefinite in $3$ digit precision, using Cholesky is not possible.\\
 Now we want to compute $Q=[\textbf{q}_1,\textbf{q}_2,\textbf{q}_3]$ and, in order to do it, we use the following relations:
 \begin{equation}\label{key}
 	\begin{split}
 		&\textbf{q}_1 = H_1 H_2 \textbf{e}_1 = \textbf{e}_1 - 2 (\textbf{u}_1^T \textbf{e}_1) \textbf{u}_1\\
-		&  \textbf{q}_2 = H_1 H_2 \textbf{e}_2 = H_1 (\textbf{e}_2 - 2 (\textbf{u}_2^T \textbf{e}_2) \textbf{u}_2)  \\
-		&=  \textbf{e}_2 - 2 (\textbf{u}_2^T \textbf{e}_2) \textbf{u}_2 -  2 (\textbf{u}_1^T \textbf{e}_2) \textbf{u}_1  + 4 (\textbf{u}_2^T \textbf{e}_2)(\textbf{u}_1^T \textbf{u}_2)\textbf{u}_1\\
-		&  \textbf{q}_3 = H_1 H_2 \textbf{e}_3 = H_1 (\textbf{e}_3 - 2 (\textbf{u}_2^T \textbf{e}_3) \textbf{u}_2)  \\
-		&=  \textbf{e}_3 - 2 (\textbf{u}_2^T \textbf{e}_3) \textbf{u}_2 -  2 (\textbf{u}_1^T \textbf{e}_3) \textbf{u}_1  + 4 (\textbf{u}_2^T \textbf{e}_3)(\textbf{u}_1^T \textbf{u}_2)\textbf{u}_1
+		&  \textbf{q}_2 = H_1 H_2 \textbf{e}_2 = H_1 (\textbf{e}_2 - 2 (\textbf{u}_2^T \textbf{e}_2) \textbf{u}_2) =  \textbf{e}_2 - 2 (\textbf{u}_2^T \textbf{e}_2) \textbf{u}_2 -  2 (\textbf{u}_1^T \textbf{e}_2) \textbf{u}_1  + 4 (\textbf{u}_2^T \textbf{e}_2)(\textbf{u}_1^T \textbf{u}_2)\textbf{u}_1\\
+		&  \textbf{q}_3 = H_1 H_2 \textbf{e}_3 = H_1 (\textbf{e}_3 - 2 (\textbf{u}_2^T \textbf{e}_3) \textbf{u}_2) =  \textbf{e}_3 - 2 (\textbf{u}_2^T \textbf{e}_3) \textbf{u}_2 -  2 (\textbf{u}_1^T \textbf{e}_3) \textbf{u}_1  + 4 (\textbf{u}_2^T \textbf{e}_3)(\textbf{u}_1^T \textbf{u}_2)\textbf{u}_1
 	\end{split}.
 \end{equation}
-Using these relations, we found the approximated matrix $Q$, that is:
+Using these relations, we find that the rounded matrix $\tilde{Q}$ is:
 \begin{equation}\label{key}
-	Q = \begin{bmatrix}
+	\tilde{Q} = \begin{bmatrix}
 		-0.578& 0.572 & 0.572 \\
 		-0.578& 0.212 & -0.788 \\
 		-0.578& -0.788 & 0.212
 	\end{bmatrix}.
 \end{equation}
-Finally, we can verify that, multiplying $Q$ and $R$ and approximating as before, we recover the original matrix $A$. It is important to point out that the columns of $Q$ are not perfectly orthonormal.\\
+Finally, we can verify that, multiplying $\tilde{Q}$ and $\tilde{R}$ and approximating as before, we recover the original matrix $A$.\\
+
+\noindent At this point, we can do a final comment. This rounding procedure, when considering only three significant digits, causes problems at different levels. The first one, which appears in the second point of this exercise, is that the matrix $A^{T}A$, which must be positive definite by construction, becomes indefinite when rounded. This implies that, for example, the Cholesky factorization algorithm, which requires the input matrix to be positive definite, is not applicable, while this problem does not appear for the QR factorization algorithm. However, in this case, a second problem emerges, since the columns of the matrix $Q$, which must be unitary and, therefore, orthonormal, become not exactly orthonormal when considering the rounded version of $Q$.\\
+%
+%
+%
+%It is important to point out that the columns of $\tilde{Q}$ are not exactly orthonormal.\\
 
 \noindent \textbf{(4)} Let $A \in \R^{m\times n}$, with $\text{rank}(A) = n$, and let $\textbf{b} \in \R^m$. Let $A = Q_1R_1$ be a reduced QR decomposition of $A$, where $Q_1 \in \R^{m\times n}$ has orthonormal columns and $R_1 \in \R^{n\times n}$ is upper triangular and nonsingular. Show that a reduced QR factorization of the augmented matrix $A_+ = [ A\ \textbf{b} ]$ is given by:
 \begin{equation}\label{key}
@@ -363,47 +537,59 @@ Finally, we can verify that, multiplying $Q$ and $R$ and approximating as before
 	\end{bmatrix}
 \end{equation}
 where $\textbf{z} = Q_1^T\textbf{b}$. Also, show that $|\rho| = \lVert \textbf{b} - A \textbf{x}^*\rVert_2$ where $\textbf{x}^*$ is the solution to the least squares problem $\lVert \textbf{b} - A \textbf{x}\rVert_2= \text{min} $.\\
-We start recalling that any matrix has a QR factorization, therefore the matrix $A_+$ must have it. In particular we know that $A_+ = Q_+ R_+$, where $Q_+$ has orthonormal columns and $R_+$ is upper triangular. In order to find the value of $\textbf{z}$ and $\rho$, we compute the product $Q_+ R_+$ and impose that it is equal to $A_+$:
+
+
+\noindent Since the QR factorization exists for any matrix, we can define the complete and reduced QR factorization of the matrix $A_{+}$, respectively, as $A_{+}=QR$ and $A_{+}=Q_{+}R_{+}$, where $Q$ is an orthogonal matrix and $Q_{+}$ has orthonormal columns, while $R$ is upper trapezoidal and $R_{+}$ is upper triangular.\\
+\noindent We now focus on the reduced QR factorization of $A_{+}$. Given this, and since we know that $A=Q_{1}R_{1}$, we can pose, without loss of generality:
+\begin{equation}
+	Q_{+} = [Q_1\  \textbf{q}_{n+1}], \qquad \text{and} \qquad
+	R_{+} = \begin{bmatrix}
+		R_1& \textbf{z}  \\
+		\textbf{0}^T& \rho 
+	\end{bmatrix},
+\end{equation}
+where we know that $\textbf{q}_{n+1} \in \text{Span}\{\textbf{q}_{1},\dots,\textbf{q}_{n}\}^{\perp}$, while $\textbf{z}$ and $\rho$ have to be defined. In order to find the value of $\textbf{z}$ and $\rho$, we compute the product $Q_+ R_+$ and impose that it is equal to $A_+$:
 \begin{equation}\label{key}
 	[Q_1\  \textbf{q}_{n+1}] \begin{bmatrix}
 		R_1& \textbf{z}  \\
 		\textbf{0}^T& \rho 
-	\end{bmatrix} = [Q_1 R_1\ Q_1\textbf{z} + \rho \textbf{q}_{n+1}] = [A\ \textbf{b}],
+	\end{bmatrix} = [Q_1 R_1\ Q_1\textbf{z} + \rho \textbf{q}_{n+1}] = [A\ \textbf{b}].
 \end{equation}
-therefore we must have 
+Therefore, we must have 
 \begin{equation}\label{key}
 	\textbf{b} = Q_1 \textbf{z} + \rho \textbf{q}_{n+1}.
 \end{equation}
-Multiplying both members of the last equation for $Q_1^T$ we find that:
+Then, by multiplying both members of the last equation for $Q_1^T$, we find that:
 \begin{equation}\label{key}
-	Q_1^T \textbf{b} = Q_1^T Q_1 \textbf{z} +  \rho Q_1^T \textbf{q}_{n+1} = \textbf{z}
+	Q_1^T \textbf{b} = Q_1^T Q_1 \textbf{z} +  \rho Q_1^T \textbf{q}_{n+1} = \textbf{z},
 \end{equation}
 where we used that the columns of $Q_1$ are orthonormal and $\textbf{q}_{n+1}$ is orthogonal to all the columns of $Q_1$.\\
-Now we consider the complete QR factorization of $A_+$:
+In order to prove that $|\rho| = \lVert \textbf{b} - A \textbf{x}^*\rVert_2$, where $\textbf{x}^*$ is the solution to the least squares problem $\lVert \textbf{b} - A \textbf{x}\rVert_2= \text{min} $, we consider the complete QR factorization of $A_+$, namely $A_+= QR$, where we can define $Q=[Q_{1}Q_{2}]$ and $Q_{1}=[\textbf{q}_{1},\dots,\textbf{q}_{n}]$, $Q_{2}=[\textbf{q}_{n+1},\dots,\textbf{q}_{m}]$.
 \begin{equation}
-	A_+ =QR= [Q_1\ Q_2] \left[ \begin{tabular}{c}
+	A_+ = [Q_1\ Q_2] \left[ \begin{tabular}{c}
 		\begin{tabular}{cc}
 			$R_1$& $\textbf{z}$ \\
 			$\textbf{0}^T$& $\rho$ \\
 		\end{tabular}\\
 	\hline
 		$\textbf{0}$
-	\end{tabular}\right] = [Q_1 R_1\ \ Q_1 \textbf{z} + Q_2(\rho,0,\dots,0)^T  ]
+	\end{tabular}\right] = [Q_1 R_1\ \ Q_1 \textbf{z} + Q_2(\rho,0,\dots,0)^T  ].
 \end{equation}
-obtaining the relation
+From this expression, we obtain the expression:
 \begin{equation}\label{key}
 	\textbf{b} = Q_1 \textbf{z} + Q_2(\rho,0,\dots,0)^T
 \end{equation}
-and, therefore, multiplying both sides for $Q_2^T$:
+and, therefore, by multiplying both sides of this equation by $Q_2^T$:
 \begin{equation}\label{key}
 	Q_2^T \textbf{b} = \rho (1,0,\dots,0)^T.
 \end{equation}
 
-\noindent Now we define the residual $\textbf{r}$ as
-\begin{equation}\label{key}
-	\textbf{r} = \textbf{b} - A \textbf{x}^*
-\end{equation}
-where $ \textbf{x}^*$ is the solution to the least square problem, and compute:
+\noindent We can now define the residual $\textbf{r}$ as $\textbf{r} = \textbf{b} - A \textbf{x}^*$,
+%\begin{equation}\label{key}
+%	\textbf{r} = \textbf{b} - A \textbf{x}^*
+%\end{equation}
+%where $ \textbf{x}^*$ is the solution to the least square problem, 
+and compute:
 \begin{equation}\label{key}
 	\lVert \textbf{r} \rVert_2^2 = \lVert Q^T \textbf{r} \rVert_2^2 = \lVert \begin{bmatrix}
 		Q_1^T \textbf{b}\\
@@ -413,11 +599,11 @@ where $ \textbf{x}^*$ is the solution to the least square problem, and compute:
 		Q_2^T A \textbf{x}^*
 	\end{bmatrix} \rVert_2^2 = \lVert Q_1^T \textbf{b} - R_1 \textbf{x}^* \rVert_2^2 + \lVert Q_2^T \textbf{b} \rVert_2^2
 \end{equation}
-where we used the invariance of the 2-norm with respect to unitary transformations. Knowing that $\textbf{x}^* = R_1^{-1} Q_1^T \textbf{b}$ we obtain:
+where we used the invariance of the 2-norm with respect to unitary transformations. Knowing that $\textbf{x}^* = R_1^{-1} Q_1^T \textbf{b}$, we obtain:
 \begin{equation}\label{key}
-	\lVert \textbf{r} \rVert_2 = \lVert Q_2^T \textbf{b} \rVert_2 = \lVert \rho (1,0,\dots,0)^T \rVert_2 = |\rho|
+	\lVert \textbf{r} \rVert_2 = \lVert Q_2^T \textbf{b} \rVert_2 = \lVert \rho (1,0,\dots,0)^T \rVert_2 = |\rho|,
 \end{equation}
-that concludes the proof. \qed
+and this concludes the proof. \qed
 
 \section*{Problem 3}
 
@@ -427,7 +613,7 @@ that concludes the proof. \qed
 
 \noindent \textbf{(a)} {$(A^{T}A)^{-1}$}
 \[(A^{T}A)^{-1} = (V^{T})^{-1}\Sigma^{-2}V^{-1}=V\Sigma^{-2}V^{T}\]
-In order to obtain this expression we used that $U^{T}U=\mathbb{1}$ and that $V^{-1}=V^{T}$, since $U$ and $V$ are orthogonal. We can conclude that both left and right singular vectors of $(A^{T}A)^{-1}$ are equal to the right singular vectors of $A$, while singular values of the former matrix are equal to those of $A$ raised to the $-2$ power. Note that, since singular values of $A$ are in increasing order and in this expression they are raised to a negative power, they must appear in reverse order.\\
+In order to obtain this expression we used that $U^{T}U=\mathbb{1}$ and that $V^{-1}=V^{T}$, since $U$ and $V$ are orthogonal. We can conclude that both left and right singular vectors of $(A^{T}A)^{-1}$ are equal to the right singular vectors of $A$, while singular values of the former matrix are equal to those of $A$ raised to the $-2$ power. Note that, since singular values of $A$ are in increasing order and in this expression they are raised to a negative power, they must appear in reverse order. Moreover, we can also note that, writing $A^{T}$ and $A$ in terms of their SVDs, we obtain that $(A^{T}A)^{-1}$ is orthogonally similar to a diagonal matrix and, therefore, diagonalizable.\\
 
 %\begin{itemize}
 %	\item Both left and right singular vectors of $(A^{T}A)^{-1}$ are equal to the right singular vectors of $A$;
@@ -446,7 +632,7 @@ Analogously to the previous case, we know that $V^{T}V=\mathbb{1}$. Here we see 
 
 \noindent \textbf{(c)} $A(A^{T}A)^{-1}$
 \[A(A^{T}A)^{-1} = U\Sigma V^{T}V\Sigma^{-2}V^{-T}=U\Sigma^{-1}V^{T}\]
-Note that this result can also be obtained from the previous case, by noting that $A(A^{T}A)^{-1}=((A^{T}A)^{-1}A^{T})^{T}$. We can see that left and right singular vectors of $(A^{T}A)^{-1}$ coincide with that of $A$, while singular values of this matrix are equal to the inverse of singular values of $A$.\\
+Note that this result can also be obtained from the previous case, by noting that $A(A^{T}A)^{-1}=((A^{T}A)^{-1}A^{T})^{T}$. We can see that left and right singular vectors of $A(A^{T}A)^{-1}$ coincide with that of $A$, while singular values of this matrix are equal to the inverse of singular values of $A$.\\
 %\begin{itemize}
 %	\item Left and right singular vectors of $(A^{T}A)^{-1}$ coincide with that of $A$;
 %	\item Singular values of $(A^{T}A)^{-1}$ are equal to the inverse of singular values of $A$.
@@ -456,15 +642,14 @@ Note that this result can also be obtained from the previous case, by noting tha
 \[A(A^{T}A)^{-1}A^{T} = U\Sigma^{-1}V^{T}V\Sigma U^{T}= U U^{T} \]
 In this case, both left and right singular vectors of $A(A^{T}A)^{-1}A^{T}$ are equal to left singular vectors of $A$, while singular values of this matrix are all equal to $1$.\\
 
-
 \noindent \textbf{(2)} Given the following matrix:
-\begin{equation}
+\begin{equation}\label{eq:A_matrix}
 	A = \begin{bmatrix}
 		1 & 2 \\
 		0 & 2
 	\end{bmatrix},
 \end{equation}
-its singular values can be computed by considering the square root of the eigenvalues of the matrix $A^{T}A$, which has the form:
+its singular values can be computed by considering the square root of the eigenvalues of the matrix $A^{T}A$ (as emerges from the case \textbf{(a)} of the previous point of this exercise), which has the form:
 \begin{equation}
 	A^{T}A = \begin{bmatrix}
 		1 & 2 \\
@@ -475,7 +660,7 @@ Hence, by imposing that $p(\lambda)=\det(A^{T}A -\lambda\mathbb{1})=0$, we find 
 \begin{equation}
 	\sigma_{1,2}=\sqrt{\frac{9 \pm \sqrt{65}}{2}}.
 \end{equation}
-Finally, knowing that the spectral condition number is defined as $k_{2}(A) = \frac{\sigma_{\max}}{\sigma_{\min}}$, we can find the condition number of $A$:
+Finally, knowing that the spectral condition number is defined as $k_{2}(A) = \frac{\sigma_{\max}}{\sigma_{\min}}$, we can find the spectral condition number of $A$:
 \begin{equation}
 	k_{2}(A) = \sqrt{\frac{9+\sqrt{65}}{9-\sqrt{65}}} \simeq 4.26.
 \end{equation}
@@ -485,22 +670,31 @@ Graphically, we have:
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.25]{Plot/Image_unit_circle}
-	\caption{Image of the unit circle}
+	\caption{Image of the unit circle under the transformation defined by the matrix $A$, reported in Eq. \eqref{eq:A_matrix}.}
 	\label{fig:Image_unit_circle}
 \end{figure}
 
-\noindent \textbf{(3)} jvejkvbkdjf\\
+\noindent \textbf{(3)} We found the solution $\textbf{x} = [1.11 \times 10^{-16},1,1]^T$ by computing the pseudoinverse matrix of $ A $, $ A^+ $, and by applying it to $ \textbf{b} $, as follows:
+\begin{equation}\label{key}
+	\textbf{x} = A^+ \textbf{b}.
+\end{equation}
+In the following there is the code that implements this operation.
+\begin{minted}[mathescape, linenos, breaklines]{python}
+A = np.array([[1,1,0],[0,1,1]])
+b = [1,2]
+x = np.linalg.pinv(A) @ b
+print(f'Minimum norm solution x = {x}')
+\end{minted}
 
-
-\noindent \textbf{(4)} Given a matrix
+\noindent \textbf{(4)} Given the matrix
 \begin{equation}
 	A = \begin{bmatrix}
 		-4 & -2 & -4 & -2 \\
 		2 & -2 & 2 & 1 \\
 		-800 & 200 & -800 & -401
-	\end{bmatrix}.
+	\end{bmatrix},
 \end{equation}
-we want to compute the the singular values of $A$, the Moore-Penrose pseudoinverse of $A$ and its spectral condition number. We report in the following the Python script that we used to do it.
+we want to compute the singular values of $A$, the Moore-Penrose pseudoinverse of $A$, and its spectral condition number. We report in the following the Python script that we used to do it.
 
 \begin{minted}[mathescape, linenos, breaklines]{python}
 import numpy as np
@@ -525,9 +719,9 @@ pseudoinverse of A = [[-2.50833333e+01  5.00833333e+01  2.50000000e-01]
 spectral condition number of A = 288680.1350686104
 \end{minted}
 
-\noindent Given the obtained results, we can say that $\text{rank}(A)=3$.\\
+\noindent Given the obtained results, we can say that $\text{rank}(A)=3$. In fact, if we compute $(k_{2}(A))^{-1} = \frac{\sigma_{3}}{\sigma_{1}}\simeq 3.5 \times 10^{-6}$, we can see that $(k_{2}(A))^{-1} \gg u$, where $u = 2^{-53} \simeq 10^{-16}$.\\
 
-\noindent \textbf{(5)} The best rank-k approximation of a matrix $A$, in the Frobenius norm, is obtained by computing the singular value decomposition of $A$ and then by considering only the first $k$ terms in that expression. In other words, given a matrix $A$ written in terms of its singular value decomposition as $A = \sum_{i=1}^{n}\sigma_{i}\textbf{u}_{i}\textbf{v}_{i}^{T}$, its best rank-k approximation is given by $\tilde{A}_{k} = \sum_{i=1}^{k}\sigma_{i}\textbf{u}_{i}\textbf{v}_{i}^{T}$. Below is reported the Python code that we used to obtain the best rank-1 and rank-2 approximations of the matrix $A$ mentioned in the previous point of this exercise.
+\noindent \textbf{(5)} The best rank-k approximation of a matrix $A$, both in the Frobenius norm and in the 2-norm, is obtained by computing the singular value decomposition of $A$ and then by considering only the first $k$ terms in that expression. In other words, given a matrix $A$ written in terms of its singular value decomposition as $A = \sum_{i=1}^{n}\sigma_{i}\textbf{u}_{i}\textbf{v}_{i}^{T}$, its best rank-k approximation is given by $\tilde{A}_{k} = \sum_{i=1}^{k}\sigma_{i}\textbf{u}_{i}\textbf{v}_{i}^{T}$. Below is reported the Python code that we used to obtain the best rank-1 and rank-2 approximations of the matrix $A$, mentioned in the previous point of this exercise.
 
 \begin{minted}[mathescape, linenos, breaklines]{python}
 A_rank_1 = singular_values[0]*np.outer(U[:,0],V_transpose[0])
@@ -565,24 +759,33 @@ def R_matrix(n):
  R = np.triu(-np.ones((n,n)),k=1) + np.eye(n)
  return R
 \end{minted}
-Note that we used an upper triangular mask to obtain the entries $r_{ij}$. Once derived $R$, we computed its singular values for $n = 10,20,50,100$, as required. The plot of the singular values are reported below. 
+Note that we used an upper triangular mask to obtain the entries $r_{ij}$. Once derived $R$, we computed its singular values for $n = 10,20,50,100$, as required. The plot of the singular values is reported below. 
 \begin{figure}[H]
 	\centering
-	\subfloat[][n=10]{\includegraphics[scale=0.23]{Plot/Singular_values_of_R_for_n=10}} \qquad \subfloat[][n=20]{\includegraphics[scale=0.23]{Plot/Singular_values_of_R_for_n=20}} \\
-	\subfloat[][n=50]{\includegraphics[scale=0.23]{Plot/Singular_values_of_R_for_n=50}} \qquad
-	\subfloat[][n=100]{\includegraphics[scale=0.23]{Plot/Singular_values_of_R_for_n=100}}
+	\subfloat[][n=10]{\includegraphics[scale=0.21]{Plot/Singular_values_of_R_for_n=10}} \qquad \subfloat[][n=20]{\includegraphics[scale=0.21]{Plot/Singular_values_of_R_for_n=20}} \\
+	\subfloat[][n=50]{\includegraphics[scale=0.21]{Plot/Singular_values_of_R_for_n=50}} \qquad
+	\subfloat[][n=100]{\includegraphics[scale=0.21]{Plot/Singular_values_of_R_for_n=100}}
 	
-	\caption{Singular values of the matrix $R$ defined at the beginning of this exercise for $n=10,20,50,100$.}
+	\caption{Singular values of the matrix $R$ defined at the beginning of this exercise for $n=10,20,50,100$. The logarithm of the singular values is reported on the ordinate axes.}
 	\label{fig:Singular_values_of_R_for_different_dimensions}
 \end{figure}
 
-\noindent It can be observed that for $n=50$ and for $n=100$ the last singular value becomes smaller than the threshold value fixed by $u\sigma_{1}$, where $u$ is the machine precision. This means that, when this happens, the matrix $R$ becomes numerically singular.
-
+\noindent In order to understand when the matrix $R$ becomes numerically singular, we put on the graphs a threshold line given by $u\sigma_{1}$ , where $u$ is the machine precision ($u \simeq 10^{-16}$). It can be observed that for $n=50$ and for $n=100$ the last singular value becomes smaller than the threshold value. This means that the matrix $R$ becomes numerically singular for these values of its dimension.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.25]{Plot/Spectral_cond_num_R}
-	\caption{Spectral condition number of $R$ as a function of its dimension.}
+	\caption{Spectral condition number of $R$ as a function of its dimension. Gray dotted line is reported for $n=50$, while the red line represents the threshold value, fixed by the machine precision $u$.}
 	\label{fig:Spectral_cond_num_R}
 \end{figure}
+\noindent We can see that for $n=50$ the matrix becomes numerically singular, since the condition number becomes greater than the inverse of the machine precision $u$.\\
 
+\noindent Finally, we report in the following plot the number of the singular values that are smaller than $u\sigma_{1}$.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.25]{Plot/singular_values_precision}
+	\caption{Number of the singular values smaller than $u\sigma_{1}$. Gray dotted line is reported for $n=50$.}
+	\label{fig:singular_values_precision}
+\end{figure}
+\noindent From this result, we can observe that the numerical rank of the matrix $A$ becomes $n-1$ when $n\ge50$, otherwise it is equal to $n$.
 \end{document}

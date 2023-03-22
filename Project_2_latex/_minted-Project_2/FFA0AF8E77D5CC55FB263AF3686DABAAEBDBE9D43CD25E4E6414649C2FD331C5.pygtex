@@ -1,0 +1,15 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+c1}{\PYGZsh{} Compute A\PYGZca{}\PYGZob{}T\PYGZcb{}, C, and d}
+\PYG{n}{A\PYGZus{}transpose} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{transpose}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+\PYG{n}{C} \PYG{o}{=} \PYG{n}{A\PYGZus{}transpose}\PYG{n+nd}{@A}
+\PYG{n}{d} \PYG{o}{=} \PYG{n}{A\PYGZus{}transpose}\PYG{n+nd}{@b}
+
+\PYG{c+c1}{\PYGZsh{} Consider the approximate solution}
+\PYG{n}{approx\PYGZus{}solution} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{([}\PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{1.919}\PYG{p}{,}\PYG{l+m+mf}{0.2782}\PYG{p}{,}\PYG{l+m+mf}{0.001739}\PYG{p}{])}
+
+\PYG{c+c1}{\PYGZsh{} Compute the residual}
+\PYG{n}{residual} \PYG{o}{=} \PYG{n}{d} \PYG{o}{\PYGZhy{}} \PYG{n}{C} \PYG{o}{@} \PYG{n}{approx\PYGZus{}solution}
+\PYG{n}{residual\PYGZus{}norm\PYGZus{}2} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{residual}\PYG{p}{,} \PYG{n+nb}{ord}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}Residual = }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{format}\PYG{p}{(}\PYG{n}{residual}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}Norm 2 of the residual = }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{format}\PYG{p}{(}\PYG{n}{residual\PYGZus{}norm\PYGZus{}2}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\end{Verbatim}

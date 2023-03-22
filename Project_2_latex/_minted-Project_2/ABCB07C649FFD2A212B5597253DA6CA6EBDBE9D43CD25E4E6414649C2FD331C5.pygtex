@@ -1,0 +1,68 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{def} \PYG{n+nf}{compute\PYGZus{}A}\PYG{p}{(}\PYG{n}{points}\PYG{p}{,}\PYG{n}{order}\PYG{p}{):}
+  \PYG{l+s+sa}{r}\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}This function computes the Vandermonde matrix A taking as inputs an array, containing the coordinates of the points, and an integer representing the order of the polynomial.}
+
+\PYG{l+s+sd}{  Parameters}
+\PYG{l+s+sd}{  \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{  points : ndarray}
+\PYG{l+s+sd}{           Input points}
+\PYG{l+s+sd}{  order : int}
+\PYG{l+s+sd}{          Order of the polynomial}
+
+\PYG{l+s+sd}{  Returns}
+\PYG{l+s+sd}{  \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{  A : ndarray}
+\PYG{l+s+sd}{      Vandermonde matrix}
+\PYG{l+s+sd}{  \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+  \PYG{n}{m} \PYG{o}{=} \PYG{n}{points}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}
+  \PYG{n}{n} \PYG{o}{=} \PYG{n}{order} \PYG{o}{+} \PYG{l+m+mi}{1}
+  \PYG{n}{A} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{m}\PYG{p}{,}\PYG{n}{n}\PYG{p}{))}
+  \PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{m}\PYG{p}{):}
+    \PYG{n}{A}\PYG{p}{[}\PYG{n}{index}\PYG{p}{,:]}\PYG{o}{=}\PYG{p}{(}\PYG{n}{points}\PYG{p}{[}\PYG{n}{index}\PYG{p}{])}\PYG{o}{**}\PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)}
+
+  \PYG{k}{return} \PYG{n}{A}
+	
+\PYG{k}{def} \PYG{n+nf}{LeastSquare\PYGZus{}Cholesky}\PYG{p}{(}\PYG{n}{A}\PYG{p}{,} \PYG{n}{b}\PYG{p}{):}
+  \PYG{l+s+sa}{r}\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{} This function computes the Cholesky factorization of a matrix :math:`(A\PYGZca{}\PYGZob{}T\PYGZcb{}A)`, and solves the linear system :math:`(A\PYGZca{}\PYGZob{}T\PYGZcb{}Ax = A\PYGZca{}\PYGZob{}T\PYGZcb{}b)`, giving as output the solution of the system.}
+
+\PYG{l+s+sd}{  Parameters}
+\PYG{l+s+sd}{  \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{  A : ndarray}
+\PYG{l+s+sd}{      Input matrix of dimension :math:`(m\PYGZbs{}times n)`}
+\PYG{l+s+sd}{  b : ndarray}
+\PYG{l+s+sd}{      Input vector of dimension :math:`(m)`}
+
+\PYG{l+s+sd}{  Returns}
+\PYG{l+s+sd}{  \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{  x : ndarray}
+\PYG{l+s+sd}{      Solution of the linear system}
+\PYG{l+s+sd}{  \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+  \PYG{n}{A\PYGZus{}transpose} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{transpose}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+  \PYG{n}{C} \PYG{o}{=} \PYG{n}{A\PYGZus{}transpose}\PYG{n+nd}{@A}
+  \PYG{n}{d} \PYG{o}{=} \PYG{n}{A\PYGZus{}transpose}\PYG{n+nd}{@b}
+
+  \PYG{n}{L}\PYG{p}{,} \PYG{n}{low} \PYG{o}{=} \PYG{n}{scipy}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{cho\PYGZus{}factor}\PYG{p}{(}\PYG{n}{C}\PYG{p}{)}
+  \PYG{n}{x} \PYG{o}{=} \PYG{n}{scipy}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{cho\PYGZus{}solve}\PYG{p}{((}\PYG{n}{L}\PYG{p}{,} \PYG{n}{low}\PYG{p}{),}\PYG{n}{d}\PYG{p}{)}
+  \PYG{k}{return} \PYG{n}{x}
+
+\PYG{k}{def} \PYG{n+nf}{LeastSquare\PYGZus{}QR}\PYG{p}{(}\PYG{n}{A}\PYG{p}{,} \PYG{n}{b}\PYG{p}{):}
+  \PYG{l+s+sa}{r}\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{} This function computes the QR factorization of a matrix :math:`A`, and solves the linear system :math:`Rx = Q\PYGZca{}\PYGZob{}T\PYGZcb{}b`, giving as output the solution of the system.}
+
+\PYG{l+s+sd}{  Parameters}
+\PYG{l+s+sd}{  \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{  A : ndarray}
+\PYG{l+s+sd}{      Input matrix of dimension :math:`(m\PYGZbs{}times n)`}
+\PYG{l+s+sd}{  b : ndarray}
+\PYG{l+s+sd}{      Input vector of dimension :math:`(m)`}
+
+\PYG{l+s+sd}{  Returns}
+\PYG{l+s+sd}{  \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{  x : ndarray}
+\PYG{l+s+sd}{      Solution of the linear system}
+\PYG{l+s+sd}{  \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+  \PYG{n}{Q}\PYG{p}{,} \PYG{n}{R} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{qr}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+  \PYG{n}{c} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{transpose}\PYG{p}{(}\PYG{n}{Q}\PYG{p}{)} \PYG{o}{@} \PYG{n}{b}
+  \PYG{n}{x} \PYG{o}{=} \PYG{n}{scipy}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{solve\PYGZus{}triangular}\PYG{p}{(}\PYG{n}{R}\PYG{p}{,} \PYG{n}{c}\PYG{p}{,} \PYG{n}{lower} \PYG{o}{=} \PYG{k+kc}{False}\PYG{p}{)}
+  \PYG{k}{return} \PYG{n}{x}
+
+\end{Verbatim}
