@@ -1,0 +1,181 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subfig}
+\usepackage{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{amsthm}
+\usepackage{bbold}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage{booktabs}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[english]{babel}
+\usepackage{lipsum}
+\usepackage{setspace}
+%\usepackage{minted}
+\usepackage{xcolor}
+\newcommand{\R}{\mathbb{R}}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm}
+
+\begin{document}
+	\author{Catalano Giuseppe, Cerrato Nunzia}
+	\title{Numerical Linear Algebra Homework Project 3:\\Eigenvalues and Eigenvectors}
+	\date{}
+	\maketitle
+	
+\section*{Problem 1}
+\textbf{(1)}
+
+\begin{equation}
+	A = \begin{bmatrix}
+		4 & -1 & -1 & 0 \\
+		-1 & 4 & 0 & -1 \\
+		-1 & 0 & 4 & -1 \\
+		0 & -1 & -1 & 4
+\end{bmatrix} = \left[ 
+\begin{array}{c|ccc}
+	a_{11}&  & \textbf{x}^T  &  \\
+	\hline
+	&  &  &  \\
+	\textbf{x}&  & \hat{A}_1 &  \\
+	&  &  & 
+\end{array}\right] 
+\end{equation}
+
+\begin{equation}\label{key}
+	\textbf{u}_1 = \textbf{x} + \text{sgn}(x_1) \lVert \textbf{x}\rVert_2 \textbf{e}_1 = \begin{bmatrix}
+		-1-\sqrt{2}\\
+		-1\\
+		0
+	\end{bmatrix}
+\end{equation}
+
+\begin{equation}\label{key}
+	\hat{R}_1 = \mathbb{1}_3 - \frac{2}{\lVert \textbf{u}_1\rVert_2^2} \textbf{u}_1 \textbf{u}_1^T
+\end{equation}
+
+
+\begin{equation}\label{key}
+	R_1 = \left[ 
+	\begin{array}{c|ccc}
+		1 &  & \textbf{0}^T  &  \\
+		\hline
+		&  &  &  \\
+		\textbf{0}&  & \hat{R}_1 &  \\
+		&  &  & 
+	\end{array}\right] 
+\end{equation}
+	
+\begin{equation}\label{key}
+	R_1 A= \left[ 
+	\begin{array}{c|ccc}
+		a_{11} &  & \textbf{x}^T  &  \\
+		\hline
+		-\text{sgn}(x_1) \lVert \textbf{x}\rVert_2  &  &  &  \\
+		0 &  & \hat{R}_1 \hat{A}_1 &  \\
+		0 &  &  & 
+	\end{array}\right] 
+\end{equation}
+
+\begin{equation}\label{key}
+	\hat{A}_1 = \left[ ( \hat{A}_1)_1,( \hat{A}_1)_2,( \hat{A}_1)_3 \right] 
+\end{equation}
+
+\begin{equation}\label{key}
+	\hat{R}_1\hat{A}_1 = \left[ ( \hat{R}_1\hat{A}_1)_1,( \hat{R}_1\hat{A}_1)_2,(\hat{R}_1 \hat{A}_1)_3 \right] 
+\end{equation}
+
+\begin{equation}\label{key}
+	( \hat{R}_1\hat{A}_1)_i = (\hat{A}_1)_i - \frac{2}{\lVert \textbf{u}_1\rVert_2^2} \textbf{u}_1 \textbf{u}_1^T(\hat{A}_1)_i
+\end{equation}
+
+\begin{equation}\label{key}
+	R_1 A = \begin{bmatrix}
+		4 & -1 & -1 & 0 \\
+		\sqrt{2} & -2\sqrt{2} & -2\sqrt{2} & \sqrt{2} \\
+		0 & -2\sqrt{2} & 2\sqrt{2} & 0 \\
+		0 & -1 & -1 & 4
+	\end{bmatrix}
+\end{equation}
+	
+	
+\begin{equation}\label{key}
+	R_1 A R_1 = \left[ 
+	\begin{array}{c|ccc}
+		a_{11} &  \lVert \textbf{x}\rVert_2 &  0 & 0 \\
+		\hline
+		 \lVert \textbf{x}\rVert_2  &  &  &  \\
+		0 &  & \hat{R}_1 \hat{A}_1 \hat{R}_1  &  \\
+		0 &  &  & 
+	\end{array}\right] 
+\end{equation}
+
+\begin{equation}\label{key}
+	\left[ (\hat{R}_1 \hat{A}_1 \hat{R}_1) \right]_i = 	\left[ (\hat{R}_1 \hat{A}_1 ) \right]_i  - \frac{2}{\lVert \textbf{u}_1\rVert_2^2} \textbf{u}_1 \textbf{u}_1^T	\left[ (\hat{R}_1 \hat{A}_1 ) \right]_i 
+\end{equation}
+
+\begin{equation}\label{key}
+		R_1 A R_1 = \left[ \begin{array}{cccc}
+		4 & \sqrt{2} & 0 & 0 \\
+		\sqrt{2} & 4 & 0 & \sqrt{2} \\
+		0 & 0 & 4 & 0 \\
+		0 & \sqrt{2} & 0 & 4
+	\end{array} \right]  
+\end{equation}
+
+\begin{equation}\label{key}
+	\hat{R}_1 \hat{A}_1 \hat{R}_1 = \left[ \begin{array}{ccc}
+		4 & 0 & \sqrt{2} \\
+		0 & 4 & 0 \\
+		\sqrt{2} & 0 & 4
+	\end{array} \right]  =  \left[ \begin{array}{cc}
+	(\hat{R}_1 \hat{A}_1 \hat{R}_1)_{11}& \textbf{y}^T \\
+	\textbf{y} & \hat{A}_2 
+\end{array} \right]
+\end{equation}	
+	
+\begin{equation}\label{key}
+	\textbf{u}_2 = \textbf{y} + \text{sgn}(y_1) \lVert \textbf{y}\rVert_2\textbf{e}_1^{(2)} = \sqrt{2} \begin{bmatrix}
+		1\\
+		1
+	\end{bmatrix}
+\end{equation}	
+	
+	
+\begin{equation}\label{key}
+	\hat{R}_2 = \mathbb{1}_2 - \frac{2}{\lVert \textbf{u}_2\rVert_2^2} \textbf{u}_2 \textbf{u}_2^T
+\end{equation}
+	
+\begin{equation}\label{key}
+	( \hat{R}_2\hat{A}_2)_i = (\hat{A}_2)_i - \frac{2}{\lVert \textbf{u}_2\rVert_2^2} \textbf{u}_2 \textbf{u}_2^T(\hat{A}_2)_i
+\end{equation}
+	
+\begin{equation}\label{key}
+	\hat{R}_2 \hat{A}_2 = \left[ \begin{array}{cc}
+		0 & -4 \\
+		-4 & 0
+	\end{array}\right] 
+\end{equation}
+	
+\begin{equation}\label{key}
+	\hat{R}_2 \hat{A}_2 \hat{R}_2  = \left[ \begin{array}{cc}
+		4 & 0 \\
+		0 &4
+	\end{array}\right] 
+\end{equation}
+
+\begin{equation}\label{key}
+	R_2R_1AR_1R_2 =\begin{bmatrix}
+		4& \sqrt{2} & 0  &  0\\
+		\sqrt{2}&4 & -\sqrt{2} & 0\\
+		0 & -\sqrt{2} & 4  & 0 \\
+		0 & 0 & 0 & 4
+	\end{bmatrix}
+\end{equation}
+
+\end{document}
