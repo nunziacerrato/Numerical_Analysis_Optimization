@@ -42,14 +42,21 @@ while diff >= tol:
 # Compute the approximated eigenvalue
 approx_eig = vect_new @ T_N @ vect_new * (N+1)**2
 
+# print(f'Iterations performed = {count}')
+# exact_eigenvalue_laplacian = np.pi**2
+# print(f'Error on lambda_exact = {abs(approx_eig - exact_eigenvalue_laplacian)}')
+# exact_eigenvalue_T_N = 2 * (N+1)**2 * (1-np.cos(np.pi/(N+1)))
+# print(f'Error on lambda(h^(-2)T_N) = {abs(approx_eig - exact_eigenvalue_T_N)}')
+# index = np.array(range(1,N+1))
+# exact_eigenvector = np.sqrt(2/(N+1)) * np.sin(index*np.pi/(N+1))
+# print(f'Error on eigenvector = {np.linalg.norm(vect_new - exact_eigenvector, ord=2)}')
+
 print(f'Iterations performed = {count}')
-exact_eigenvalue_laplacian = np.pi**2
-print(f'Error on lambda_exact = {abs(approx_eig - exact_eigenvalue_laplacian)}')
-exact_eigenvalue_T_N = 2 * (N+1)**2 * (1-np.cos(np.pi/(N+1)))
-print(f'Error on lambda(h^(-2)T_N) = {abs(approx_eig - exact_eigenvalue_T_N)}')
+exact_eigval_T_N = 2 * (N+1)**2 * (1-np.cos(np.pi/(N+1)))
+print(f'Absolute error eigenvalue) = {abs(approx_eig - exact_eigval_T_N)}')
 index = np.array(range(1,N+1))
-exact_eigenvector = np.sqrt(2/(N+1)) * np.sin(index*np.pi/(N+1))
-print(f'Error on eigenvector = {np.linalg.norm(vect_new - exact_eigenvector, ord=2)}')
+exact_eigvect = np.sqrt(2/(N+1)) * np.sin(index*np.pi/(N+1))
+print(f'2-norm error eigenvector = {np.linalg.norm(vect_new - exact_eigvect, ord=2)}')
 
 # Plot
 fig_eigvect, ax_eigvect = plt.subplots()

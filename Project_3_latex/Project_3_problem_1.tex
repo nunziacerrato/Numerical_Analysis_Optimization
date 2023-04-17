@@ -483,7 +483,7 @@ print(f'2-norm error eigenvector = {np.linalg.norm(vect_new - exact_eigvect, ord
 \end{minted}
 
 
-\noindent \textbf{(7)}In the following we report the script implementing the shift-and-invert method to find the fifth eigenvalue of $h^{-2}T_{N}$. In this case, it is not possible to use the Cholesky factorization since the matrix $h^{-2}T_{N} - 25\pi^2\mathbb{1}_{N}$ is not positive-definite.
+\noindent \textbf{(7)} In the following we report the script implementing the shift-and-invert method to find the fifth eigenvalue of $h^{-2}T_{N}$. In this case, it is not possible to use the Cholesky factorization since the matrix $h^{-2}T_{N} - 25\pi^2\mathbb{1}_{N}$ is not positive-definite.
 
 \begin{minted}[mathescape, linenos, breaklines]{python}
 import numpy as np
@@ -526,6 +526,11 @@ exact_eigvect = np.sqrt(2/(N+1)) * np.sin(index*np.pi*5/(N+1))
 print(f'2-norm error eigenvector = {np.linalg.norm(vect_new - exact_eigvect, ord=2)}')
 \end{minted}
 
+\begin{minted}{text}
+Iterations performed = 2
+Absolute error eigenvalue = 1.0032863428932615e-11
+2-norm error eigenvector = 5.021569614559994e-08
+\end{minted}
 
 \begin{figure}[H]
 	\centering
