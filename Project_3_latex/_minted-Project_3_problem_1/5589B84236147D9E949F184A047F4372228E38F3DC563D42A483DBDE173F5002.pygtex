@@ -1,0 +1,40 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k}{as} \PYG{n+nn}{np}
+\PYG{k+kn}{import} \PYG{n+nn}{scipy}
+
+\PYG{c+c1}{\PYGZsh{} Set initial parameters}
+\PYG{n}{N} \PYG{o}{=} \PYG{l+m+mi}{500}
+\PYG{n}{lambda\PYGZus{}5} \PYG{o}{=} \PYG{l+m+mi}{25}\PYG{o}{*}\PYG{n}{np}\PYG{o}{.}\PYG{n}{pi}\PYG{o}{**}\PYG{l+m+mi}{2}
+\PYG{n}{initial\PYGZus{}guess} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{random}\PYG{p}{(}\PYG{n}{N}\PYG{p}{)}
+\PYG{n}{initial\PYGZus{}guess} \PYG{o}{=} \PYG{n}{initial\PYGZus{}guess}\PYG{o}{/}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{initial\PYGZus{}guess}\PYG{p}{,} \PYG{n+nb}{ord}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}
+\PYG{n}{count} \PYG{o}{=} \PYG{l+m+mi}{0}
+
+\PYG{c+c1}{\PYGZsh{} Build T\PYGZus{}N}
+\PYG{n}{T\PYGZus{}N} \PYG{o}{=} \PYG{n}{scipy}\PYG{o}{.}\PYG{n}{sparse}\PYG{o}{.}\PYG{n}{diags}\PYG{p}{([}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{],[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{],}\PYG{n}{shape}\PYG{o}{=}\PYG{p}{(}\PYG{n}{N}\PYG{p}{,}\PYG{n}{N}\PYG{p}{))}\PYG{o}{.}\PYG{n}{toarray}\PYG{p}{()}
+
+\PYG{n}{tol} \PYG{o}{=} \PYG{l+m+mf}{1e\PYGZhy{}12} \PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{((}\PYG{n}{N}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{**}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{T\PYGZus{}N}\PYG{p}{,} \PYG{n+nb}{ord} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{inf}\PYG{p}{)}
+\PYG{n}{diff} \PYG{o}{=} \PYG{l+m+mi}{10} \PYG{o}{*} \PYG{n}{tol}
+
+\PYG{c+c1}{\PYGZsh{} LU factorization of h\PYGZca{}(\PYGZhy{}2)T\PYGZus{}N}
+\PYG{n}{lu}\PYG{p}{,} \PYG{n}{piv} \PYG{o}{=} \PYG{n}{scipy}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{lu\PYGZus{}factor}\PYG{p}{(}\PYG{n}{T\PYGZus{}N}\PYG{o}{*}\PYG{p}{(}\PYG{n}{N}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{**}\PYG{l+m+mi}{2} \PYG{o}{\PYGZhy{}} \PYG{n}{lambda\PYGZus{}5} \PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{eye}\PYG{p}{(}\PYG{n}{N}\PYG{p}{))}
+
+\PYG{n}{vect\PYGZus{}old} \PYG{o}{=} \PYG{n}{initial\PYGZus{}guess}
+
+\PYG{c+c1}{\PYGZsh{} Cycle until the stopping criterion is satisfied \PYGZhy{} condition on the residual}
+\PYG{k}{while} \PYG{n}{diff} \PYG{o}{\PYGZgt{}=} \PYG{n}{tol}\PYG{p}{:}
+  \PYG{c+c1}{\PYGZsh{} Compute and normalize the new vector by using the LU factorization to solve a linear system}
+  \PYG{n}{vect\PYGZus{}new} \PYG{o}{=} \PYG{n}{scipy}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{lu\PYGZus{}solve}\PYG{p}{((}\PYG{n}{lu}\PYG{p}{,} \PYG{n}{piv}\PYG{p}{),} \PYG{n}{vect\PYGZus{}old}\PYG{p}{)}
+  \PYG{n}{vect\PYGZus{}new} \PYG{o}{=} \PYG{n}{vect\PYGZus{}new}\PYG{o}{/}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{vect\PYGZus{}new}\PYG{p}{,} \PYG{n+nb}{ord}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}
+  \PYG{c+c1}{\PYGZsh{} Compute the approximated eigenvalue}
+  \PYG{n}{approx\PYGZus{}eig} \PYG{o}{=} \PYG{n}{vect\PYGZus{}new} \PYG{o}{@} \PYG{n}{T\PYGZus{}N} \PYG{o}{@} \PYG{n}{vect\PYGZus{}new} \PYG{o}{*} \PYG{p}{(}\PYG{n}{N}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{**}\PYG{l+m+mi}{2}
+  \PYG{n}{diff} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{((} \PYG{n}{T\PYGZus{}N} \PYG{o}{*} \PYG{p}{(}\PYG{n}{N}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{**}\PYG{l+m+mi}{2} \PYG{o}{\PYGZhy{}} \PYG{n}{approx\PYGZus{}eig} \PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{eye}\PYG{p}{(}\PYG{n}{N}\PYG{p}{)} \PYG{p}{)} \PYG{o}{@} \PYG{n}{vect\PYGZus{}new}\PYG{p}{,} \PYG{n+nb}{ord}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{inf}\PYG{p}{)}
+  \PYG{n}{count} \PYG{o}{+=} \PYG{l+m+mi}{1}
+  \PYG{n}{vect\PYGZus{}old} \PYG{o}{=} \PYG{n}{vect\PYGZus{}new}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}Iterations performed = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{exact\PYGZus{}eigval\PYGZus{}T\PYGZus{}N} \PYG{o}{=} \PYG{l+m+mi}{2} \PYG{o}{*} \PYG{p}{(}\PYG{n}{N}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{**}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{o}{\PYGZhy{}}\PYG{n}{np}\PYG{o}{.}\PYG{n}{cos}\PYG{p}{(}\PYG{l+m+mi}{5}\PYG{o}{*}\PYG{n}{np}\PYG{o}{.}\PYG{n}{pi}\PYG{o}{/}\PYG{p}{(}\PYG{n}{N}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)))}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}Absolute error eigenvalue = }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{abs}\PYG{p}{(}\PYG{n}{approx\PYGZus{}eig} \PYG{o}{\PYGZhy{}} \PYG{n}{exact\PYGZus{}eigval\PYGZus{}T\PYGZus{}N}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{index} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{N}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{))}
+\PYG{n}{exact\PYGZus{}eigvect} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{sqrt}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{o}{/}\PYG{p}{(}\PYG{n}{N}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{))} \PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{sin}\PYG{p}{(}\PYG{n}{index}\PYG{o}{*}\PYG{n}{np}\PYG{o}{.}\PYG{n}{pi}\PYG{o}{*}\PYG{l+m+mi}{5}\PYG{o}{/}\PYG{p}{(}\PYG{n}{N}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{))}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}2\PYGZhy{}norm error eigenvector = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{vect\PYGZus{}new} \PYG{o}{\PYGZhy{}} \PYG{n}{exact\PYGZus{}eigvect}\PYG{p}{,} \PYG{n+nb}{ord}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\end{Verbatim}

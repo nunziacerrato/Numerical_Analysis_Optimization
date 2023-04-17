@@ -1,0 +1,52 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k}{as} \PYG{n+nn}{np}
+\PYG{k+kn}{import} \PYG{n+nn}{matplotlib.pyplot} \PYG{k}{as} \PYG{n+nn}{plt}
+
+\PYG{c+c1}{\PYGZsh{} Set the initial values}
+\PYG{n}{tol} \PYG{o}{=} \PYG{l+m+mf}{1e\PYGZhy{}5}
+\PYG{n}{counter} \PYG{o}{=} \PYG{l+m+mi}{0}
+\PYG{n}{t} \PYG{o}{=} \PYG{l+m+mi}{1} \PYG{c+c1}{\PYGZsh{} Initial exponent for the tolerance}
+
+\PYG{c+c1}{\PYGZsh{} Set the number of significant digits}
+\PYG{n}{np}\PYG{o}{.}\PYG{n}{set\PYGZus{}printoptions}\PYG{p}{(}\PYG{n}{precision}\PYG{o}{=}\PYG{l+m+mi}{15}\PYG{p}{,} \PYG{n}{suppress}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Construct the matrix A}
+\PYG{n}{A} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{([[}\PYG{l+m+mi}{4}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{],[}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{4}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{],[}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{4}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{],[}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{4}\PYG{p}{]])}
+\PYG{c+c1}{\PYGZsh{} Compute the exact eigenvalues}
+\PYG{n}{exact\PYGZus{}eigenvalues} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{eigvals}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Initialize an empty list to store the number of iterations at each t}
+\PYG{n}{t\PYGZus{}counter\PYGZus{}list} \PYG{o}{=} \PYG{p}{[]}
+
+\PYG{c+c1}{\PYGZsh{} Cycle until the stopping criterion is not satisfied}
+\PYG{k}{while} \PYG{n}{np}\PYG{o}{.}\PYG{n}{amax}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{A} \PYG{o}{\PYGZhy{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{diag}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{diag}\PYG{p}{(}\PYG{n}{A}\PYG{p}{))))} \PYG{o}{\PYGZgt{}=} \PYG{n}{tol}\PYG{p}{:}
+ \PYG{c+c1}{\PYGZsh{} Obtain the QR factorization of A and perform the QR iteration}
+ \PYG{n}{Q}\PYG{p}{,} \PYG{n}{R} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{qr}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+ \PYG{n}{A} \PYG{o}{=} \PYG{n}{R}\PYG{n+nd}{@Q}
+
+ \PYG{c+c1}{\PYGZsh{} Obtain the current approximation of the eigenvalues}
+ \PYG{n}{computed\PYGZus{}eigvals} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{diag}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+
+ \PYG{c+c1}{\PYGZsh{} Compute and store the maximum absolute error on the eigenvalues}
+ \PYG{n}{abs\PYGZus{}error} \PYG{o}{=} \PYG{n+nb}{max}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{exact\PYGZus{}eigenvalues} \PYG{o}{\PYGZhy{}} \PYG{n}{computed\PYGZus{}eigvals}\PYG{p}{))}
+
+ \PYG{n}{counter} \PYG{o}{+=} \PYG{l+m+mi}{1}
+
+ \PYG{k}{if} \PYG{n}{abs\PYGZus{}error} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{10}\PYG{o}{**}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{n}{t}\PYG{p}{):}
+   \PYG{n}{t\PYGZus{}counter\PYGZus{}list}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{counter}\PYG{p}{)}
+   \PYG{n}{t} \PYG{o}{+=} \PYG{l+m+mi}{1}
+
+ \PYG{k}{if} \PYG{n}{counter} \PYG{o+ow}{in} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{5}\PYG{p}{,}\PYG{l+m+mi}{10}\PYG{p}{,}\PYG{l+m+mi}{15}\PYG{p}{]:}
+   \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}k=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{counter}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+   \PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+   \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZsq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}Final k = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{counter}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+\PYG{n}{computed\PYGZus{}eigvals} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{diag}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZsq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}Exact eigenvalues = }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{format}\PYG{p}{(}\PYG{n}{exact\PYGZus{}eigenvalues}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}Computed eigenvalues = }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{format}\PYG{p}{(}\PYG{n}{computed\PYGZus{}eigvals}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{diff\PYGZus{}eigvals} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{exact\PYGZus{}eigenvalues} \PYG{o}{\PYGZhy{}} \PYG{n}{computed\PYGZus{}eigvals}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}Absolute error = }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{format}\PYG{p}{(}\PYG{n}{diff\PYGZus{}eigvals}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\end{Verbatim}
