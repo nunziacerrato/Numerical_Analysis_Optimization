@@ -30,14 +30,16 @@ lu, piv = scipy.linalg.lu_factor(T_N*(N+1)**2 - lambda_5 * np.eye(N))
 
 vect_old = initial_guess
 
+# Cycle until the stopping criterion is satisfied - condition on the residual
 while diff >= tol:
+    # Compute and normalize the new vector by using the LU factorization to solve a linear system
     vect_new = scipy.linalg.lu_solve((lu, piv), vect_old)  
     vect_new = vect_new/np.linalg.norm(vect_new, ord=2)
+    # Compute the approximated eigenvalue
     approx_eig = vect_new @ T_N @ vect_new * (N+1)**2
     diff = np.linalg.norm(( T_N * (N+1)**2 - approx_eig * np.eye(N) ) @ vect_new, ord=np.inf)
     count += 1
     vect_old = vect_new
-    print(diff)
 
 print(f'Iterations performed = {count}')
 exact_eigenvalue_laplacian = 25 * np.pi**2
