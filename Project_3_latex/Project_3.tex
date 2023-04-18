@@ -75,7 +75,7 @@ and a new matrix $R_1$, as follows:
 		&  &  & 
 	\end{array}\right] .
 \end{equation}
-We will not explicitely construct the matrix $R_1$, as we know that the product $R_1 A$ will assume the following form:
+We will not explicitly construct the matrix $R_1$, as we know that the product $R_1 A$ will assume the following form:
 \begin{equation}\label{key}
 	R_1 A= \left[ 
 	\begin{array}{c|ccc}
@@ -86,11 +86,11 @@ We will not explicitely construct the matrix $R_1$, as we know that the product 
 		0 &  &  & 
 	\end{array}\right] ,
 \end{equation}
-where the first column is obtained by constuction and the matrix $\hat{R}_1\hat{A}_1$ can be obtained by considering the matrix $\hat{A}_1$ written by columns as $\hat{A}_1 = \left[ ( \hat{A}_1)_1,( \hat{A}_1)_2,( \hat{A}_1)_3 \right] $. Hence $\hat{R}_1\hat{A}_1 = \left[ ( \hat{R}_1\hat{A}_1)_1,( \hat{R}_1\hat{A}_1)_2,(\hat{R}_1 \hat{A}_1)_3 \right] $, where we know that a singole column can be computed as:
+where the first column is obtained by construction and the matrix $\hat{R}_1\hat{A}_1$ can be obtained by considering the matrix $\hat{A}_1$ written by columns as $\hat{A}_1 = \left[ ( \hat{A}_1)_1,( \hat{A}_1)_2,( \hat{A}_1)_3 \right] $. Hence $\hat{R}_1\hat{A}_1 = \left[ ( \hat{R}_1\hat{A}_1)_1,( \hat{R}_1\hat{A}_1)_2,(\hat{R}_1 \hat{A}_1)_3 \right] $, where we know that a single column can be computed as:
 \begin{equation}\label{key}
 	( \hat{R}_1\hat{A}_1)_i = (\hat{A}_1)_i - \frac{2}{\lVert \textbf{u}_1\rVert_2^2} \textbf{u}_1 \textbf{u}_1^T(\hat{A}_1)_i .
 \end{equation}
-By expliciting all the terms, we obatin:
+By expliciting all the terms, we obtain:
 \begin{equation}\label{key}
 	R_1 A = \begin{bmatrix}
 		4 & -1 & -1 & 0 \\
@@ -144,7 +144,7 @@ we can build the vector $\textbf{u}_2 $ as
 %		1
 %	\end{bmatrix}
 %\end{equation}	
-which will allow us to define the matrix $\hat{R}_2$
+with $ \textbf{e}_1^{(2)} = (1,0)^T $, which will allow us to define the matrix $\hat{R}_2$
 \begin{equation}\label{key}
 	\hat{R}_2 = \mathbb{1}_2 - \frac{2}{\lVert \textbf{u}_2\rVert_2^2} \textbf{u}_2 \textbf{u}_2^T.
 \end{equation}
@@ -168,7 +168,7 @@ As before, we can compute $\hat{R}_2 \hat{A}_2 \hat{R}_2$ by columns, and the fi
 		0 & 0 & 0 & 4
 	\end{bmatrix}.
 \end{equation}
-As we can see, we have reduced the initial matrix $A$ to tridiagonal form.\\
+As we can see, we have reduced the initial matrix $A$ to a tridiagonal form.\\
 
 \noindent \textbf{(2)} In the following we report the script where we implement the QR diagonalization of a matrix $A$, defined as:
 \begin{equation}
@@ -321,11 +321,11 @@ for tol in tol_list:
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.40]{Plot/Plot_QR_Standard_Rayleigh.png}
-	\caption{Number of iteration needed to achieve a maximum absolute error less than $10^{-t}$ on the eigenvalues computed by using standard and shifted QR iteration algorithm.}
+	\caption{Number of iterations needed to achieve a maximum absolute error less than $10^{-t}$ on the eigenvalues computed by using standard and shifted QR iteration algorithm.}
 	\label{Fig:Num_iter_with_t}
 \end{figure}
 
-\noindent As we see from Fig. \ref{Fig:Num_iter_with_t}  the number of iteration required to achieve a maximum absolute error less than $10^{-t}$ on eigenvalues appears to grow linearly with $t$ in the case of the simple QR iteration algorithm. On the other hand, in the case of the shifter QR iteration algorithm, implemented by using the Rayleigh shift, the same error appears to grow sublinearly with $t$, meaning that this last algorithm reaches the required tolerance with a less number of iterations, thus being faster.
+\noindent As we see from Fig. \ref{Fig:Num_iter_with_t}  the number of iterations required to achieve a maximum absolute error less than $10^{-t}$ on eigenvalues appears to grow linearly with $t$ in the case of the simple QR iteration algorithm. On the other hand, in the case of the shifted QR iteration algorithm, implemented by using the Rayleigh shift, the same error appears to grow sublinearly with $t$, meaning that this last algorithm reaches the required tolerance with a smaller number of iterations, thus being faster.
 
 	
 \section*{Problem 2}	
@@ -339,7 +339,7 @@ We want to find approximations to the eigenvalues and eigenfunctions of the one-
 %
 %The eigenvalues and eigenfunctions of $L$ are easily found to be $\lambda_j = j^2\pi^2$ and $u_j(x) = \alpha \sin(j\pi x)$ for any nonzero constant $\alpha$, which we can take to be $1$. Here $j$ is a positive integer; hence, the operator $L$ has an infinite set of (mutually orthogonal) eigenfunctions $\{u_j\}_{j=1}^\infty $ corresponding to the discrete spectrum of eigenvalues ${\lambda_j}_{j=1}^\infty $. Note that $0 < \lambda_1 < \lambda_2 < \dots < \lambda_j \rightarrow \infty$ as $j \rightarrow \infty$. Also, each eigenvalue is simple in the sense that (up to a scalar multiple) there is a unique eigenfunction corresponding to it.
 
-\noindent Approximations to the eigenvalues and eigenfunctions can be obtained by discretizing the interval $[0, 1]$ by means of $N+2$ evenly spaced points: $x_i =ih \text{ where } i=0,1,...,N+1 \text{ and } h=1/(N+1)$. The second derivative operator can then be approximated by centred finite differences:
+\noindent Approximations to the eigenvalues and eigenfunctions can be obtained by discretizing the interval $[0, 1]$ through $N+2$ evenly spaced points: $x_i =ih \text{ where } i=0,1,...,N+1 \text{ and } h=1/(N+1)$. The second derivative operator can then be approximated by centered finite differences:
 
 \begin{equation}
 	-\frac{d^2u}{dx^2}(x_i) \approx \frac{-u(x_{i-1} + 2 u(x_i)  -2 u(x_{i+1}) )}{h^2}
@@ -373,14 +373,14 @@ with $u_i := u(x_i)$. Recall that the eigenvalues and eigenfunctions of $L$ are 
 %\begin{equation}
 %	\cos \frac{\pi j }{N+1} = \cos \pi j h = 1 - \frac{1}{2!} (\pi j h)^2 + \frac{1}{4!} (\pi j h)^4 + O(h^6),
 %\end{equation}
-which leads us to approximate the smallest eigenvalues of $2h^{-2} T_N$ as follows:
+which leads us to approximate the smallest eigenvalues of $h^{-2} T_N$ as follows:
 \begin{equation}\label{Eq:Taylor_exp_small_j}
 	2h^{-2} \left( 1- \cos \frac{\pi j }{N+1} \right)  = 2h^{-2} \left(\frac{(\pi j h)^2}{2!} - \frac{(\pi j h)^4}{4!} + O(h^6)\right)  = \pi^2 j^2 \left( 1- \frac{(\pi j h)^2}{12} + O(h^4) \right),
 \end{equation}
 where we used that $h=1/N+1$.\\
-\noindent For the largest eigenvalue of $T_N$, we have that $j = N$, therefore we can not truncate anymore the Taylor expansion of the cosine if we want a good approximation. We can compute the $N-th$ eigenvalue of $T_N$ in the limit of $N\gg 1$ (namely $h\ll 1$):
+\noindent For the largest eigenvalue of $T_N$, we have that $j = N$, therefore we can not truncate anymore the Taylor expansion of $ \cos \frac{\pi j }{N+1} $ if we want a good approximation. We can compute the $N-th$ eigenvalue of $T_N$ in the limit of $N\gg 1$ (namely $h\ll 1$) with the following manipulations:
 \begin{equation}\label{Eq:Taylor_exp_big_j}
-	\mu_N = 2\left( 1-\cos\pi  \frac{N}{N+1}\right)   =2(1-\cos (\pi -\pi h) ) = 2(1+\cos\pi h) = 4 - \pi^2 h^2 + O(h^4).
+	\mu_N = 2\left( 1-\cos  \frac{\pi N}{N+1}\right)   =2(1-\cos (\pi -\pi h) ) = 2(1+\cos\pi h) = 4 - \pi^2 h^2 + O(h^4).
 \end{equation}
 Therefore, we have
 \begin{equation}\label{key}
@@ -388,7 +388,7 @@ Therefore, we have
 \end{equation}
 which is not a good approximation of $\lambda_N = \pi^2 N^2$.
 
-\noindent \textbf{(2)} We want to compare the eigenvectors $\textbf{u}_j$ of $T_N$ with the eigenfunctions of $L$, up to the normalization constant, that we will set to $1$ for both. If we recall that $x_k = k h\ \forall k = 1,\dots, N$, we can observe that the $k-th$ component of the eigenvector $\textbf{u}_j$ is equal to the $j-th$ eigenfunction $u_j(x)$ computed in corrispondence of the value $x=x_k$:
+\noindent \textbf{(2)} We want to compare the eigenvectors $\textbf{u}_j$ of $T_N$ with the eigenfunctions of $L$, up to the normalization constant, that we will set to $1$ for both. If we recall that $x_k = k h\ \forall k = 1,\dots, N$, we can observe that the $k-th$ component of the eigenvector $\textbf{u}_j$ is equal to the $j-th$ eigenfunction $u_j(x)$ computed in correspondence of the value $x=x_k$:
 \begin{equation}
 	u_j(x_k) = \sin(j \pi x_k) = \sin ( j \pi k h ) = \sin\left( \frac{j \pi k}{N+1}\right)  = \textbf{u}_j(k).
 \end{equation}
