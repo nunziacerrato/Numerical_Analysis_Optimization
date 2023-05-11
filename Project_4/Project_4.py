@@ -1,6 +1,7 @@
 ''' This script implements the unconstrained optimization of a function using the Newton algorithm.
 '''
 import numpy as np
+import numpy.linalg as np_lin
 
 ########### a ##############
 func_a = lambda x: (x[0]-2)**4 + ((x[0]-2)**2)*x[1]**2 + (x[1]+1)**2
@@ -19,28 +20,49 @@ H = np.array([[0.16,-1.2,2.4,-1.4],
 func_b = lambda x: b @ x + 0.5*(x @ H @ x)
 grad_b = lambda x: b + H @ x
 hess_b = lambda x: H
-x_0_b = np.array([-1,3,3,0])
+x0_b = np.array([-1,3,3,0])
 
 
-def Netwon(func, grad, hess, tol, maxit, start_point):
-    ''' '''
-    func_0 = func(start_point)
-    old_point = start_point
+old_point = x0_b
+gradient = grad_b(old_point)
+hessian = hess_b(old_point)
+eigval, eigvect = np_lin.eigh(hess_b(old_point))
 
-    for k in range(maxit):
-        gradient = grad(old_point)
-        hessian = hess(old_point)
-        
-        c, low = cho_factor(hessian)
-        p = cho_solve((c, low), -gradient)
+mu = abs(min(eigvect.any(), 0)) + 1e-15
+print(mu)
+print(eigvect)
+print(eigvect.T)
+coeff_vect_1 = eigvect@grad_b(old_point)/(eigval + mu)
+coeff_vect_2 = np.transpose(eigvect)@grad_b(old_point)/(eigval + mu)
 
-        new_point = old_point + p
+print(coeff_vect_1)
+print(coeff_vect_2)
+print('-------------------')
+p = - (eigvect.T @ grad_b(old_point))/(eigval+mu) @ eigvect
+p2 = - eigvect /(eigval+mu) @ eigvect.T @ grad_b(old_point)
 
-        diff_x = new_point - old_point
-        norm_grad = np.linalg.norm(gradient, ord='fro')
-        norm_diff_x = np.linalg.norm(diff_x, ord='fro')
-        if norm_grad <= tol and norm_diff_x <=tol*(1 + np.linalg.norm(new_point, ord='fro')):
-            
-            break
 
-    return k, 
+coeff = eigvect.T @ grad_b(old_point)
+print(coeff)
+print('--------------')
+print(f'eigvect = {eigvect}')
+shift_eigval = eigval + mu
+print(f'eigval + mu = {shift_eigval}')
+num = eigvect/(eigval + mu)
+print(f'num={num}')
+print('--------------')
+print(p)
+print(p2)
+print('--------------')
+vect = np.zeros(len(eigval))
+print(vect)
+for i in range(len(eigval)):
+    c = eigvect[:,i]@grad_b(old_point)
+    denom = eigval[i] + mu 
+    frac = -(c/denom)*eigvect[:,i]
+    vect = vect + frac
+print(vect)
+
+coeff_vect = eigvect.T @ grad_b(old_point)/(eigval + mu)
+ccc = eigvect@coeff_vect
+print(ccc)
