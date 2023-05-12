@@ -12,16 +12,16 @@ modified during the course of the lectures.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   .. :caption: Contents:
 
-   :caption: Documentazione utente
+   :caption: Project Documentation
 
    user_guide.md
    faq.md
 
 
-.. automodule:: Project_1
-   :members:
+.. .. automodule:: Project_1
+..    :members:
 
 Indices and tables
 ==================
