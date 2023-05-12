@@ -16,8 +16,8 @@ modified during the course of the lectures.
 
    :caption: Project Documentation
 
-   user_guide.md
-   faq.md
+   Project_1.md
+   Project_2.md
 
 
 .. .. automodule:: Project_1
