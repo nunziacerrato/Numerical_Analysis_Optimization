@@ -12,16 +12,16 @@ modified during the course of the lectures.
 
 .. toctree::
    :maxdepth: 2
-   .. :caption: Contents:
+   :caption: Contents:
 
-   :caption: Project Documentation:
+   .. :caption: Project Documentation:
 
-   Project_1.rst
-   Project_2.rst
+   .. Project_1.rst
+   .. Project_2.rst
 
 
-.. .. automodule:: Project_1
-..    :members:
+.. automodule:: Project_1
+   :members:
 
 Indices and tables
 ==================
