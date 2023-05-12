@@ -75,7 +75,6 @@ sol_f_d = -0.582445174
 def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.0001, rho=0.5, backtracking=False):
     ''' '''
     old_point = x_0
-    # func_0 = func(start_point)
     alpha_0 = alpha
 
     # Create a list to save intermediate points
@@ -93,7 +92,7 @@ def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.000
         scalar_prod.append(gradient@p)
         # alpha=0.1*alpha
 
-        # # Implement backtracking if backtracking == True is passed to the function
+        # Implement backtracking if backtracking == True is passed to the function
         if backtracking == True:
             alpha = alpha_0
             iteraz_backtracking = 0 
@@ -132,87 +131,12 @@ def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.000
     # to its value in the exact minimum point
     error_f = [func(interm_x) - sol_f for interm_x in interm_points]
     
-    # grad_new_point = grad(new_point)
-    # # Compute the scalar product between the gradient and the descend direction
-    # scalar_prod = (-grad_new_point)@(np_lin.inv(hess(new_point)))@(grad_new_point)
-
     results = {'k' : k, 'final_iter' : k+2, 'min_point' : new_point, 'min_value' : min_value ,
                'interm_point' : interm_points, 'error_x' : error_x, 'error_f' : error_f,
                'scalar_product' : scalar_prod}
 
     return results
 
-
-
-def Newton_Backtracking(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.1, rho=0.99):
-    ''' '''
-    old_point = x_0
-    # func_0 = func(start_point)
-    # alpha_0 = alpha
-
-    # Create a list to save intermediate points
-    interm_points = [old_point]
-    # Create a list to save the scalar product between the gradient and the descent direction
-    scalar_prod = []
-
-    # Cycle on the number of iterations
-    for k in range(maxit):
-        gradient = grad(old_point)
-        hessian = hess(old_point)
-        
-        # Compute the descent direction by solving a linear system
-        p = np_lin.solve(hessian, -gradient)
-        scalar_prod.append(gradient@p)
-        #### alpha=0.1*alpha
-
-        # # Implement backtracking if backtracking == True is passed to the function
-        # if backtracking == True:
-        #     # alpha = alpha_0
-        #     iteraz_backtracking = 0 
-        #     while func(old_point + alpha*p) > func(old_point) + (sigma*alpha)*(p @ gradient) and iteraz_backtracking < 100:
-        #         # print('a')
-        #         alpha = rho*alpha
-        #         new_point = old_point + alpha*p
-        #         old_point = new_point
-        #         iteraz_backtracking += 1         
-
-        # Compute the new point and add it to the list of intermediate points
-        new_point = old_point + alpha*p
-        interm_points.append(new_point)
-
-        # Compute norms for the stopping criterion
-        norm_grad = np_lin.norm(gradient)
-        norm_diff_x = np_lin.norm(new_point - old_point)
-
-        # Check if the stopping criterion is satisfied
-        if norm_grad <= tol and norm_diff_x <=tol*(1 + np_lin.norm(new_point)):
-            min_value = func(new_point)
-            print(k)
-            break
-
-        old_point = new_point
-    
-    gradient = grad(new_point)
-    hessian = hess(new_point)
-    p = np_lin.solve(hessian, -gradient)
-    scalar_prod.append(gradient@p)
-
-    # Compute the 2norm of the difference between the new point and the exact solution
-    error_x = [np_lin.norm(interm_x - sol_x) for interm_x in interm_points]
-    
-    # Compute the absolute error of the function evaluated in the new point with respect
-    # to its value in the exact minimum point
-    error_f = [func(interm_x) - sol_f for interm_x in interm_points]
-    
-    # grad_new_point = grad(new_point)
-    # # Compute the scalar product between the gradient and the descend direction
-    # scalar_prod = (-grad_new_point)@(np_lin.inv(hess(new_point)))@(grad_new_point)
-
-    results = {'k' : k, 'final_iter' : k+2, 'min_point' : new_point, 'min_value' : min_value ,
-               'interm_point' : interm_points, 'error_x' : error_x, 'error_f' : error_f,
-               'scalar_product' : scalar_prod}
-
-    return results
 
 
 def Trust_Region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, eta=0.01):
@@ -230,6 +154,7 @@ def Trust_Region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, eta=0
     interm_points = [x_0]
     scalar_prod = []
     old_point = x_0
+
     # Cycle on the number of iterations
     for k in range(maxit):
         
@@ -239,35 +164,29 @@ def Trust_Region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, eta=0
 
         # Diagonalize the hessian computed at the current point
         eigval, eigvect = np_lin.eigh(hessian)
-        # Choose an initial mu value (to be adjusted)
+        # Choose an initial mu value
         mu = abs(min(min(eigval), 0)) + 1e-12
-
         coeff_vect = eigvect.T @ gradient/(eigval + mu)
 
         # Choose the optimal mu value which respects the condition on the 2-norm of p
         while sum([coeff**2 for coeff in coeff_vect]) > delta**2:
             mu = mu*2
             coeff_vect = eigvect.T @ gradient/(eigval + mu)
-        # print(mu)
+        
         # Compute the descent direction
-        # p = - (eigvect.T @ grad(old_point))/(eigval+mu) @ eigvect
-        p = - eigvect /(eigval+mu) @ eigvect.T @ gradient
-        # p = - eigvect @ coeff_vect
+        # p = - eigvect /(eigval+mu) @ eigvect.T @ gradient
+        p = - eigvect @ coeff_vect
         scalar_prod.append(- gradient @ eigvect @ np.diag(1/eigval) @ eigvect.T @ gradient)
 
         new_point = old_point + alpha*p
 
         # Choose the value of delta for the successive iteration
         rho = (func(new_point)-func(old_point))/(p @ gradient + 0.5*p @ hessian @ p)
-        print(f'k={k}')
-        print(f'rho={rho}')
 
-        if 0 < rho < 0.25:
+        if rho < 0.25:
             delta = delta/4
             interm_radius.append(delta)
-        elif rho > 0.75: # and np_lin.norm(p)==delta:
-            print(f'k={k}')
-            print(f'rho={rho}')
+        elif rho > 0.75:
             delta = 2*delta
             interm_radius.append(delta)
         elif 0 < rho < eta:
@@ -300,10 +219,6 @@ def Trust_Region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, eta=0
     # to its value in the exact minimum point
     error_f = [func(interm_x) - sol_f for interm_x in interm_points]
     
-    # grad_new_point = grad(new_point)
-    # # Compute the scalar product between the gradient and the descend direction
-    # scalar_prod = (-grad_new_point)@(np_lin.inv(hess(new_point)))@(grad_new_point)
-
     results = {'k' : k, 'final_iter' : k+2, 'min_point' : new_point, 'min_value' : min_value,
                'interm_point' : interm_points, 'interm_radius' : interm_radius, 'error_x' : error_x, 'error_f' : error_f,
                'scalar_product' : scalar_prod}
@@ -425,8 +340,8 @@ if __name__ == '__main__':
                        linewidth=0, antialiased=True, alpha=0.7)
         
         delta = 0.0025
-        Xc = np.arange(-0.5, 2, delta) # x in [0,9] per backtracking
-        Yc = np.arange(-2, 0.5, delta) # y in [0,1] per backtracking
+        Xc = np.arange(-2.5, 2.5, delta) # x in [0,9] per backtracking
+        Yc = np.arange(-2, 2, delta) # y in [0,1] per backtracking
         Xc, Yc = np.meshgrid(Xc,Yc)      
         Zc = Xc**4 + Xc * Yc + (1 + Yc)**2
 
@@ -457,13 +372,15 @@ if __name__ == '__main__':
         
         scatter_c = ax_contour.plot(interm_x, interm_y, '-o', markersize=4, color='black')
         scatter_c = ax_contour.plot(interm_x[-1], interm_y[-1], '-o', markersize=4, color='red')
-        # interm_rad = results['interm_radius']
-        # for i in range(1):
-        #     circle = plt.Circle([interm_x[i],interm_y[i]], interm_rad[i])
-        #     ax_contour.add_patch(circle)
-        
-        
-        
+        interm_rad = results['interm_radius']
+        circle = list(np.zeros(len(interm_rad)))
+        for i in range(len(interm_rad)):
+            circle[i] = (plt.Circle([interm_x[i],interm_y[i]], interm_rad[i], fill = False, color = 'g', linewidth=1.5))
+            ax_contour.add_patch(circle[i])
+        # circle1 = plt.Circle([interm_x[1],interm_y[1]], interm_rad[1], color = 'b', fill = False)
+        # ax_contour.add_patch(circle1)
+        # circle2 = plt.Circle([interm_x[2],interm_y[2]], interm_rad[2], color = 'y', fill = False)
+        # ax_contour.add_patch(circle2)
         
         plt.show()
 

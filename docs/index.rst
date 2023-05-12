@@ -14,6 +14,11 @@ modified during the course of the lectures.
    :maxdepth: 2
    :caption: Contents:
 
+   :caption: Documentazione utente
+
+   user_guide.md
+   faq.md
+
 
 .. automodule:: Project_1
    :members:
