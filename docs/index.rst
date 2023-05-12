@@ -14,7 +14,7 @@ modified during the course of the lectures.
    :maxdepth: 2
    .. :caption: Contents:
 
-   :caption: Project Documentation
+   :caption: Project Documentation:
 
    Project_1.rst
    Project_2.rst
