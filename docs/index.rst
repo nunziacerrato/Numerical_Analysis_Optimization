@@ -16,8 +16,8 @@ modified during the course of the lectures.
 
    :caption: Project Documentation
 
-   Project_1.md
-   Project_2.md
+   Project_1.rst
+   Project_2.rst
 
 
 .. .. automodule:: Project_1
