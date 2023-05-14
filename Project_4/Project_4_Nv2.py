@@ -335,7 +335,6 @@ if __name__ == '__main__':
         Z = X**4 + X * Y + (1 + Y)**2
 
         fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-        fig_contour, ax_contour = plt.subplots()
         surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm,
                        linewidth=0, antialiased=True, alpha=0.7)
         
@@ -345,7 +344,7 @@ if __name__ == '__main__':
         Xc, Yc = np.meshgrid(Xc,Yc)      
         Zc = Xc**4 + Xc * Yc + (1 + Yc)**2
 
-        
+        fig_contour, ax_contour = plt.subplots()
         cp = ax_contour.contour(Xc, Yc, Zc, levels = 80)
         fig_contour.colorbar(cp, shrink=0.5, aspect=10)
 

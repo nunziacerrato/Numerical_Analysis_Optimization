@@ -11,17 +11,12 @@ Michele Benzi. This document is written by Catalano Giuseppe and Cerrato Nunzia,
 modified during the course of the lectures.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 10
+   :glob:
 
-   .. :caption: Project Documentation:
-
-   .. Project_1.rst
-   .. Project_2.rst
+   modules
 
 
-.. automodule:: Project_1
-   :members:
 
 Indices and tables
 ==================

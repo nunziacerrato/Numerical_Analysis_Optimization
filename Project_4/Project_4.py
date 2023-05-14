@@ -6,6 +6,7 @@
 import numpy as np
 import numpy.linalg as np_lin
 
+common_path = 'Project_4'
 
 def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.0001, rho=0.5, backtracking=False):
     ''' This function implements the standard Newton method for unconstrained optimization.
@@ -109,7 +110,6 @@ def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.000
                'scalar_product' : scalar_prod}
 
     return results
-
 
 
 def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, eta=0.01):

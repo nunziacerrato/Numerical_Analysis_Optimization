@@ -12,8 +12,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
-# sys.path.insert(0, os.path.abspath('../Project_1'))
+sys.path.insert(0, os.path.abspath(r'..\..'))
 
 
 # -- Project information -----------------------------------------------------
@@ -34,7 +33,8 @@ release = '1.0'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.mathjax',
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -45,7 +45,6 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-autodoc_mock_imports = ['..']
 autodoc_mock_imports = ['pandas','qutip']
 
 
