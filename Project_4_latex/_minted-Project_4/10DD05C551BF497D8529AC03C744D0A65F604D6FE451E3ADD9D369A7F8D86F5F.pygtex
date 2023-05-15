@@ -30,7 +30,7 @@
 \PYG{l+s+sd}{     Results}
 \PYG{l+s+sd}{     \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
 \PYG{l+s+sd}{     results : dict}
-\PYG{l+s+sd}{         Dictonary of the results given by the function. It contains the following items:}
+\PYG{l+s+sd}{         Dictionary of the results given by the function. It contains the following items:}
 \PYG{l+s+sd}{           \PYGZhy{} \PYGZsq{}convergence\PYGZsq{} : (bool) True if the algorithm converges, False if it doesn\PYGZsq{}t converge}
 \PYG{l+s+sd}{           \PYGZhy{} \PYGZsq{}k\PYGZsq{} : (int) final iteration at which convergence is reached}
 \PYG{l+s+sd}{           \PYGZhy{} \PYGZsq{}min\PYGZus{}point\PYGZsq{} : (ndarray) computed point at which the minimum of the function is reached}
