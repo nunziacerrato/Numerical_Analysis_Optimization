@@ -22,6 +22,13 @@ sol_x_b = np.array([1,0,-1,2])
 sol_f_b = -167.28
 
 results = Newton(func_b, grad_b, hess_b, 1e-12, 100, x0_b_1, sol_x_b, sol_f_b, 1, backtracking=False)
+k = results['k']
+conv = results['convergence']
+min_point = results['min_point']
+min_value = results['min_value']
+print(f'convergence = {conv}, with {k} steps')
+print(f'min point = {min_point}')
+print(f'min value = {min_value}')
 
 # Initialize LateX code for creating a table
 table = "\\begin{table} \n \\centering \n \\begin{tabular}{|c|c|c|c|} \n \hline \n"

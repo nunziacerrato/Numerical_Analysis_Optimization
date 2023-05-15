@@ -1,0 +1,122 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{def} \PYG{n+nf}{Newton\PYGZus{}trust\PYGZus{}region}\PYG{p}{(}\PYG{n}{func}\PYG{p}{,} \PYG{n}{grad}\PYG{p}{,} \PYG{n}{hess}\PYG{p}{,} \PYG{n}{tol}\PYG{p}{,} \PYG{n}{maxit}\PYG{p}{,} \PYG{n}{x\PYGZus{}0}\PYG{p}{,} \PYG{n}{sol\PYGZus{}x}\PYG{p}{,} \PYG{n}{sol\PYGZus{}f}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{eta}\PYG{o}{=}\PYG{l+m+mf}{0.01}\PYG{p}{):}
+    \PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{} This function implements the Newton method with the trust region approach for unconstrained optimization.}
+
+\PYG{l+s+sd}{    Parameters}
+\PYG{l+s+sd}{    \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{    func : function}
+\PYG{l+s+sd}{        Function to be minimized. It must be :math:`f : \PYGZbs{}mathbb\PYGZob{}R\PYGZcb{}\PYGZca{}\PYGZob{}n\PYGZcb{} \PYGZbs{}rightarrow \PYGZbs{}mathbb\PYGZob{}R\PYGZcb{}`.}
+\PYG{l+s+sd}{    grad : function}
+\PYG{l+s+sd}{        Gradient of the function. It returns a 1d\PYGZhy{}array (vector)}
+\PYG{l+s+sd}{    hess : function}
+\PYG{l+s+sd}{        Hessian of the function. It returns a 2d\PYGZhy{}array (matrix)}
+\PYG{l+s+sd}{    tol : float}
+\PYG{l+s+sd}{        Tolerance parameter for the stopping criterion}
+\PYG{l+s+sd}{    maxit : int}
+\PYG{l+s+sd}{        Maximum number of iterations}
+\PYG{l+s+sd}{    x\PYGZus{}0 : ndarray}
+\PYG{l+s+sd}{        Starting point}
+\PYG{l+s+sd}{    sol\PYGZus{}x : ndarray}
+\PYG{l+s+sd}{        Exact solution (x) to the minimization problem}
+\PYG{l+s+sd}{    sol\PYGZus{}f : float}
+\PYG{l+s+sd}{        Exact minimum value of the function}
+\PYG{l+s+sd}{    alpha : float}
+\PYG{l+s+sd}{        Step lenght. Default value alpha=1}
+\PYG{l+s+sd}{    eta : float}
+\PYG{l+s+sd}{        Constant parameter in :math:`(0,0.25)`. Default value eta=0.01}
+
+\PYG{l+s+sd}{    Results}
+\PYG{l+s+sd}{    \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{    results : dict}
+\PYG{l+s+sd}{        Dictonary of the results given by the function. It contains the following items:}
+\PYG{l+s+sd}{          \PYGZhy{} \PYGZsq{}convergence\PYGZsq{} : (bool) True if the algorithm converges, False if it doesn\PYGZsq{}t converge}
+\PYG{l+s+sd}{          \PYGZhy{} \PYGZsq{}k\PYGZsq{} : (int) final iteration at which convergence is reached}
+\PYG{l+s+sd}{          \PYGZhy{} \PYGZsq{}min\PYGZus{}point\PYGZsq{} : (ndarray) computed point at which the minimum of the function is reached}
+\PYG{l+s+sd}{          \PYGZhy{} \PYGZsq{}min\PYGZus{}value\PYGZsq{} : (float) computed minimum value of the function}
+\PYG{l+s+sd}{          \PYGZhy{} \PYGZsq{}interm\PYGZus{}point\PYGZsq{} : (list) list of the intermediate points}
+\PYG{l+s+sd}{          \PYGZhy{} \PYGZsq{}error\PYGZus{}x\PYGZsq{} : (list) list that contains the 2\PYGZhy{}norm of the difference between each intermediate point and the exact solution (min\PYGZus{}point).}
+\PYG{l+s+sd}{          \PYGZhy{} \PYGZsq{}error\PYGZus{}f\PYGZsq{} : (list) list that contains the difference between the function evaluated at each intermediate point and its value in the exact minimum point}
+\PYG{l+s+sd}{          \PYGZhy{} \PYGZsq{}scalar\PYGZus{}product\PYGZsq{} : (list) list that contains the scalar product between the descent direction and the gradient}
+\PYG{l+s+sd}{    \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+
+    \PYG{c+c1}{\PYGZsh{} Evaluate the gradient and the hessian in the starting point}
+    \PYG{n}{gradient} \PYG{o}{=} \PYG{n}{grad}\PYG{p}{(}\PYG{n}{x\PYGZus{}0}\PYG{p}{)}
+    \PYG{n}{hessian} \PYG{o}{=} \PYG{n}{hess}\PYG{p}{(}\PYG{n}{x\PYGZus{}0}\PYG{p}{)}
+
+    \PYG{c+c1}{\PYGZsh{} Compute the fist descent direction and the first delta value}
+    \PYG{n}{p} \PYG{o}{=} \PYG{n}{np\PYGZus{}lin}\PYG{o}{.}\PYG{n}{solve}\PYG{p}{(}\PYG{n}{hessian}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{n}{gradient}\PYG{p}{)}
+    \PYG{n}{delta} \PYG{o}{=} \PYG{n}{np\PYGZus{}lin}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{p}\PYG{p}{)}
+    \PYG{n}{interm\PYGZus{}radius} \PYG{o}{=} \PYG{p}{[}\PYG{n}{delta}\PYG{p}{]}
+
+    \PYG{n}{interm\PYGZus{}points} \PYG{o}{=} \PYG{p}{[}\PYG{n}{x\PYGZus{}0}\PYG{p}{]}
+    \PYG{n}{scalar\PYGZus{}prod} \PYG{o}{=} \PYG{p}{[]}
+    \PYG{n}{old\PYGZus{}point} \PYG{o}{=} \PYG{n}{x\PYGZus{}0}
+
+    \PYG{c+c1}{\PYGZsh{} Cycle on the number of iterations}
+    \PYG{k}{for} \PYG{n}{k} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{maxit}\PYG{p}{):}
+
+        \PYG{c+c1}{\PYGZsh{} Evaluate the gradient and the hessian at the current point}
+        \PYG{n}{gradient} \PYG{o}{=} \PYG{n}{grad}\PYG{p}{(}\PYG{n}{old\PYGZus{}point}\PYG{p}{)}
+        \PYG{n}{hessian} \PYG{o}{=} \PYG{n}{hess}\PYG{p}{(}\PYG{n}{old\PYGZus{}point}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} Diagonalize the hessian computed at the current point}
+        \PYG{n}{eigval}\PYG{p}{,} \PYG{n}{eigvect} \PYG{o}{=} \PYG{n}{np\PYGZus{}lin}\PYG{o}{.}\PYG{n}{eigh}\PYG{p}{(}\PYG{n}{hessian}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} Choose an initial mu value}
+        \PYG{n}{mu} \PYG{o}{=} \PYG{n+nb}{abs}\PYG{p}{(}\PYG{n+nb}{min}\PYG{p}{(}\PYG{n+nb}{min}\PYG{p}{(}\PYG{n}{eigval}\PYG{p}{),} \PYG{l+m+mi}{0}\PYG{p}{))} \PYG{o}{+} \PYG{l+m+mf}{1e\PYGZhy{}12}
+        \PYG{n}{coeff\PYGZus{}vect} \PYG{o}{=} \PYG{n}{eigvect}\PYG{o}{.}\PYG{n}{T} \PYG{o}{@} \PYG{n}{gradient}\PYG{o}{/}\PYG{p}{(}\PYG{n}{eigval} \PYG{o}{+} \PYG{n}{mu}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} Choose the optimal mu value which respects the condition on the 2\PYGZhy{}norm}
+        \PYG{k}{while} \PYG{n+nb}{sum}\PYG{p}{([}\PYG{n}{coeff}\PYG{o}{**}\PYG{l+m+mi}{2} \PYG{k}{for} \PYG{n}{coeff} \PYG{o+ow}{in} \PYG{n}{coeff\PYGZus{}vect}\PYG{p}{])} \PYG{o}{\PYGZgt{}} \PYG{n}{delta}\PYG{o}{**}\PYG{l+m+mi}{2}\PYG{p}{:}
+            \PYG{n}{mu} \PYG{o}{=} \PYG{n}{mu}\PYG{o}{*}\PYG{l+m+mi}{2}
+            \PYG{n}{coeff\PYGZus{}vect} \PYG{o}{=} \PYG{n}{eigvect}\PYG{o}{.}\PYG{n}{T} \PYG{o}{@} \PYG{n}{gradient}\PYG{o}{/}\PYG{p}{(}\PYG{n}{eigval} \PYG{o}{+} \PYG{n}{mu}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} Compute the descent direction}
+        \PYG{n}{p} \PYG{o}{=} \PYG{o}{\PYGZhy{}} \PYG{n}{eigvect} \PYG{o}{@} \PYG{n}{coeff\PYGZus{}vect}
+        \PYG{n}{scalar\PYGZus{}prod}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{o}{\PYGZhy{}} \PYG{n}{gradient} \PYG{o}{@} \PYG{n}{eigvect} \PYG{o}{@} \PYG{n}{np}\PYG{o}{.}\PYG{n}{diag}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{o}{/}\PYG{n}{eigval}\PYG{p}{)} \PYG{o}{@} \PYG{n}{eigvect}\PYG{o}{.}\PYG{n}{T} \PYG{o}{@} \PYG{n}{gradient}\PYG{p}{)}
+
+        \PYG{n}{new\PYGZus{}point} \PYG{o}{=} \PYG{n}{old\PYGZus{}point} \PYG{o}{+} \PYG{n}{alpha}\PYG{o}{*}\PYG{n}{p}
+
+        \PYG{c+c1}{\PYGZsh{} Choose the value of delta for the successive iteration}
+        \PYG{n}{rho} \PYG{o}{=} \PYG{p}{(}\PYG{n}{func}\PYG{p}{(}\PYG{n}{new\PYGZus{}point}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{n}{func}\PYG{p}{(}\PYG{n}{old\PYGZus{}point}\PYG{p}{))}\PYG{o}{/}\PYG{p}{(}\PYG{n}{p} \PYG{o}{@} \PYG{n}{gradient} \PYG{o}{+} \PYG{l+m+mf}{0.5}\PYG{o}{*}\PYG{n}{p} \PYG{o}{@} \PYG{n}{hessian} \PYG{o}{@} \PYG{n}{p}\PYG{p}{)}
+
+        \PYG{k}{if} \PYG{l+m+mi}{0} \PYG{o}{\PYGZlt{}} \PYG{n}{rho} \PYG{o}{\PYGZlt{}} \PYG{l+m+mf}{0.25}\PYG{p}{:}
+            \PYG{n}{delta} \PYG{o}{=} \PYG{n}{delta}\PYG{o}{/}\PYG{l+m+mi}{4}
+        \PYG{k}{elif} \PYG{n}{rho} \PYG{o}{\PYGZgt{}} \PYG{l+m+mf}{0.75}\PYG{p}{:}
+            \PYG{n}{delta} \PYG{o}{=} \PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{delta}
+        \PYG{k}{elif} \PYG{l+m+mi}{0} \PYG{o}{\PYGZlt{}} \PYG{n}{rho} \PYG{o}{\PYGZlt{}} \PYG{n}{eta}\PYG{p}{:}
+            \PYG{n}{new\PYGZus{}point} \PYG{o}{=} \PYG{n}{old\PYGZus{}point}
+
+        \PYG{n}{interm\PYGZus{}points}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{new\PYGZus{}point}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} Compute norms for the stopping criterion}
+        \PYG{n}{norm\PYGZus{}grad} \PYG{o}{=} \PYG{n}{np\PYGZus{}lin}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{gradient}\PYG{p}{)}
+        \PYG{n}{norm\PYGZus{}diff\PYGZus{}x} \PYG{o}{=} \PYG{n}{np\PYGZus{}lin}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{new\PYGZus{}point} \PYG{o}{\PYGZhy{}} \PYG{n}{old\PYGZus{}point}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} Check if the stopping criterion is satisfied}
+        \PYG{k}{if} \PYG{n}{norm\PYGZus{}grad} \PYG{o}{\PYGZlt{}=} \PYG{n}{tol} \PYG{o+ow}{and} \PYG{n}{norm\PYGZus{}diff\PYGZus{}x} \PYG{o}{\PYGZlt{}=}\PYG{n}{tol}\PYG{o}{*}\PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{+} \PYG{n}{np\PYGZus{}lin}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{new\PYGZus{}point}\PYG{p}{)):}
+            \PYG{n}{min\PYGZus{}value} \PYG{o}{=} \PYG{n}{func}\PYG{p}{(}\PYG{n}{new\PYGZus{}point}\PYG{p}{)}
+            \PYG{n}{conv} \PYG{o}{=} \PYG{k+kc}{True}
+            \PYG{k}{break}
+
+        \PYG{n}{old\PYGZus{}point} \PYG{o}{=} \PYG{n}{new\PYGZus{}point}
+
+    \PYG{k}{if} \PYG{n}{k} \PYG{o}{==} \PYG{n}{maxit}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{:}
+        \PYG{n}{min\PYGZus{}value} \PYG{o}{=} \PYG{n}{func}\PYG{p}{(}\PYG{n}{new\PYGZus{}point}\PYG{p}{)}
+        \PYG{n}{conv} \PYG{o}{=} \PYG{k+kc}{False}
+
+    \PYG{n}{gradient} \PYG{o}{=} \PYG{n}{grad}\PYG{p}{(}\PYG{n}{new\PYGZus{}point}\PYG{p}{)}
+    \PYG{n}{hessian} \PYG{o}{=} \PYG{n}{hess}\PYG{p}{(}\PYG{n}{new\PYGZus{}point}\PYG{p}{)}
+    \PYG{n}{p} \PYG{o}{=} \PYG{n}{np\PYGZus{}lin}\PYG{o}{.}\PYG{n}{solve}\PYG{p}{(}\PYG{n}{hessian}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{n}{gradient}\PYG{p}{)}
+    \PYG{n}{scalar\PYGZus{}prod}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{o}{\PYGZhy{}} \PYG{n}{gradient} \PYG{o}{@} \PYG{n}{eigvect} \PYG{o}{@} \PYG{n}{np}\PYG{o}{.}\PYG{n}{diag}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{o}{/}\PYG{n}{eigval}\PYG{p}{)} \PYG{o}{@} \PYG{n}{eigvect}\PYG{o}{.}\PYG{n}{T} \PYG{o}{@} \PYG{n}{gradient}\PYG{p}{)}
+
+    \PYG{c+c1}{\PYGZsh{} Compute the 2norm of the difference between each intermediate point and the exact solution}
+    \PYG{n}{error\PYGZus{}x} \PYG{o}{=} \PYG{p}{[}\PYG{n}{np\PYGZus{}lin}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{interm\PYGZus{}x} \PYG{o}{\PYGZhy{}} \PYG{n}{sol\PYGZus{}x}\PYG{p}{)} \PYG{k}{for} \PYG{n}{interm\PYGZus{}x} \PYG{o+ow}{in} \PYG{n}{interm\PYGZus{}points}\PYG{p}{]}
+
+    \PYG{c+c1}{\PYGZsh{} Compute the difference between the function evaluated in each intermediate point and}
+    \PYG{c+c1}{\PYGZsh{} its value in the exact minimum point}
+    \PYG{n}{error\PYGZus{}f} \PYG{o}{=} \PYG{p}{[}\PYG{n}{func}\PYG{p}{(}\PYG{n}{interm\PYGZus{}x}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{sol\PYGZus{}f} \PYG{k}{for} \PYG{n}{interm\PYGZus{}x} \PYG{o+ow}{in} \PYG{n}{interm\PYGZus{}points}\PYG{p}{]}
+
+    \PYG{n}{results} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}convergence\PYGZsq{}}\PYG{p}{:} \PYG{n}{conv}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}k\PYGZsq{}} \PYG{p}{:} \PYG{n}{k}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}min\PYGZus{}point\PYGZsq{}} \PYG{p}{:} \PYG{n}{new\PYGZus{}point}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}min\PYGZus{}value\PYGZsq{}} \PYG{p}{:} \PYG{n}{min\PYGZus{}value}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}interm\PYGZus{}point\PYGZsq{}} \PYG{p}{:} \PYG{n}{interm\PYGZus{}points}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}error\PYGZus{}x\PYGZsq{}} \PYG{p}{:} \PYG{n}{error\PYGZus{}x}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}error\PYGZus{}f\PYGZsq{}} \PYG{p}{:} \PYG{n}{error\PYGZus{}f}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}scalar\PYGZus{}product\PYGZsq{}} \PYG{p}{:} \PYG{n}{scalar\PYGZus{}prod}\PYG{p}{\PYGZcb{}}
+
+    \PYG{k}{return} \PYG{n}{results}
+\end{Verbatim}

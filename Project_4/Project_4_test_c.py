@@ -41,11 +41,14 @@ sol_f_c = 0
 
 
 # Compute the minimum value of the function using the standard Newton algorithm (with backtracking)
-results = Newton(func_c, grad_c, hess_c, 1e-12, 100, x0_c_1, sol_x_c, sol_f_c, 1, backtracking=False)
-print(results['min_point'])
-print('######################################')
-print(results['min_value'])
-print('######################################')
+results = Newton(func_c, grad_c, hess_c, 1e-12, 100, x0_c_2, sol_x_c, sol_f_c, 1, backtracking=True)
+k = results['k']
+conv = results['convergence']
+min_point = results['min_point']
+min_value = results['min_value']
+print(f'convergence = {conv}, with {k} steps')
+print(f'min point = {min_point}')
+print(f'min value = {min_value}')
 
 # Initialize LateX code for creating a table
 table = "\\begin{table} \n \\centering \n \\begin{tabular}{|c|c|c|c|} \n \hline \n"
@@ -83,7 +86,7 @@ table += "\\hline \n \\end{tabular} \n \\end{table}"
 print(table)
 
 ##################### PLOT #####################
-plot = True
+plot = False
 if plot == True:
     # Set size parameters for the plots
     tickparams_size = 16
@@ -96,8 +99,8 @@ if plot == True:
     delta = 0.025
     # X = np.arange(0., 9.0, delta) 
     # Y = np.arange(0., 1., delta)
-    X = np.arange(0, 10, delta) # x in [0, 10] per x0_1 standard
-    Y = np.arange(0, 1, delta) # x in [0, 1] per x0_1 standard
+    X = np.arange(-15, 10, delta) # x in [0, 10] per x0_1 standard, x in [-15, 10] per x0_2 standard
+    Y = np.arange(0, 1.5, delta) # x in [0, 1] per x0_1 standard, x in [0, 1.5] per x0_2 standard
     X, Y = np.meshgrid(X,Y)
     Z = (1.5 - X * (1 - Y))**2 + (2.25 - X * (1 - Y**2))**2 +\
                 (2.625 - X * (1 - Y**3))**2
@@ -109,7 +112,7 @@ if plot == True:
     # Add a color bar which maps values to colors and choose the format
     ax.zaxis.set_major_locator(LinearLocator(10))
     ax.zaxis.set_major_formatter('{x:.0f}')
-    cb = fig.colorbar(surf, shrink=0.5, aspect=10)
+    cb = fig.colorbar(surf, shrink=0.5, aspect=10, pad=0.08)
     cb.ax.tick_params(labelsize=12)
 
     # Obtain the scatterplot of the intermediate points
@@ -127,15 +130,15 @@ if plot == True:
     ax.zaxis.set_rotate_label(False)
     ax.set_zlabel(r'$f\,(x_{1},x_{2})$', fontsize=18, rotation = 90, labelpad=10)
 
-    ax.azim = -160
-    fig.savefig(f'{common_path}_latex\\Plot\\func_c_standard_newton_3d'.format(ax.azim), bbox_inches='tight')
+    ax.azim = -37
+    fig.savefig(f'{common_path}_latex\\Plot\\func_c_standard_newton_x0_2_3d'.format(ax.azim), bbox_inches='tight')
 
     ########### Contour plot ###########
     delta = 0.0025
     # Xc = np.arange(0., 9.0, delta)
     # Yc = np.arange(0., 1., delta)
-    Xc = np.arange(0, 10, delta) # x in [0, 10] per x0_1 standard
-    Yc = np.arange(0, 1, delta) # x in [0, 1] per x0_1 standard
+    Xc = np.arange(-15, 10, delta) # x in [0, 10] per x0_1 standard, x in [-15, 10] per x0_2 standard
+    Yc = np.arange(0, 1.5, delta) # x in [0, 1] per x0_1 standard, x in [0, 1.5] per x0_2 standard
     Xc, Yc = np.meshgrid(Xc,Yc)
     Zc = (1.5 - Xc * (1 - Yc))**2 + (2.25 - Xc * (1 - Yc**2))**2 +\
                 (2.625 - Xc * (1 - Yc**3))**2
@@ -151,7 +154,7 @@ if plot == True:
     ax_contour.set_xlabel(r'$x_{1}$', fontsize=25)
     ax_contour.set_ylabel(r'$x_{2}$', fontsize=25)
 
-    fig_contour.savefig(f'{common_path}_latex\\Plot\\func_c_standard_newton_contour', bbox_inches='tight')
+    fig_contour.savefig(f'{common_path}_latex\\Plot\\func_c_standard_newton_x0_2_contour', bbox_inches='tight')
 
 
     plt.show()

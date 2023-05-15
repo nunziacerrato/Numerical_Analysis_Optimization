@@ -62,6 +62,7 @@ def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.000
     scalar_prod = []
 
     new_point = x_0
+    norm_diff_x = np_lin.norm(new_point - old_point)
     # Cycle on the number of iterations
     for k in range(maxit):
         gradient = grad(old_point)
@@ -69,13 +70,11 @@ def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.000
 
         # Compute norms for the stopping criterion
         norm_grad = np_lin.norm(gradient)
-        norm_diff_x = np_lin.norm(new_point - old_point)
 
         # Check if the stopping criterion is satisfied
         if norm_grad <= tol and norm_diff_x <= tol*(1 + np_lin.norm(old_point)):            
             min_value = func(new_point)
             conv = True
-            print(k)
             break
         
         # Compute the descent direction by solving a linear system
@@ -94,6 +93,7 @@ def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.000
         # Compute the new point and add it to the list of intermediate points
         new_point = old_point + alpha*p
         interm_points.append(new_point)
+        norm_diff_x = np_lin.norm(new_point - old_point)
 
         old_point = new_point
     
@@ -145,7 +145,7 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
         alpha : float
             Step lenght. Default value alpha=1
         eta : float
-            Constant parameter in :math:`(0,0.25)`. Default value sigma=0.01
+            Constant parameter in :math:`(0,0.25)`. Default value eta=0.01
         
 
         Results
@@ -208,13 +208,10 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
 
         if 0 < rho < 0.25:
             delta = delta/4
-            interm_radius.append(delta)
         elif rho > 0.75:
             delta = 2*delta
-            interm_radius.append(delta)
         elif 0 < rho < eta:
             new_point = old_point
-            interm_radius.append(delta)
 
         interm_points.append(new_point)
 
@@ -225,7 +222,6 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
         # Check if the stopping criterion is satisfied
         if norm_grad <= tol and norm_diff_x <=tol*(1 + np_lin.norm(new_point)):
             min_value = func(new_point)
-            print(k)
             conv = True
             break
 
