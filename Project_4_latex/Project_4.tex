@@ -272,15 +272,15 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
 	
 	\noindent In all of these cases, we have chosen as tolerance parameter  \mintinline{Python}{tol=1e-12} and as maximum number of iterations allowed \mintinline{Python}{maxit=100}. Moreover, we have chosen \mintinline{Python}{alpha=1} as default $\alpha$ value and \mintinline{Python}{sigma=0.0001} and \mintinline{Python}{rho=0.5} as default parameters for backtracking. Finally, in the case of the Newton trust region method, we have chosen \mintinline{Python}{eta=0.01}. However, these constants can be passed as keyword argument to the appropriate functions, therefore one can change their value in the main program, where these functions are effectively used.\\
 	
-	\noindent In each case we will report a table with the required values in correspondence of the intermediate points (note that $k=0$ will correspond to the starting point) and a contour plot and a 3D plot to show how the minimum point is reached.
+	\noindent In each case we will report a table with the required values in correspondence with the intermediate points (note that $k=0$ will correspond to the starting point) and a contour plot and a 3D plot to show how the minimum point is reached.
 	
 	
-	\subsection*{(a)}
+	\subsection*{Test function (a)}
 	Consider the function $f^{(a)}: \R^{2}\rightarrow \R$, defined as
 	\begin{equation}
 		f^{(a)}(x_{1},x_{2}) = (x_{1}-2)^{4} + (x_{1}-2)^{2}x_{2}^{2} + (x_{2}+1)^{2}.
 	\end{equation}
-	It is possible to note that this function assumes a minimum value $f^{(a)}(\textbf{x}^*)=0$ in correspondence with the point $\textbf{x}^*=(2,-1)$. We would like to obtain this minimum value and the corresponding point $\textbf{x}^*$ by using the standard Newton algorithm implemented by the function \mintinline{Python}{Newton}. We report below the gradient and the Hessian of $f^{(a)}$, which must be passed as arguments to the Python function which performs the minimization.
+	It is possible to note that this function assumes a minimum value $f^{(a)}(\textbf{x}^*)=0$ in correspondence with the point $\textbf{x}^*=(2,-1)$. We would like to obtain this minimum value and the corresponding point $\textbf{x}^*$ by using the standard Newton algorithm implemented by the function \mintinline{Python}{Newton}. We report below the gradient and the Hessian of $f^{(a)}(\textbf{x})$, which must be passed as arguments to the Python function which performs the minimization.
 	\begin{equation}
 		\nabla f^{(a)}(x_{1},x_{2}) = \begin{bmatrix}
 			4(x_{1}-2)^{3} + 2x_{2}^{2}(x_{1}-2)\\
@@ -302,12 +302,12 @@ convergence = True, with 8 steps
 min point = [ 2. -1.]
 min value = 0.0
 \end{minted}
-	As we can see, the algorithm converges in $8$ steps and it returns the right minimum point and the corresponding value of the function. In the following we report the table with the required quantities computed at each step.
+	As we can see, the algorithm converges in $8$ steps and it returns the right minimum point and the corresponding minimum value of the function. We report in Tab. \ref{tab:table_a} the required quantities computed at each step.
 	\begin{table}[H]
 	\centering	
 	\begin{tabular}{|c|c|c|c|}
 		\hline
-		k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f_{1}(\textbf{x}_{k}) - f_{1}(\textbf{x}^{*}) $ & $-\nabla f_{1}(\textbf{x}_{k})^{T} [\nabla^{2}f_{1}(\textbf{x}_{k})]^{-1} \nabla f_{1}(\textbf{x}_{k})$ \\
+		k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f^{(a)}(\textbf{x}_{k}) - f^{(a)}(\textbf{x}^{*}) $ & $-\nabla f^{(a)}(\textbf{x}_{k})^{T} [\nabla^{2}f^{(a)}(\textbf{x}_{k})]^{-1} \nabla f^{(a)}(\textbf{x}_{k})$ \\
 		\hline
 		0 & $2.236$ & $6.000$ & $-9.000$ \\
 		1 & $1.118$ & $1.500$ & $-1.761$ \\
@@ -320,11 +320,11 @@ min value = 0.0
 		8 & 0 & 0 & 0 \\
 		\hline
 	\end{tabular}
-	\caption{Table of data obtained using the standard Newton method to minimize the function $f^{(a)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $x_{0}=(1,1)^{T}$.}
+	\caption{Table of data obtained using the standard Newton method to minimize the function $f^{(a)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $\textbf{x}_{0}=(1,1)^{T}$.}
 	\label{tab:table_a}
 	\end{table}
 	
-	\noindent Below are the contour plot and the 3D plot, where it is possible to see how the minimum point (in red) is reached.
+	\noindent We report in Fig. \ref{Fig:func_a} the contour plot and the 3D plot, where it is possible to see how the minimum point (in red) is reached.
 	\begin{figure}[H]
 		\centering
 		\subfloat[][]{\includegraphics[scale=0.26]{Plot/func_a_standard_newton_contour.png}} \quad
@@ -366,7 +366,7 @@ Below is the table with the required quantities at each step.
 	\centering
 	\begin{tabular}{|c|c|c|c|}
 		\hline
-		k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f_{1}(\textbf{x}_{k}) - f_{1}(\textbf{x}^{*}) $ & $-\nabla f_{1}(\textbf{x}_{k})^{T}[\nabla^{2}f_{1}(\textbf{x}_{k})]^{-1} \nabla f_{1}(\textbf{x}_{k})$ \\
+		k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f^{(b)}(\textbf{x}_{k}) - f^{(b)}(\textbf{x}^{*}) $ & $-\nabla f^{(b)}(\textbf{x}_{k})^{T}[\nabla^{2}f^{(b)}(\textbf{x}_{k})]^{-1} \nabla f^{(b)}(\textbf{x}_{k})$ \\
 		\hline
 		$0$ & $5.745$ & $5.223\times10^{2}$ & $-1.045\times10^{3}$ \\
 		$1$ & $9.769\times10^{-13}$ & $2.842\times10^{-14}$ & $-9.948\times10^{-27}$ \\
@@ -401,7 +401,7 @@ We report in Tab \ref*{tab:table_c_x0_1} the required quantities at each step of
 	\centering
 	\begin{tabular}{|c|c|c|c|}
 		\hline
-		k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f_{1}(\textbf{x}_{k}) - f_{1}(\textbf{x}^{*}) $ & $-\nabla f_{1}(\textbf{x}_{k})^{T}[\nabla^{2}f_{1}(\textbf{x}_{k})]^{-1} \nabla f_{1}(\textbf{x}_{k})$ \\
+		k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f^{(c)}(\textbf{x}_{k}) - f^{(c)}(\textbf{x}^{*}) $ & $-\nabla f^{(c)}(\textbf{x}_{k})^{T}[\nabla^{2}f^{(c)}(\textbf{x}_{k})]^{-1} \nabla f^{(c)}(\textbf{x}_{k})$ \\
 		\hline
 		$0$ & $5.009$ & $8.17\times10^{1}$ & $-1.455\times10^{2}$ \\
 		$1$ & $8.66\times10^{-1}$ & $2.423$ & $-4.527$ \\
@@ -440,7 +440,7 @@ As we can see, the algorithm converges in $10$ step to the point $\tilde{\textbf
 		\centering
 		\begin{tabular}{|c|c|c|c|}
 			\hline
-			k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f_{1}(\textbf{x}_{k}) - f_{1}(\textbf{x}^{*}) $ & $-\nabla f_{1}(\textbf{x}_{k})^{T}[\nabla^{2}f_{1}(\textbf{x}_{k})]^{-1} \nabla f_{1}(\textbf{x}_{k})$ \\
+			k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f^{(c)}(\textbf{x}_{k}) - f^{(c)}(\textbf{x}^{*}) $ & $-\nabla f^{(c)}(\textbf{x}_{k})^{T}[\nabla^{2}f^{(c)}(\textbf{x}_{k})]^{-1} \nabla f^{(c)}(\textbf{x}_{k})$ \\
 			\hline
 			$0$ & $5.009$ & $2.043$ & $-3.291$ \\
 			$1$ & $3.963$ & $2.553\times10^{-1}$ & $-5.885\times10^{-2}$ \\
@@ -479,7 +479,7 @@ We can see that the algorithm converges to the expected minimum point in $14$ st
 		\centering
 		\begin{tabular}{|c|c|c|c|}
 			\hline
-			k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f_{1}(\textbf{x}_{k}) - f_{1}(\textbf{x}^{*}) $ & $-\nabla f_{1}(\textbf{x}_{k})^{T}[\nabla^{2}f_{1}(\textbf{x}_{k})]^{-1} \nabla f_{1}(\textbf{x}_{k})$ \\
+			k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f^{(c)}(\textbf{x}_{k}) - f^{(c)}(\textbf{x}^{*}) $ & $-\nabla f^{(c)}(\textbf{x}_{k})^{T}[\nabla^{2}f^{(c)}(\textbf{x}_{k})]^{-1} \nabla f^{(c)}(\textbf{x}_{k})$ \\
 			\hline
 			$0$ & $5.009$ & $2.043$ & $-3.291$ \\
 			$1$ & $3.963$ & $2.553\times10^{-1}$ & $-5.885\times10^{-2}$ \\
@@ -506,7 +506,7 @@ We can see that the algorithm converges to the expected minimum point in $14$ st
 		\centering
 		\subfloat[][]{\includegraphics[scale=0.24]{Plot/func_c_standard_newton_backtrack_contour.png}} \quad
 		\subfloat[][]{\includegraphics[scale=0.34]{Plot/func_c_standard_newton_backtrack_3d.png}}
-		\caption{Contour plot (Panel (a)) and 3D plot (Panel (b)) of the function $f^{(c)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the Newton algorithm with backtracking, starting from the point $x_{0}=(8,0.2)^{T}$.}
+		\caption{Contour plot (Panel (a)) and 3D plot (Panel (b)) of the function $f^{(c)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the Newton algorithm with backtracking, starting from the point $x_{0}=(8,0.8)^{T}$.}
 		\label{Fig:func_c_x0_2_backtracking}
 	\end{figure}
 	
@@ -535,7 +535,7 @@ In this case, the algorithm converges in $5$ steps. We report in Tab. \ref{tab:t
 		\centering
 		\begin{tabular}{|c|c|c|c|}
 			\hline
-			k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f_{1}(\textbf{x}_{k}) - f_{1}(\textbf{x}^{*}) $ & $-\nabla f_{1}(\textbf{x}_{k})^{T}[\nabla^{2}f_{1}(\textbf{x}_{k})]^{-1} \nabla f_{1}(\textbf{x}_{k})$ \\
+			k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f^{(d)}(\textbf{x}_{k}) - f^{(d)}(\textbf{x}^{*}) $ & $-\nabla f^{(d)}(\textbf{x}_{k})^{T}[\nabla^{2}f^{(d)}(\textbf{x}_{k})]^{-1} \nabla f^{(d)}(\textbf{x}_{k})$ \\
 			\hline
 			$0$ & $1.119\times10^{-1}$ & $2.385\times10^{-2}$ & $-4.688\times10^{-2}$ \\
 			$1$ & $4.601\times10^{-3}$ & $4.517\times10^{-5}$ & $-8.996\times10^{-5}$ \\
@@ -564,12 +564,11 @@ min point = [ 0.00169883 -1.00084941]
 min value = -0.0016995470778935944
 \end{minted}
 As emerges from this results, after $100$ iterations the algorithm does not reach the minimum point of the considered function. We report in Tab.\ref{tab:func_d_x0_2} the first and the last values of the required quantities.
-
 \begin{table}
 	\centering
 	\begin{tabular}{|c|c|c|c|}
 		\hline
-		k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f_{1}(\textbf{x}_{k}) - f_{1}(\textbf{x}^{*}) $ & $-\nabla f_{1}(\textbf{x}_{k})^{T}[\nabla^{2}f_{1}(\textbf{x}_{k})]^{-1} \nabla f_{1}(\textbf{x}_{k})$ \\
+		k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f^{(d)}(\textbf{x}_{k}) - f^{(d)}(\textbf{x}^{*}) $ & $-\nabla f^{(d)}(\textbf{x}_{k})^{T}[\nabla^{2}f^{(d)}(\textbf{x}_{k})]^{-1} \nabla f^{(d)}(\textbf{x}_{k})$ \\
 		\hline
 		$0$ & $1.517$ & $1.582$ & $0.000$ \\
 		$1$ & $3.014$ & $1.758\times10^{1}$ & $-2.156\times10^{1}$ \\
@@ -597,16 +596,23 @@ As emerges from this results, after $100$ iterations the algorithm does not reac
 		$100$ & $7.761\times10^{-1}$ & $5.807\times10^{-1}$ & $2.004$ \\
 		\hline
 	\end{tabular}
-	\caption{text}
+	\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(d)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $x_{0}=(0,0)^{T}$.}
 	\label{tab:func_d_x0_2}
 \end{table}
+From these results we can see that the 2-norm of the difference between the computed minimum point at step $k$ and the exact minimum point has a sort of periodic pattern, since it decreases every five iterations and then increases again, and this also happens when considering the difference between $f^{(d)}(\textbf{x}_{k})$ and  $f^{(d)}(\textbf{x}^*)$. This suggests that the computed point tries to slowly approach the exact minimum point but then moves away again, showing a sort of zig-zag pattern. In fact, if we see the scalar product between the gradient of the function and the descent direction we can observe that at the fifth iteration, and every five iterations, it becomes positive, suggesting that in the next step the new point will move away from the minimum point.\\
 
-
+\noindent To reach convergence we first tried to use the standard Newton algorithm considering a different value for $\alpha$. In particular, we observed that it is possible to reach convergence by choosing $\alpha=0.9$ instead of $\alpha=1$.
+\begin{minted}{text}
+convergence = True, with 25 steps
+min point = [ 0.69588439 -1.34794219]
+min value = -0.5824451744436351
+\end{minted}
+From these results we can see that the computed minimum point and the computed minimum value of the function coincide with the exact ones. However, in this case, the number of iterations required to reach convergence is $25$, which is a much higher number if compared to the previous case.
 	\begin{table}[H] 
 		\centering 
 		\begin{tabular}{|c|c|c|c|} 
 			\hline 
-			k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f_{1}(\textbf{x}_{k}) - f_{1}(\textbf{x}^{*}) $ & $-\nabla f_{1}(\textbf{x}_{k})^{T}[\nabla^{2}f_{1}(\textbf{x}_{k})]^{-1} \nabla f_{1}(\textbf{x}_{k})$ \\
+			k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f^{(d)}(\textbf{x}_{k}) - f^{(d)}(\textbf{x}^{*}) $ & $-\nabla f^{(d)}(\textbf{x}_{k})^{T}[\nabla^{2}f^{(d)}(\textbf{x}_{k})]^{-1} \nabla f^{(d)}(\textbf{x}_{k})$ \\
 			\hline
 			$0$ & $1.517$ & $1.582$ & $0.000$ \\
 			$1$ & $2.837$ & $1.208\times10^{1}$ & $-1.432\times10^{1}$ \\
@@ -627,11 +633,17 @@ As emerges from this results, after $100$ iterations the algorithm does not reac
 			$16$ & $3.643\times10^{-5}$ & $2.375\times10^{-9}$ & $-5.637\times10^{-9}$ \\
 			$17$ & $3.646\times10^{-6}$ & $-4.154\times10^{-10}$ & $-5.642\times10^{-11}$ \\
 			$18$ & $3.659\times10^{-7}$ & $-4.434\times10^{-10}$ & $-5.643\times10^{-13}$ \\
+			$19$ & $3.801\times10^{-8}$ & $-4.436\times10^{-10}$ & $-5.643\times10^{-15}$ \\
+			$20$ & $5.778\times10^{-9}$ & $-4.436\times10^{-10}$ & $-5.643\times10^{-17}$ \\
+			$21$ & $3.252\times10^{-9}$ & $-4.436\times10^{-10}$ & $-5.643\times10^{-19}$ \\
+			$22$ & $3.079\times10^{-9}$ & $-4.436\times10^{-10}$ & $-5.643\times10^{-21}$ \\
+			$23$ & $3.063\times10^{-9}$ & $-4.436\times10^{-10}$ & $-5.643\times10^{-23}$ \\
+			$24$ & $3.061\times10^{-9}$ & $-4.436\times10^{-10}$ & $-5.644\times10^{-25}$ \\
+			$25$ & $3.061\times10^{-9}$ & $-4.436\times10^{-10}$ & $-5.63\times10^{-27}$ \\
 			\hline
 		\end{tabular}
 		\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(d)}(x_{1},x_{2})$ by using $\alpha=0.9$ and by considering as starting point $x_{0}=(0,0)^{T}$.}
 	\end{table}
-
 	
 	\begin{figure}[H]
 		\centering
@@ -640,13 +652,20 @@ As emerges from this results, after $100$ iterations the algorithm does not reac
 		\caption{Contour plot and 3D plot for the function $f^{(d)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the standard Newton method with $\alpha=0.9$. The staring point considered in this case is $x_{0}=(0,0)^{T}$.}
 		\label{Fig:func_d}
 	\end{figure}
-	
-	
+
+\noindent Finally, we implemented the trust region Newton algorithm to see if it is possible to reach convergence in fewer steps. In this case, we obtained the following results:
+\begin{minted}{text}
+convergence = True, with 8 steps
+min point = [ 0.69588439 -1.34794219]
+min value = -0.5824451744436351
+\end{minted}
+We can see that in this case the algorithm converges in $8$ steps, returning the expected minimum point and the corresponding minimum value of the function. We report in Tab. \ref{tab:func_d_x0_2_trustreg} the required quantities at each step of the algorithm and in Fig. \ref{Fig:func_d_x0_2_trustreg} the obtained contour plot and the 3D plot.
+
 	\begin{table}[H]
 		\centering
 		\begin{tabular}{|c|c|c|c|}
 			\hline
-			k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f_{1}(\textbf{x}_{k}) - f_{1}(\textbf{x}^{*}) $ & $-\nabla f_{1}(\textbf{x}_{k})^{T}[\nabla^{2}f_{1}(\textbf{x}_{k})]^{-1} \nabla f_{1}(\textbf{x}_{k})$ \\
+			k & $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $ & $f^{(d)}(\textbf{x}_{k}) - f^{(d)}(\textbf{x}^{*}) $ & $-\nabla f^{(d)}(\textbf{x}_{k})^{T}[\nabla^{2}f^{(d)}(\textbf{x}_{k})]^{-1} \nabla f^{(d)}(\textbf{x}_{k})$ \\
 			\hline
 			$0$ & $1.517$ & $1.582$ & $0.000$ \\
 			$1$ & $8.014\times10^{-1}$ & $3.716$ & $-5.554$ \\
@@ -656,8 +675,11 @@ As emerges from this results, after $100$ iterations the algorithm does not reac
 			$5$ & $4.011\times10^{-4}$ & $3.414\times10^{-7}$ & $-6.834\times10^{-7}$ \\
 			$6$ & $2.275\times10^{-7}$ & $-4.435\times10^{-10}$ & $-2.171\times10^{-13}$ \\
 			$7$ & $3.061\times10^{-9}$ & $-4.436\times10^{-10}$ & $-2.197\times10^{-26}$ \\
+			$8$ & $3.061\times10^{-9}$ & $-4.436\times10^{-10}$ & $0.000$ \\
 			\hline
 		\end{tabular}
+		\caption{Table of data obtained using the trust region Newton algorithm to minimize the function $f^{(d)}(x_{1},x_{2})$ by considering as starting point $x_{0}=(0,0)^{T}$.}
+		\label{tab:func_d_x0_2_trustreg}
 	\end{table}
 	
 		\begin{figure}[H]
@@ -665,7 +687,7 @@ As emerges from this results, after $100$ iterations the algorithm does not reac
 		\subfloat[][]{\includegraphics[scale=0.24]{Plot/func_d_newton_trustreg_contour.png}} \quad
 		\subfloat[][]{\includegraphics[scale=0.34]{Plot/func_d_newton_trustreg_3d.png}}
 		\caption{Contour plot and 3D plot of the function $f^{(d)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the Newton method with the trust region approach. The starting point considered in this case is $x_{0}=(0,0)^{T}$.}
-		\label{Fig:func_d}
+		\label{Fig:func_d_x0_2_trustreg}
 	\end{figure}
 	
 \end{document}

@@ -20,9 +20,9 @@ sol_f_d = -0.582445174
 
 # Compute the minimum value of the function using the standard Newton algorithm and the Newton
 # algorithm with the trust region approach
-alpha = 1
-results = Newton(func_d, grad_d, hess_d, 1e-12, 100, x0_d_2, sol_x_d, sol_f_d, alpha, backtracking=False)
-# results = Newton_trust_region(func_d, grad_d, hess_d, 1e-5, 100, x0_d_2, sol_x_d, sol_f_d)
+alpha = 0.9
+# results = Newton(func_d, grad_d, hess_d, 1e-12, 100, x0_d_2, sol_x_d, sol_f_d, alpha, backtracking=False)
+results = Newton_trust_region(func_d, grad_d, hess_d, 1e-12, 100, x0_d_2, sol_x_d, sol_f_d)
 k = results['k']
 conv = results['convergence']
 min_point = results['min_point']
