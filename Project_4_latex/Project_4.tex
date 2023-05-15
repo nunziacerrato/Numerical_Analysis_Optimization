@@ -29,7 +29,7 @@
 	\maketitle
 	
 	\noindent In this project we want to perform unconstrained optimization using the Newton method both in its standard form and by considering its variants which make use of the backtracking and the trust region approach.
-	The first function that we report is called \mintinline{Python}{Newton} and it performs the standard Newton algorithm, with the possibility of using backtracking for the choice of $\alpha$ if \mintinline{Python}{backtracking=True} is passed as keyword argument to the function. The second function is called \mintinline{Python}{Newton_trust_region} and it performs the Newton algorithm with the trust region approach. These two functions are presented with their own documentation and they can be found in the library \mintinline{Python}{Project_4.py} on GitHub.
+	The first function that we report is called \mintinline{Python}{Newton} and it performs the standard Newton algorithm, with the possibility of using backtracking for the choice of $\alpha$ if \mintinline{Python}{backtracking=True} is passed as keyword argument to the function. The second function is called \mintinline{Python}{Newton_trust_region} and it performs the Newton algorithm with the trust region approach. These two functions are presented with their own documentation and they can be found in the library \mintinline{Python}{Project_4.py} on \href{https://github.com/nunziacerrato/Numerical_Analysis_Optimization/blob/main/Project_4/Project_4.py}{GitHub}.
 	We will apply these methods to four test functions and, in some cases, we will compare these approaches to see how convergence changes.
 	
 \section{Algorithms}
@@ -140,7 +140,7 @@ def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.000
 
 \end{minted}
 
-Below the code of the trust region Newton algorithm.
+\noindent Below the code of the trust region Newton algorithm.
 
 
 \begin{minted}[mathescape, linenos, breaklines]{python}
@@ -191,7 +191,6 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
     # Compute the fist descent direction and the first delta value
     p = np_lin.solve(hessian, -gradient)
     delta = np_lin.norm(p)
-    interm_radius = [delta]
 
     interm_points = [x_0]
     scalar_prod = []
@@ -272,7 +271,7 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
 	
 	\noindent In all of these cases, we have chosen as tolerance parameter  \mintinline{Python}{tol=1e-12} and as maximum number of iterations allowed \mintinline{Python}{maxit=100}. Moreover, we have chosen \mintinline{Python}{alpha=1} as default $\alpha$ value and \mintinline{Python}{sigma=0.0001} and \mintinline{Python}{rho=0.5} as default parameters for backtracking. Finally, in the case of the Newton trust region method, we have chosen \mintinline{Python}{eta=0.01}. However, these constants can be passed as keyword argument to the appropriate functions, therefore one can change their value in the main program, where these functions are effectively used.\\
 	
-	\noindent In each case we will report a table with the required values in correspondence with the intermediate points (note that $k=0$ will correspond to the starting point) and a contour plot and a 3D plot to show how the minimum point is reached.
+	\noindent For each case we will report a table with the required values in correspondence with the intermediate points \footnote{Note that $k=0$ will correspond to the starting point.}, namely $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $, $f(\textbf{x}_{k}) - f(\textbf{x}^{*}) $, and $-\nabla f(\textbf{x}_{k})^{T} [\nabla^{2}f(\textbf{x}_{k})]^{-1} \nabla f(\textbf{x}_{k})$, where $\textbf{x}_{k}$ is the computed point at step $k$, $\textbf{x}^*$ is the exact minimum point, while the last term represents the scalar product between the gradient of the function and the descent direction at step $k$. We will expect the first two terms to get smaller and smaller as the algorithm approaches the minimum point, while we will expect the third one to be negative in order to have a descent direction. Values of these terms different from the expected ones might be an indication of the non-convergence of the algorithm. Finally, we will report a contour plot and a 3D plot to show how the minimum point is reached.
 	
 	
 	\subsection*{Test function (a)}
@@ -295,14 +294,14 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
 		\end{bmatrix}.
 	\end{equation}
 	
-	\noindent We consider first the starting point $x_{0}=(1,1)^{T}$. The results that we obtained are the following:
+	\noindent We consider first the starting point $\textbf{x}_{0}=(1,1)^{T}$. The results that we obtain are the following:
 	
 \begin{minted}{text}
 convergence = True, with 8 steps
 min point = [ 2. -1.]
 min value = 0.0
 \end{minted}
-	As we can see, the algorithm converges in $8$ steps and it returns the right minimum point and the corresponding minimum value of the function. We report in Tab. \ref{tab:table_a} the required quantities computed at each step.
+	As we can see, the algorithm converges in $8$ steps and it returns the right minimum point and the corresponding minimum value of the function. We report in Tab.~\ref{tab:table_a} the required quantities computed at each step.
 	\begin{table}[H]
 	\centering	
 	\begin{tabular}{|c|c|c|c|}
@@ -320,20 +319,20 @@ min value = 0.0
 		8 & 0 & 0 & 0 \\
 		\hline
 	\end{tabular}
-	\caption{Table of data obtained using the standard Newton method to minimize the function $f^{(a)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $\textbf{x}_{0}=(1,1)^{T}$.}
+	\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(a)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $\textbf{x}_{0}=(1,1)^{T}$.}
 	\label{tab:table_a}
 	\end{table}
 	
-	\noindent We report in Fig. \ref{Fig:func_a} the contour plot and the 3D plot, where it is possible to see how the minimum point (in red) is reached.
+	\noindent We report in Fig.~\ref{Fig:func_a} the contour plot and the 3D plot, where it is possible to see how the minimum point (in red) is reached.
 	\begin{figure}[H]
 		\centering
 		\subfloat[][]{\includegraphics[scale=0.26]{Plot/func_a_standard_newton_contour.png}} \quad
 		\subfloat[][]{\includegraphics[scale=0.35]{Plot/func_a_standard_newton_3d.png}}
-		\caption{Contour plot (Panel (a)) and 3D plot (Panel (b)) of the function $f^{(a)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the standard Newton algorithm starting from the point $x_{0}=(1,1)^{T}$.}
+		\caption{Contour plot (Panel (a)) and 3D plot (Panel (b)) of the function $f^{(a)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the standard Newton algorithm with $\alpha=1$, starting from the point $\textbf{x}_{0}=(1,1)^{T}$.}
 		\label{Fig:func_a}
 	\end{figure}
 
-	\noindent The second starting point which we consider is $x_{0}=(2,-1)^{T}$. This is exactly the minimum point of the function, therefore we expect the algorithm to converge in $0$ steps. The results that we obtained are the following:
+	\noindent The second starting point which we consider is $\textbf{x}_{0}=(2,-1)^{T}$. This is exactly the minimum point of the function, therefore we expect the algorithm to converge in $0$ steps. The results that we obtain are the following:
 	
 \begin{minted}{text}
 convergence = True, with 0 steps
@@ -341,7 +340,7 @@ min point = [ 2 -1]
 min value = 0 
 \end{minted}
 
-	\subsection{(b)}
+	\subsection{Test function (b)}
 	Consider the function $f^{(b)}:\mathbb{R}^{4} \rightarrow  \mathbb{R}$, defined as $f^{(b)}(\textbf{x}) = \textbf{b}^{T} + \frac{1}{2}\textbf{x}^{T}H\textbf{x}$, where:
 	\begin{equation}
 		\textbf{b} = (5.04, -59.4, 146.4, -96.6)^{T},
@@ -355,13 +354,13 @@ min value = 0
 		-1.4 & 16.8 & -42.0 & 28.0
 		\end{bmatrix}.
 	\end{equation}
-\noindent We know that the minimum point is $\textbf{x}^*=(1,0,-1,2)^{T}$ and the minimum value of the function is $f^{(b)}(\textbf{x}^*)=-167.28$. Moreover, in this case we have that $\nabla f^{(b)}(\textbf{x}) = H\textbf{x} + \textbf{b}$ and $\nabla^2 f^{(b)}(\textbf{x}) = H$. Since this is a quadratic function, we expect the standard Newton algorithm to converge in $1$ step, regardless the starting point. In this case, we consider as starting point $x_{0}=(-1,3,3,0)^{T}$ and the results that we obtained are the following:
+\noindent We know that the minimum point is $\textbf{x}^*=(1,0,-1,2)^{T}$ and the minimum value of the function is $f^{(b)}(\textbf{x}^*)=-167.28$. Moreover, in this case we have that $\nabla f^{(b)}(\textbf{x}) = H\textbf{x} + \textbf{b}$ and $\nabla^2 f^{(b)}(\textbf{x}) = H$. Since this is a quadratic function, we expect the standard Newton algorithm to converge in $1$ step, regardless the starting point. In this case, we consider as starting point $\textbf{x}_{0}=(-1,3,3,0)^{T}$ and the results that we obtain are the following:
 	\begin{minted}{text}
 convergence = True, with 2 steps
 min point = [ 1.000e+00 -4.730e-13 -1.000e+00  2.000e+00]
 min value = -167.28
 	\end{minted}
-Below is the table with the required quantities at each step.
+Below is the table with the required quantities at each step of the algorithm.
 \begin{table}[H]
 	\centering
 	\begin{tabular}{|c|c|c|c|}
@@ -373,13 +372,13 @@ Below is the table with the required quantities at each step.
 		$2$ & $1.688\times10^{-13}$ & $0.000$ & $-2.005\times10^{-26}$ \\
 		\hline
 	\end{tabular}
-	\caption{Table of data obtained using the standard Newton method to minimize the function $f^{(b)}(\textbf{x})$ by using $\alpha=1$ and by considering as starting point $x_{0}=(-1,3,3,0)^{T}$.}
+	\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(b)}(\textbf{x})$ by using $\alpha=1$ and by considering as starting point $\textbf{x}_{0}=(-1,3,3,0)^{T}$.}
 	\label{Tab:func_b}
 \end{table}
 
 	\noindent The second, in principle unexpected, step is due to the convergence criterion. Recall that we have chosen as tolerance parameter \mintinline{Python}{tol=1e-12} and we have requested that two successive points must be close \textit{enough}, where enough means that it must be satisfied the condition $\|\textbf{x}_{k} - \textbf{x}_{k-1} \|_2 \le tol(1+ \| \textbf{x}_{k}\|_{2})$.
 
-	\subsection{(c)}
+	\subsection{Test function (c)}
 	Consider the function $f:\mathbb{R}^{2} \rightarrow  \mathbb{R}$, defined as 
 	\begin{equation}
 		f^{(c)}(x_{1},x_{2}) = (1.5 - x_{1}(1-x_{2}))^2 + (2.25 - x_{1}(1-x_{2}^{2}))^2 + (2.625 - x_{1}(1-x_{2}^{3}))^2.
@@ -389,7 +388,7 @@ Below is the table with the required quantities at each step.
 	\noindent We would like to obtain the minimum point and the minimum value of the function by using, as a first attempt, the standard Newton algorithm.\\
 	
 	 
-	\noindent The first point that we consider is $\textbf{x}_{0}=(8,0.2)^{T}$. The results that we obtained are the following:
+	\noindent The first point that we consider is $\textbf{x}_{0}=(8,0.2)^{T}$. The results that we obtain are the following:
 	
 \begin{minted}{text}
 convergence = True, with 9 steps
@@ -415,7 +414,7 @@ We report in Tab \ref*{tab:table_c_x0_1} the required quantities at each step of
 		$9$ & $0.000$ & $0.000$ & $0.000$ \\
 		\hline
 	\end{tabular}
-	\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(c)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $x_{0}=(8,0.2)^{T}$.}
+	\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(c)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $\textbf{x}_{0}=(8,0.2)^{T}$.}
 	\label{tab:table_c_x0_1}
 \end{table}
 
@@ -423,19 +422,19 @@ We report in Tab \ref*{tab:table_c_x0_1} the required quantities at each step of
 		\centering
 		\subfloat[][]{\includegraphics[scale=0.24]{Plot/func_c_standard_newton_x0_1_contour.png}} \quad
 		\subfloat[][]{\includegraphics[scale=0.34]{Plot/func_c_standard_newton_x0_1_3d.png}}
-		\caption{Contour plot (Panel (a)) and 3D plot (Panel (b)) of the function $f^{(c)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the standard Newton algorithm starting from the point $x_{0}=(8,0.2)^{T}$.}
+		\caption{Contour plot (Panel (a)) and 3D plot (Panel (b)) of the function $f^{(c)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the standard Newton algorithm with $\alpha=1$, starting from the point $\textbf{x}_{0}=(8,0.2)^{T}$.}
 		\label{Fig:func_c}
 	\end{figure}
 
-	\noindent As can be seen from the obtained results, the algorithm reaches convergence in $9$ step. This can be also seen by considering the quantities reported in Tab. \ref{tab:table_c_x0_1} and the contour plot and the 3D plot reported in Fig. \ref{Fig:func_c}.\\
+	\noindent As can be seen from the obtained results, the algorithm reaches convergence in $9$ step. This can be also seen by considering the quantities reported in Tab.~\ref{tab:table_c_x0_1} and the contour plot and the 3D plot reported in Fig.~\ref{Fig:func_c}.\\
 	
-	\noindent We now consider as starting point $x_{0}= (8,0.8)^{T}$. In this case we obtained the following results:
+	\noindent We now consider as starting point $\textbf{x}_{0}= (8,0.8)^{T}$. In this case we obtain the following results:
 	\begin{minted}{text}
 convergence = True, with 10 steps
 min point = [0. 1.]
-min value = 14.203125
+min value = 14.203
 	\end{minted}
-As we can see, the algorithm converges in $10$ step to the point $\tilde{\textbf{x}}=(0,1)^{T}$ which, however, is not the minimum point of the function (which we know to be equal to $\textbf{x}^*=(3,0.5)^{T}$). This emerges also from the data reported in Tab. \ref{tab:func_c_x0_2}, where one can see that the 2-norm of the difference between the computed minimum point at step $k$ and the exact minimum point stabilizes to a non-zero value, as well as the difference between the value of the function at the point $\textbf{x}_{k}$ and the minimum value $f(\textbf{x}^*)$. What happens in this case is that the algorithm converges to a saddle point. In fact, in this point the gradient of the function vanishes, i.e. $\nabla f^{(c)}(\tilde{\textbf{x}})=\textbf{0}$ (and this also reflects on the last points in Tab. \ref{tab:func_c_x0_2}, since the scalar product between the gradient and the descent direction becomes equal to zero), while the Hessian is indefinite.
+As we can see, the algorithm converges in $10$ step to the point $\tilde{\textbf{x}}=(0,1)^{T}$ which, however, is not the minimum point of the function (which we know to be equal to $\textbf{x}^*=(3,0.5)^{T}$). This emerges also from the data reported in Tab.~\ref{tab:func_c_x0_2}, where one can see that the 2-norm of the difference between the computed point at step $k$ and the exact minimum point stabilizes to a non-zero value, as well as the difference between the value of the function at the point $\textbf{x}_{k}$ and the minimum value $f(\textbf{x}^*)$. What happens in this case is that the algorithm converges to a saddle point. In fact, in this point the gradient of the function vanishes, i.e. $\nabla f^{(c)}(\tilde{\textbf{x}})=\textbf{0}$ (and this also reflects on the last points in Tab.~\ref{tab:func_c_x0_2}, since the scalar product between the gradient and the descent direction becomes equal to zero), while the Hessian is indefinite.
 	\begin{table}[H]
 		\centering
 		\begin{tabular}{|c|c|c|c|}
@@ -455,7 +454,7 @@ As we can see, the algorithm converges in $10$ step to the point $\tilde{\textbf
 			$10$ & $3.041$ & $1.42\times10^{1}$ & $0.000$ \\
 			\hline
 		\end{tabular}
-		\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(c)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $x_{0}=(8,0.8)^{T}$.}
+		\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(c)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $\textbf{x}_{0}=(8,0.8)^{T}$.}
 		\label{tab:func_c_x0_2}
 	\end{table}
 	
@@ -463,17 +462,17 @@ As we can see, the algorithm converges in $10$ step to the point $\tilde{\textbf
 		\centering
 		\subfloat[][]{\includegraphics[scale=0.24]{Plot/func_c_standard_newton_x0_2_contour.png}} \quad
 		\subfloat[][]{\includegraphics[scale=0.34]{Plot/func_c_standard_newton_x0_2_3d.png}}
-		\caption{Contour plot (Panel (a)) and 3D plot (Panel (b)) of the function $f^{(c)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the standard Newton algorithm starting from the point $x_{0}=(8,0.2)^{T}$.}
+		\caption{Contour plot (Panel (a)) and 3D plot (Panel (b)) of the function $f^{(c)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the standard Newton algorithm with $\alpha=1$, starting from the point $\textbf{x}_{0}=(8,0.8)^{T}$.}
 		\label{Fig:func_c_x0_2}
 	\end{figure}
 
-\noindent To solve this problem, we tried to minimize the function $f^{(c)}(x_{1},x_{2})$ by using the Newton algorithm with backtracking. In this case, we obtained:
+\noindent To solve this problem, we tried to minimize the function $f^{(c)}(x_{1},x_{2})$ by using the Newton algorithm with backtracking, thanks to which it is possible to adapt the value of the step length $\alpha$ at each step. In this case, we obtain:
 	\begin{minted}{text}
 convergence = True, with 14 steps
 min point = [3.  0.5]
 min value = 0.0
 	\end{minted}
-We can see that the algorithm converges to the expected minimum point in $14$ steps. We report in Tab. \ref{Tab:table_c_x0_2_backtracking} the required quantities at each step and in Fig. \ref{Fig:func_c_x0_2_backtracking} the obtained contour plot and the 3D plot.
+We can see that the algorithm converges to the expected minimum point in $14$ steps. We report in Tab.~\ref{Tab:table_c_x0_2_backtracking} the required quantities at each step and in Fig.~\ref{Fig:func_c_x0_2_backtracking} the obtained contour plot and the 3D plot.
 
 	\begin{table}[H]
 		\centering
@@ -498,7 +497,7 @@ We can see that the algorithm converges to the expected minimum point in $14$ st
 			$14$ & $0.000$ & $0.000$ & $0.000$ \\
 			\hline
 		\end{tabular}
-		\caption{Table of data obtained using the Newton algorithm with backtracking to minimize the function $f^{(c)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $x_{0}=(8,0.8)^{T}$.}
+		\caption{Table of data obtained using the Newton algorithm with backtracking to minimize the function $f^{(c)}(x_{1},x_{2})$ by using $\alpha=1$, $\sigma=10^{-4}$, $\rho=0.5$ and by considering as starting point $\textbf{x}_{0}=(8,0.8)^{T}$.}
 		\label{Tab:table_c_x0_2_backtracking}
 	\end{table}
 	
@@ -506,12 +505,15 @@ We can see that the algorithm converges to the expected minimum point in $14$ st
 		\centering
 		\subfloat[][]{\includegraphics[scale=0.24]{Plot/func_c_standard_newton_backtrack_contour.png}} \quad
 		\subfloat[][]{\includegraphics[scale=0.34]{Plot/func_c_standard_newton_backtrack_3d.png}}
-		\caption{Contour plot (Panel (a)) and 3D plot (Panel (b)) of the function $f^{(c)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the Newton algorithm with backtracking, starting from the point $x_{0}=(8,0.8)^{T}$.}
+		\caption{Contour plot (Panel (a)) and 3D plot (Panel (b)) of the function $f^{(c)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the Newton algorithm with backtracking, with $\alpha=1$, $\sigma=10^{-4}$, and $\rho=0.5$, starting from the point $\textbf{x}_{0}=(8,0.8)^{T}$.}
 		\label{Fig:func_c_x0_2_backtracking}
 	\end{figure}
 	
-	\subsection{(d)}
-	Consider the function $f:\mathbb{R}^{2} \rightarrow  \mathbb{R}$, defined as $f(x_{1},x_{2}) = x_{1}^{4} + x_{1}x_{2} + (1+x_{2})^{2}$. This function assumes a minimum value $f^{(d)}(\textbf{x}^*)\simeq -0.582445174$ in correspondence with the point $\textbf{x}^{*}\simeq (0.695884386, -1.34794219)^{T}$. We report below the gradient and the Hessian of $f^{(d)}(\textbf{x})$, which must be passed as arguments to the Python function which performs the minimization.
+	\subsection{Test function (d)}
+	Consider the function $f:\mathbb{R}^{2} \rightarrow  \mathbb{R}$, defined as
+	\begin{equation}
+		f(x_{1},x_{2}) = x_{1}^{4} + x_{1}x_{2} + (1+x_{2})^{2}.
+	\end{equation} This function assumes a minimum value $f^{(d)}(\textbf{x}^*)\simeq -0.582445174$ in correspondence with the point $\textbf{x}^{*}\simeq (0.695884386, -1.34794219)^{T}$. We report below the gradient and the Hessian of $f^{(d)}(\textbf{x})$, which must be passed as arguments to the Python function which performs the minimization.
 	
 	\begin{equation}
 		\nabla f^{(d)}(\textbf{x}) = \begin{bmatrix}
@@ -524,13 +526,13 @@ We can see that the algorithm converges to the expected minimum point in $14$ st
 	\end{bmatrix}.
 	\end{equation}
 
-\noindent We consider first the starting point $x_{0}=(0.75,-1.25)^{T}$ and we try to see if the standard Newton algorithm converges, obtaining the following results:
+\noindent We consider first the starting point $\textbf{x}_{0}=(0.75,-1.25)^{T}$ and we try to see if the standard Newton algorithm converges, obtaining the following results:
 \begin{minted}{text}
 convergence = True, with 5 steps
 min point = [ 0.69588439 -1.34794219]
 min value = -0.5824451744436351
 \end{minted}
-In this case, the algorithm converges in $5$ steps. We report in Tab. \ref{tab:table_d_x0_1} the required quantities and in Fig. \ref{Fig:func_d_x0_1} the contour plot and the 3D plot.
+In this case, the algorithm converges in $5$ steps. We report in Tab.~\ref{tab:table_d_x0_1} the required quantities and in Fig.~\ref{Fig:func_d_x0_1} the contour plot and the 3D plot.
 	\begin{table}[H]
 		\centering
 		\begin{tabular}{|c|c|c|c|}
@@ -545,7 +547,7 @@ In this case, the algorithm converges in $5$ steps. We report in Tab. \ref{tab:t
 			$5$ & $3.061\times10^{-9}$ & $-4.436\times10^{-10}$ & $0.000$ \\
 			\hline
 		\end{tabular}
-		\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(d)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $x_{0}=(0.75,-1.25)^{T}$.}
+		\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(d)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $\textbf{x}_{0}=(0.75,-1.25)^{T}$.}
 		\label{tab:table_d_x0_1}
 	\end{table}
 
@@ -553,18 +555,18 @@ In this case, the algorithm converges in $5$ steps. We report in Tab. \ref{tab:t
 		\centering
 		\subfloat[][]{\includegraphics[scale=0.24]{Plot/func_d_standard_newton_x0_1_contour.png}} \quad
 		\subfloat[][]{\includegraphics[scale=0.34]{Plot/func_d_standard_newton_x0_1_3d.png}}
-		\caption{Contour plot (Panel (a)) and 3D plot (Panel (b)) of the function $f^{(c)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the standard Newton algorithm with $\alpha=1$, starting from the point $x_{0}=(8,0.2)^{T}$.}
+		\caption{Contour plot (Panel (a)) and 3D plot (Panel (b)) of the function $f^{(d)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the standard Newton algorithm with $\alpha=1$, starting from the point $\textbf{x}_{0}=(0.75,-1.25)^{T}$.}
 		\label{Fig:func_d_x0_1}
 	\end{figure}
 
-\noindent We now consider as starting point $x_{0}=(0,0)^{T}$. In this case we can see that the standard Newton algorithm fails to converge, indeed
+\noindent We now consider as starting point $\textbf{x}_{0}=(0,0)^{T}$. In this case we can see that the standard Newton algorithm fails to converge, indeed
 \begin{minted}{text}
 convergence = False, with 100 steps
 min point = [ 0.00169883 -1.00084941]
 min value = -0.0016995470778935944
 \end{minted}
-As emerges from this results, after $100$ iterations the algorithm does not reach the minimum point of the considered function. We report in Tab.\ref{tab:func_d_x0_2} the first and the last values of the required quantities.
-\begin{table}
+As emerges from these results, after $100$ iterations the algorithm does not reach the minimum point of the considered function. We report in Tab.~\ref{tab:func_d_x0_2} the first and the last values of the required quantities.
+\begin{table}[H]
 	\centering
 	\begin{tabular}{|c|c|c|c|}
 		\hline
@@ -596,18 +598,18 @@ As emerges from this results, after $100$ iterations the algorithm does not reac
 		$100$ & $7.761\times10^{-1}$ & $5.807\times10^{-1}$ & $2.004$ \\
 		\hline
 	\end{tabular}
-	\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(d)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $x_{0}=(0,0)^{T}$.}
+	\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(d)}(x_{1},x_{2})$ by using $\alpha=1$ and by considering as starting point $\textbf{x}_{0}=(0,0)^{T}$.}
 	\label{tab:func_d_x0_2}
 \end{table}
-From these results we can see that the 2-norm of the difference between the computed minimum point at step $k$ and the exact minimum point has a sort of periodic pattern, since it decreases every five iterations and then increases again, and this also happens when considering the difference between $f^{(d)}(\textbf{x}_{k})$ and  $f^{(d)}(\textbf{x}^*)$. This suggests that the computed point tries to slowly approach the exact minimum point but then moves away again, showing a sort of zig-zag pattern. In fact, if we see the scalar product between the gradient of the function and the descent direction we can observe that at the fifth iteration, and every five iterations, it becomes positive, suggesting that in the next step the new point will move away from the minimum point.\\
+\noindent From these results we can see that the 2-norm of the difference between the computed point at step $k$ and the exact minimum point decreases every five iterations and then increases again, and this also happens when considering the difference between $f^{(d)}(\textbf{x}_{k})$ and  $f^{(d)}(\textbf{x}^*)$. This suggests that the computed point tries to slowly approach the exact minimum point but then moves away again, showing a sort of zig-zag pattern. In fact, if we consider the scalar product between the gradient of the function and the descent direction we can observe that at the fifth iteration, and every five iterations, it becomes positive, suggesting that in the next step the new point will move away from the minimum point. A possible explanation of this behavior might be that the value of $\alpha$ is too large.\\
 
-\noindent To reach convergence we first tried to use the standard Newton algorithm considering a different value for $\alpha$. In particular, we observed that it is possible to reach convergence by choosing $\alpha=0.9$ instead of $\alpha=1$.
+\noindent To reach convergence we have first tried to use the standard Newton algorithm considering a different value for $\alpha$. In particular, we observe that it is possible to reach convergence by choosing $\alpha=0.9$ instead of $\alpha=1$.
 \begin{minted}{text}
 convergence = True, with 25 steps
 min point = [ 0.69588439 -1.34794219]
 min value = -0.5824451744436351
 \end{minted}
-From these results we can see that the computed minimum point and the computed minimum value of the function coincide with the exact ones. However, in this case, the number of iterations required to reach convergence is $25$, which is a much higher number if compared to the previous case.
+From these results we can see that the computed minimum point and the computed minimum value of the function coincide with the exact ones. However, in this case, the number of iterations required to reach convergence is $25$, and one might be tempted to improve this result by using a different method.
 	\begin{table}[H] 
 		\centering 
 		\begin{tabular}{|c|c|c|c|} 
@@ -642,24 +644,24 @@ From these results we can see that the computed minimum point and the computed m
 			$25$ & $3.061\times10^{-9}$ & $-4.436\times10^{-10}$ & $-5.63\times10^{-27}$ \\
 			\hline
 		\end{tabular}
-		\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(d)}(x_{1},x_{2})$ by using $\alpha=0.9$ and by considering as starting point $x_{0}=(0,0)^{T}$.}
+		\caption{Table of data obtained using the standard Newton algorithm to minimize the function $f^{(d)}(x_{1},x_{2})$ by using $\alpha=0.9$ and by considering as starting point $\textbf{x}_{0}=(0,0)^{T}$.}
 	\end{table}
 	
 	\begin{figure}[H]
 		\centering
 		\subfloat[][]{\includegraphics[scale=0.24]{Plot/func_d_standard_newton_x0_2_alpha=0.9_contour.png}} \quad
 		\subfloat[][]{\includegraphics[scale=0.34]{Plot/func_d_standard_newton_x0_2_alpha=0.9_3d.png}}
-		\caption{Contour plot and 3D plot for the function $f^{(d)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the standard Newton method with $\alpha=0.9$. The staring point considered in this case is $x_{0}=(0,0)^{T}$.}
+		\caption{Contour plot and 3D plot for the function $f^{(d)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the standard Newton method with $\alpha=0.9$, starting from the point $\textbf{x}_{0}=(0,0)^{T}$.}
 		\label{Fig:func_d}
 	\end{figure}
 
-\noindent Finally, we implemented the trust region Newton algorithm to see if it is possible to reach convergence in fewer steps. In this case, we obtained the following results:
+\noindent For this reason, we have implemented the trust region Newton algorithm to see if it is possible to reach convergence in fewer steps. In this case, we obtain the following results:
 \begin{minted}{text}
 convergence = True, with 8 steps
 min point = [ 0.69588439 -1.34794219]
 min value = -0.5824451744436351
 \end{minted}
-We can see that in this case the algorithm converges in $8$ steps, returning the expected minimum point and the corresponding minimum value of the function. We report in Tab. \ref{tab:func_d_x0_2_trustreg} the required quantities at each step of the algorithm and in Fig. \ref{Fig:func_d_x0_2_trustreg} the obtained contour plot and the 3D plot.
+We can see that in this case the algorithm converges in $8$ steps, returning the expected minimum point and the corresponding minimum value of the function. We report in Tab.~\ref{tab:func_d_x0_2_trustreg} the required quantities at each step of the algorithm and in Fig.~\ref{Fig:func_d_x0_2_trustreg} the obtained contour plot and the 3D plot.
 
 	\begin{table}[H]
 		\centering
@@ -678,7 +680,7 @@ We can see that in this case the algorithm converges in $8$ steps, returning the
 			$8$ & $3.061\times10^{-9}$ & $-4.436\times10^{-10}$ & $0.000$ \\
 			\hline
 		\end{tabular}
-		\caption{Table of data obtained using the trust region Newton algorithm to minimize the function $f^{(d)}(x_{1},x_{2})$ by considering as starting point $x_{0}=(0,0)^{T}$.}
+		\caption{Table of data obtained using the trust region Newton algorithm to minimize the function $f^{(d)}(x_{1},x_{2})$ by using $\alpha=1$ and $\eta=10^{-2}$ and by considering as starting point $\textbf{x}_{0}=(0,0)^{T}$.}
 		\label{tab:func_d_x0_2_trustreg}
 	\end{table}
 	
@@ -686,7 +688,7 @@ We can see that in this case the algorithm converges in $8$ steps, returning the
 		\centering
 		\subfloat[][]{\includegraphics[scale=0.24]{Plot/func_d_newton_trustreg_contour.png}} \quad
 		\subfloat[][]{\includegraphics[scale=0.34]{Plot/func_d_newton_trustreg_3d.png}}
-		\caption{Contour plot and 3D plot of the function $f^{(d)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the Newton method with the trust region approach. The starting point considered in this case is $x_{0}=(0,0)^{T}$.}
+		\caption{Contour plot and 3D plot of the function $f^{(d)}(x_{1},x_{2})$ where the intermediate points and the minimum point (in red) are obtained by using the Newton method with the trust region approach with $\alpha=1$, $\eta=10^{-2}$, starting from the point $\textbf{x}_{0}=(0,0)^{T}$.}
 		\label{Fig:func_d_x0_2_trustreg}
 	\end{figure}
 	

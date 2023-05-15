@@ -46,7 +46,6 @@
     \PYG{c+c1}{\PYGZsh{} Compute the fist descent direction and the first delta value}
     \PYG{n}{p} \PYG{o}{=} \PYG{n}{np\PYGZus{}lin}\PYG{o}{.}\PYG{n}{solve}\PYG{p}{(}\PYG{n}{hessian}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{n}{gradient}\PYG{p}{)}
     \PYG{n}{delta} \PYG{o}{=} \PYG{n}{np\PYGZus{}lin}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{p}\PYG{p}{)}
-    \PYG{n}{interm\PYGZus{}radius} \PYG{o}{=} \PYG{p}{[}\PYG{n}{delta}\PYG{p}{]}
 
     \PYG{n}{interm\PYGZus{}points} \PYG{o}{=} \PYG{p}{[}\PYG{n}{x\PYGZus{}0}\PYG{p}{]}
     \PYG{n}{scalar\PYGZus{}prod} \PYG{o}{=} \PYG{p}{[]}
