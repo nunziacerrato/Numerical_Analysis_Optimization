@@ -21,7 +21,7 @@ x0_b_1 = np.array([-1,3,3,0])
 sol_x_b = np.array([1,0,-1,2])
 sol_f_b = -167.28
 
-results = Newton(func_b, grad_b, hess_b, 1e-5, 100, x0_b_1, sol_x_b, sol_f_b, 1, backtracking=False)
+results = Newton(func_b, grad_b, hess_b, 1e-12, 100, x0_b_1, sol_x_b, sol_f_b, 1, backtracking=False)
 
 # Initialize LateX code for creating a table
 table = "\\begin{table} \n \\centering \n \\begin{tabular}{|c|c|c|c|} \n \hline \n"

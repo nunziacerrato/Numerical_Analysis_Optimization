@@ -20,8 +20,10 @@ sol_f_d = -0.582445174
 
 # Compute the minimum value of the function using the standard Newton algorithm and the Newton
 # algorithm with the trust region approach
-results = Newton(func_d, grad_d, hess_d, 1e-5, 100, x0_d_1, sol_x_d, sol_f_d, 0.9, backtracking=False)
-# results = Newton_trust_region(func_d, grad_d, hess_d, 1e-5, 100, x0_d_1, sol_x_d, sol_f_d)
+alpha = 1
+results = Newton(func_d, grad_d, hess_d, 1e-5, 100, x0_d_2, sol_x_d, sol_f_d, alpha, backtracking=False)
+print(results['convergence'])
+# results = Newton_trust_region(func_d, grad_d, hess_d, 1e-5, 100, x0_d_2, sol_x_d, sol_f_d)
 
 
 # Initialize LateX code for creating a table
@@ -73,8 +75,8 @@ if plot == True:
 
     ########### 3D plot ###########
     delta = 0.0025
-    X = np.arange(-0.25, 1.6, delta) # x in [0,9] per backtracking
-    Y = np.arange(-1.6, 0.25, delta) # y in [0,1] per backtracking
+    X = np.arange(-0.25, 1.6, delta) # x in [0.6, 0.8] per x0_d_1, x in [-0.25, 1.6] per x0_d_2 con trust region, x in [-2.1, 1.1] per x0_d_2 alpha=0.9 senza trust region
+    Y = np.arange(-1.6, 0.25, delta) # y in [-1.5,-1.1] per backtracking, x in [-1.6, 0.25] per x0_d_2 con trust region, x in [-1.5, 0.1] per x0_d_2 alpha=0.9 senza trust region
     X, Y = np.meshgrid(X,Y)
     Z = X**4 + X * Y + (1 + Y)**2
 
@@ -84,8 +86,8 @@ if plot == True:
 
     # Add a color bar which maps values to colors and choose the format
     ax.zaxis.set_major_locator(LinearLocator(10))
-    ax.zaxis.set_major_formatter('{x:.0f}')
-    cb = fig.colorbar(surf, shrink=0.5, aspect=10)
+    ax.zaxis.set_major_formatter('{x:.02f}')
+    cb = fig.colorbar(surf, shrink=0.5, aspect=10, format='%.02f')#, pad=0.08) per x0_2 alpha=0.9
     cb.ax.tick_params(labelsize=12)
 
     # Obtain the scatterplot of the intermediate points
@@ -103,25 +105,24 @@ if plot == True:
     ax.zaxis.set_rotate_label(False)
     ax.set_zlabel(r'$f\,(x_{1},x_{2})$', fontsize=18, rotation = 90, labelpad=10)
 
-    ax.azim = -160
+    ax.azim = -160 # -30 per x0_2 con alpha=0.9
     fig.savefig(f'{common_path}_latex\\Plot\\func_d_newton_trustreg_3d'.format(ax.azim), bbox_inches='tight')
 
     ########### Contour plot ###########
     delta = 0.0025
-    Xc = np.arange(-1.5, 2, delta) # x in [0,9] per backtracking
-    Yc = np.arange(-2, 1, delta) # y in [0,1] per backtracking
+    Xc = np.arange(-1.5, 2, delta) # x in [0.6, 0.8] per x0_d_1, x in [-1.5, 2] per x0_d_2 con trust region, x in [-2.1, 1.1] per x0_d_2 alpha=0.9 senza trust region
+    Yc = np.arange(-2, 1, delta) # y in [-1.5,-1.1] per backtracking, x in [-2, 1] per x0_d_2 con trust region, x in [-1.5, 0.1] per x0_d_2 alpha=0.9 senza trust region
     Xc, Yc = np.meshgrid(Xc,Yc)      
     Zc = Xc**4 + Xc * Yc + (1 + Yc)**2
 
     fig_contour, ax_contour = plt.subplots(figsize=(14,9))
-    cp = ax_contour.contour(Xc, Yc, Zc, levels = 80)
-    cb = fig_contour.colorbar(cp, shrink=1, aspect=15, format='%.0f')
+    cp = ax_contour.contour(Xc, Yc, Zc, levels = 90)
+    cb = fig_contour.colorbar(cp, shrink=1, aspect=15, format='%.02f')
     cb.set_label(label = r'$f\,(x_{1},x_{2})$', size = 25)
     cb.ax.tick_params(labelsize=14)
 
     scatter_c = ax_contour.plot(interm_x, interm_y, '-o', markersize=4, color='black')
     scatter_c = ax_contour.plot(interm_x[-1], interm_y[-1], '-o', markersize=4, color='red')
-    interm_rad = results['interm_radius']
 
     ax_contour.tick_params(labelsize = tickparams_size)
     ax_contour.set_xlabel(r'$x_{1}$', fontsize=25)
@@ -129,4 +130,4 @@ if plot == True:
 
     fig_contour.savefig(f'{common_path}_latex\\Plot\\func_d_newton_trustreg_contour', bbox_inches='tight')
 
-    # plt.show()
+    plt.show()

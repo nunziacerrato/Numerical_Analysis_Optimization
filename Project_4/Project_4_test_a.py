@@ -23,7 +23,7 @@ sol_f_a = 0
 
 
 # Compute the minimum value of the function using the standard Newton algorithm
-results = Newton(func_a, grad_a, hess_a, 1e-5, 100, x0_a_1, sol_x_a, sol_f_a, 1, backtracking=False)
+results = Newton(func_a, grad_a, hess_a, 1e-5, 100, x0_a_2, sol_x_a, sol_f_a, 1, backtracking=False)
 # results = Newton_trust_region(func_a, grad_a, hess_a, 1e-5, 100, x0_a_1, sol_x_a, sol_f_a, alpha=1, eta=0.01)
 
 

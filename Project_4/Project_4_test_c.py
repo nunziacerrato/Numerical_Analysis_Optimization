@@ -41,7 +41,7 @@ sol_f_c = 0
 
 
 # Compute the minimum value of the function using the standard Newton algorithm (with backtracking)
-results = Newton(func_c, grad_c, hess_c, 1e-12, 100, x0_c_2, sol_x_c, sol_f_c, 1, backtracking=False)
+results = Newton(func_c, grad_c, hess_c, 1e-12, 100, x0_c_1, sol_x_c, sol_f_c, 1, backtracking=False)
 print(results['min_point'])
 print('######################################')
 print(results['min_value'])
@@ -83,7 +83,7 @@ table += "\\hline \n \\end{tabular} \n \\end{table}"
 print(table)
 
 ##################### PLOT #####################
-plot = False
+plot = True
 if plot == True:
     # Set size parameters for the plots
     tickparams_size = 16
@@ -96,8 +96,8 @@ if plot == True:
     delta = 0.025
     # X = np.arange(0., 9.0, delta) 
     # Y = np.arange(0., 1., delta)
-    X = np.arange(-15, 10.0, delta) # per backtracking
-    Y = np.arange(0, 1.5, delta) # per backtracking
+    X = np.arange(0, 10, delta) # x in [0, 10] per x0_1 standard
+    Y = np.arange(0, 1, delta) # x in [0, 1] per x0_1 standard
     X, Y = np.meshgrid(X,Y)
     Z = (1.5 - X * (1 - Y))**2 + (2.25 - X * (1 - Y**2))**2 +\
                 (2.625 - X * (1 - Y**3))**2
@@ -134,8 +134,8 @@ if plot == True:
     delta = 0.0025
     # Xc = np.arange(0., 9.0, delta)
     # Yc = np.arange(0., 1., delta)
-    Xc = np.arange(-15, 10.0, delta) # per backtracking
-    Yc = np.arange(0, 1.5, delta) # per backtracking
+    Xc = np.arange(0, 10, delta) # x in [0, 10] per x0_1 standard
+    Yc = np.arange(0, 1, delta) # x in [0, 1] per x0_1 standard
     Xc, Yc = np.meshgrid(Xc,Yc)
     Zc = (1.5 - Xc * (1 - Yc))**2 + (2.25 - Xc * (1 - Yc**2))**2 +\
                 (2.625 - Xc * (1 - Yc**3))**2

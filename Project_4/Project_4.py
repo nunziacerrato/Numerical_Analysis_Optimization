@@ -9,45 +9,48 @@ import numpy.linalg as np_lin
 common_path = 'Project_4'
 
 def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.0001, rho=0.5, backtracking=False):
-    ''' This function implements the standard Newton method for unconstrained optimization.
+    r''' This function implements the standard Newton method for unconstrained optimization.
     
-    Parameters
-    ----------
-    func : func
-        Function to be minimized. It must be :math:`f : \mathbb{R}^{n} \rightarrow \mathbb{R}`.
-    grad : func
-        Gradient of the function. It returns a 1d-array (vector)
-    hess : func
-        Hessian of the function. It returns a 2d-array (matrix)
-    tol : float
-        Tolerance parameter for the stopping criterion
-    maxit : int
-        Maximum number of iterations
-    x_0 : ndarray
-        Starting point
-    sol_x : ndarray
-        Exact solution to the minimization problem
-    sol_f : float
-        Value of the function in correspondence with the exact solution
-    alpha : float
-        Step lenght
-    sigma : float
-        Constant parameter in :math:`(0,1)`. Used if backtracking = True. Default value sigma=0.0001
-    rho : float
-        Reduction parameter in :math:`(0,1)`. Used if backtracking = True. Default value rho=0.5
+        Parameters
+        ----------
+        func : function
+            Function to be minimized. It must be :math:`f : \mathbb{R}^{n} \rightarrow \mathbb{R}`
+        grad : function
+            Gradient of the function. It returns a 1d-array (vector)
+        hess : function
+            Hessian of the function. It returns a 2d-array (matrix)
+        tol : float
+            Tolerance parameter for the stopping criterion
+        maxit : int
+            Maximum number of iterations
+        x_0 : ndarray
+            Starting point
+        sol_x : ndarray
+            Exact solution (x) to the minimization problem
+        sol_f : float
+            Exact minimum value of the function
+        alpha : float
+            Step lenght. Default value alpha=1
+        sigma : float
+            Constant parameter in :math:`(0,1)`. Used if backtracking = True. Default value sigma=0.0001
+        rho : float
+            Reduction parameter in :math:`(0,1)`. Used if backtracking = True. Default value rho=0.5
 
-    Results
-    -------
-    results : dict
-        Dictonary of the results given by the function. It contains the following items:
-        - 'k': (int) final iteration at which convergence is reached
-        - 'min_point' : (ndaray) computed point at which minimum is reached
-        - 'min_value' : (float) computed minimum value of the function
-        - 'interm_point' : (list) list of the intermediate points
-        - 'error_x' : (float) 2-norm of the difference between 'min_point' and the exact solution
-        - 'error_f' : (float) absolute error of the function evaluated at 'min_point' with respect
-                      to its value in the exact minimum point
-        - 'scalar_product' : (list) scalar product between the discent direction and the gradient
+        Results
+        -------
+        results : dict
+            Dictonary of the results given by the function. It contains the following items:
+            - 'convergence' : (bool) True if the algorithm converges, False if it doesn't converge
+            - 'k' : (int) final iteration at which convergence is reached
+            - 'min_point' : (ndarray) computed point at which the minimum of the function is reached
+            - 'min_value' : (float) computed minimum value of the function
+            - 'interm_point' : (list) list of the intermediate points
+            - 'error_x' : (list) list that contains the 2-norm of the difference between each 
+                          intermediate point and the exact solution (min_point). 
+            - 'error_f' : (list) list that contains the difference between the function evaluated at 
+                          each intermediate point and its value in the exact minimum point
+            - 'scalar_product' : (list) list that contains the scalar product between the descent 
+                                 direction and the gradient
 
     '''
     old_point = x_0
@@ -58,17 +61,28 @@ def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.000
     # Create a list to save the scalar product between the gradient and the descent direction
     scalar_prod = []
 
+    new_point = x_0
     # Cycle on the number of iterations
     for k in range(maxit):
         gradient = grad(old_point)
         hessian = hess(old_point)
+
+        # Compute norms for the stopping criterion
+        norm_grad = np_lin.norm(gradient)
+        norm_diff_x = np_lin.norm(new_point - old_point)
+
+        # Check if the stopping criterion is satisfied
+        if norm_grad <= tol and norm_diff_x <= tol*(1 + np_lin.norm(old_point)):            
+            min_value = func(new_point)
+            conv = True
+            print(k)
+            break
         
         # Compute the descent direction by solving a linear system
         p = np_lin.solve(hessian, -gradient)
         scalar_prod.append(gradient@p)
-        # alpha=0.1*alpha
 
-        # Implement backtracking if backtracking == True is passed to the function
+        # Implement backtracking if backtracking == True
         if backtracking == True:
             alpha = alpha_0
             iteraz_backtracking = 0 
@@ -81,31 +95,25 @@ def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.000
         new_point = old_point + alpha*p
         interm_points.append(new_point)
 
-        # Compute norms for the stopping criterion
-        norm_grad = np_lin.norm(gradient)
-        norm_diff_x = np_lin.norm(new_point - old_point)
-
-        # Check if the stopping criterion is satisfied
-        if norm_grad <= tol and norm_diff_x <=tol*(1 + np_lin.norm(new_point)):
-            min_value = func(new_point)
-            print(k)
-            break
-
         old_point = new_point
+    
+    if k == maxit-1:
+        min_value = func(new_point)
+        conv = False
     
     gradient = grad(new_point)
     hessian = hess(new_point)
     p = np_lin.solve(hessian, -gradient)
     scalar_prod.append(gradient@p)
 
-    # Compute the 2norm of the difference between the new point and the exact solution
+    # Compute the 2norm of the difference between each intermediate point and the exact solution
     error_x = [np_lin.norm(interm_x - sol_x) for interm_x in interm_points]
     
-    # Compute the absolute error of the function evaluated in the new point with respect
-    # to its value in the exact minimum point
+    # Compute the difference between the function evaluated in each intermediate point and 
+    # its value in the exact minimum point
     error_f = [func(interm_x) - sol_f for interm_x in interm_points]
     
-    results = {'k' : k, 'min_point' : new_point, 'min_value' : min_value ,
+    results = {'convergence': conv, 'k' : k, 'min_point' : new_point, 'min_value' : min_value ,
                'interm_point' : interm_points, 'error_x' : error_x, 'error_f' : error_f,
                'scalar_product' : scalar_prod}
 
@@ -116,43 +124,45 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
     ''' This function implements the Newton method with the trust region approach for unconstrained 
         optimization.
     
-    Parameters
-    ----------
-    func : func
-        Function to be minimized. It must be :math:`f : \mathbb{R}^{n} \rightarrow \mathbb{R}`.
-    grad : func
-        Gradient of the function. It returns a 1d-array (vector)
-    hess : func
-        Hessian of the function. It returns a 2d-array (matrix)
-    tol : float
-        Tolerance parameter for the stopping criterion
-    maxit : int
-        Maximum number of iterations
-    x_0 : ndarray
-        Starting point
-    sol_x : ndarray
-        Exact solution to the minimization problem
-    sol_f : float
-        Value of the function in correspondence with the exact solution
-    alpha : float
-        Step lenght
-    eta : float
-        Constant parameter in :math:`(0,0.25)`. Default value sigma=0.01
-    
+        Parameters
+        ----------
+        func : function
+            Function to be minimized. It must be :math:`f : \mathbb{R}^{n} \rightarrow \mathbb{R}`.
+        grad : function
+            Gradient of the function. It returns a 1d-array (vector)
+        hess : function
+            Hessian of the function. It returns a 2d-array (matrix)
+        tol : float
+            Tolerance parameter for the stopping criterion
+        maxit : int
+            Maximum number of iterations
+        x_0 : ndarray
+            Starting point
+        sol_x : ndarray
+            Exact solution (x) to the minimization problem
+        sol_f : float
+            Exact minimum value of the function
+        alpha : float
+            Step lenght. Default value alpha=1
+        eta : float
+            Constant parameter in :math:`(0,0.25)`. Default value sigma=0.01
+        
 
-    Results
-    -------
-    results : dict
-        Dictonary of the results given by the function. It contains the following items:
-        - 'k': (int) final iteration at which convergence is reached
-        - 'min_point' : (ndaray) computed point at which minimum is reached
-        - 'min_value' : (float) computed minimum value of the function
-        - 'interm_point' : (list) list of the intermediate points
-        - 'interm_radius' : (list) list of the intermediate radii
-        - 'error_x' : (float) 2-norm of the difference between 'min_point' and the exact solution
-        - 'error_f' : (float) absolute error of the function evaluated at 'min_point' with respect
-                      to its value in the exact minimum point
-        - 'scalar_product' : (list) scalar product between the discent direction and the gradient
+        Results
+        -------
+        results : dict
+            Dictonary of the results given by the function. It contains the following items:
+            - 'convergence' : (bool) True if the algorithm converges, False if it doesn't converge
+            - 'k' : (int) final iteration at which convergence is reached
+            - 'min_point' : (ndarray) computed point at which the minimum of the function is reached
+            - 'min_value' : (float) computed minimum value of the function
+            - 'interm_point' : (list) list of the intermediate points
+            - 'error_x' : (list) list that contains the 2-norm of the difference between each 
+                          intermediate point and the exact solution (min_point). 
+            - 'error_f' : (list) list that contains the difference between the function evaluated at 
+                          each intermediate point and its value in the exact minimum point
+            - 'scalar_product' : (list) list that contains the scalar product between the descent 
+                                 direction and the gradient
 
     '''
 
@@ -182,7 +192,7 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
         mu = abs(min(min(eigval), 0)) + 1e-12
         coeff_vect = eigvect.T @ gradient/(eigval + mu)
 
-        # Choose the optimal mu value which respects the condition on the 2-norm of p
+        # Choose the optimal mu value which respects the condition on the 2-norm
         while sum([coeff**2 for coeff in coeff_vect]) > delta**2:
             mu = mu*2
             coeff_vect = eigvect.T @ gradient/(eigval + mu)
@@ -216,24 +226,29 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
         if norm_grad <= tol and norm_diff_x <=tol*(1 + np_lin.norm(new_point)):
             min_value = func(new_point)
             print(k)
+            conv = True
             break
 
         old_point = new_point
     
+    if k == maxit-1:
+        min_value = func(new_point)
+        conv = False
+
     gradient = grad(new_point)
     hessian = hess(new_point)
     p = np_lin.solve(hessian, -gradient)
     scalar_prod.append(- gradient @ eigvect @ np.diag(1/eigval) @ eigvect.T @ gradient)
 
-    # Compute the 2norm of the difference between the new point and the exact solution
+    # Compute the 2norm of the difference between each intermediate point and the exact solution
     error_x = [np_lin.norm(interm_x - sol_x) for interm_x in interm_points]
     
-    # Compute the absolute error of the function evaluated in the new point with respect
-    # to its value in the exact minimum point
+    # Compute the difference between the function evaluated in each intermediate point and 
+    # its value in the exact minimum point
     error_f = [func(interm_x) - sol_f for interm_x in interm_points]
     
-    results = {'k' : k, 'min_point' : new_point, 'min_value' : min_value,
-               'interm_point' : interm_points, 'interm_radius' : interm_radius, 'error_x' : error_x,
+    results = {'convergence': conv, 'k' : k, 'min_point' : new_point, 'min_value' : min_value,
+               'interm_point' : interm_points, 'error_x' : error_x,
                'error_f' : error_f, 'scalar_product' : scalar_prod}
 
     return results
