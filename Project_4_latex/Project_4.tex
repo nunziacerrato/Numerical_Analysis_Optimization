@@ -274,7 +274,7 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
 	\noindent For each case we will report a table with the required values in correspondence with the intermediate points \footnote{Note that $k=0$ will correspond to the starting point.}, namely $\| \textbf{x}_{k} - \textbf{x}^*\|_{2} $, $f(\textbf{x}_{k}) - f(\textbf{x}^{*}) $, and $-\nabla f(\textbf{x}_{k})^{T} [\nabla^{2}f(\textbf{x}_{k})]^{-1} \nabla f(\textbf{x}_{k})$, where $\textbf{x}_{k}$ is the computed point at step $k$, $\textbf{x}^*$ is the exact minimum point, while the last term represents the scalar product between the gradient of the function and the descent direction at step $k$. We will expect the first two terms to get smaller and smaller as the algorithm approaches the minimum point, while we will expect the third one to be negative in order to have a descent direction. Values of these terms different from the expected ones might be an indication of the non-convergence of the algorithm. Finally, we will report a contour plot and a 3D plot to show how the minimum point is reached.
 	
 	
-	\subsection*{Test function (a)}
+	\subsection{Test function (a)}
 	Consider the function $f^{(a)}: \R^{2}\rightarrow \R$, defined as
 	\begin{equation}
 		f^{(a)}(x_{1},x_{2}) = (x_{1}-2)^{4} + (x_{1}-2)^{2}x_{2}^{2} + (x_{2}+1)^{2}.

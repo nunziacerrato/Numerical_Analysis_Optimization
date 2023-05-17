@@ -39,7 +39,7 @@ def Newton(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1, sigma=0.000
         Results
         -------
         results : dict
-            Dictonary of the results given by the function. It contains the following items:
+            Dictionary of the results given by the function. It contains the following items:
             - 'convergence' : (bool) True if the algorithm converges, False if it doesn't converge
             - 'k' : (int) final iteration at which convergence is reached
             - 'min_point' : (ndarray) computed point at which the minimum of the function is reached
@@ -151,7 +151,7 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
         Results
         -------
         results : dict
-            Dictonary of the results given by the function. It contains the following items:
+            Dictionary of the results given by the function. It contains the following items:
             - 'convergence' : (bool) True if the algorithm converges, False if it doesn't converge
             - 'k' : (int) final iteration at which convergence is reached
             - 'min_point' : (ndarray) computed point at which the minimum of the function is reached
@@ -170,10 +170,9 @@ def Newton_trust_region(func, grad, hess, tol, maxit, x_0, sol_x, sol_f, alpha=1
     gradient = grad(x_0)
     hessian = hess(x_0)
     
-    # Compute the fist descent direction and the first delta value
+    # Compute the first descent direction and the first delta value
     p = np_lin.solve(hessian, -gradient)
     delta = np_lin.norm(p)
-    interm_radius = [delta]
 
     interm_points = [x_0]
     scalar_prod = []
