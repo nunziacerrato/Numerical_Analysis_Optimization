@@ -1,21 +1,21 @@
-Numerical\_Analysis\_Optimization.test package
-==============================================
+.. Numerical\_Analysis\_Optimization.test package
+.. ==============================================
 
-Submodules
-----------
+.. Submodules
+.. ----------
 
-Numerical\_Analysis\_Optimization.test.test\_Project1 module
-------------------------------------------------------------
+.. Numerical\_Analysis\_Optimization.test.test\_Project1 module
+.. ------------------------------------------------------------
 
-.. automodule:: Numerical_Analysis_Optimization.test.test_Project1
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. .. automodule:: Numerical_Analysis_Optimization.test.test_Project1
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:
 
-Module contents
----------------
+.. Module contents
+.. ---------------
 
-.. automodule:: Numerical_Analysis_Optimization.test
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. .. automodule:: Numerical_Analysis_Optimization.test
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:

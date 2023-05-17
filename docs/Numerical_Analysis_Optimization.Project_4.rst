@@ -4,13 +4,13 @@ Numerical\_Analysis\_Optimization.Project\_4 package
 Submodules
 ----------
 
-Numerical\_Analysis\_Optimization.Project\_4.Projecct\_4\_N module
-------------------------------------------------------------------
+.. Numerical\_Analysis\_Optimization.Project\_4.Projecct\_4\_N module
+.. ------------------------------------------------------------------
 
-.. automodule:: Numerical_Analysis_Optimization.Project_4.Projecct_4_N
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. .. automodule:: Numerical_Analysis_Optimization.Project_4.Projecct_4_N
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:
 
 Numerical\_Analysis\_Optimization.Project\_4.Project\_4 module
 --------------------------------------------------------------
