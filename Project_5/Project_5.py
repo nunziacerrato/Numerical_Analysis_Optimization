@@ -2,10 +2,13 @@ import numpy as np
 
 
 
-def int_point(func,grad_func,hess_func,constr,grad_constr,x0,method='full',alpha=1.,beta=1.,gamma=1.,tol=1e-12,maxit=100,seed=1):
-    ''' '''
+def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='full', alpha=1., beta=1., gamma=1., tol=1e-12, maxit=100, seed=1):
+    ''' aaa '''
+
+
     # Check if the starting point is in the feasible set
-    if (constr(x0) > 0).any:
+    if any(constr(x0) > 0):
+        print(any(constr(x0) > 0))
         print(f'Starting point x0 = {x0} is not feasible')
         return False
     
@@ -57,15 +60,15 @@ def int_point(func,grad_func,hess_func,constr,grad_constr,x0,method='full',alpha
         lambda_new = lambda_old + beta*dl
         z_new = z_old + gamma*dz
 
-        while( (constr(x_new) >0).any ):
+        while any(constr(x_new) > 0 ):
             a0 = a0/2
             x_new = x_old + a0*dx
 
-        while(lambda_new < 0 ):
+        while any(lambda_new < 0 ):
             b0 = b0/2
             lambda_new = lambda_old + b0*dl
 
-        while(z_new <= 0 ):
+        while any(z_new <= 0 ):
             g0 = g0/2
             z_new = z_old + g0*dz
 
@@ -83,8 +86,10 @@ def int_point(func,grad_func,hess_func,constr,grad_constr,x0,method='full',alpha
     conv = True
     if k == maxit:
         conv = False
+
+    f_max = func(x_new)
     
-    results = {'conv': conv, }
+    results = {'x_max' : x_new, 'f_max' : f_max, 'n_iter' : k ,'conv' : conv}
 
     return results
 
