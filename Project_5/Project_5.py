@@ -2,18 +2,18 @@ import numpy as np
 
 
 
-def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='full', alpha=1., beta=1., gamma=1., tol=1e-12, maxit=100, seed=1):
+def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic', alpha=1., beta=1., gamma=1., tol=1e-12, maxit=100, seed=1):
     ''' aaa '''
 
 
     # Check if the starting point is in the feasible set
     if any(constr(x0) > 0):
-        print(any(constr(x0) > 0))
         print(f'Starting point x0 = {x0} is not feasible')
         return False
     
     x_old = x0
     m = len(constr(x_old))
+    n = len(x_old)
 
     # Fix the seed to ensure reproducibility
     np.random.seed(seed=seed)
@@ -34,12 +34,14 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='full'
         b0 = beta
         g0 = gamma
 
+        # Compute matrices and vectors entering the expression of the linear system
+        Z_inv = np.linalg.inv(np.diag(z_old))
+        grad_c = grad_constr(x_old)
+        Lambda = np.diag(lambda_old)
+
+
         # Choose the method to compute dx, dl, dz
         if method == 'full':
-            # Compute matrices and vectors entering the expression of the linear system
-            Z_inv = np.linalg.inv(np.diag(z_old))
-            grad_c = grad_constr(x_old)
-            Lambda = np.diag(lambda_old)
             
             matrix = hess_func(x_old) + (grad_c).T @ (Z_inv @ Lambda @ grad_c )
             vect = - r1 - (grad_c).T @ Z_inv @ (r3 + Lambda @ r2)
@@ -54,7 +56,13 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='full'
         if method == 'first':
             pass
         if method == 'basic':
-            pass
+            Jacobian = np.block([[ hess_func(x_old), - grad_c.T, np.zeros((n,m)) ],
+                                 [ grad_c , np.zeros((m,m)), - np.eye(m)],
+                                 [ np.zeros((m,n)), np.diag(z_old), Lambda ]])
+            p = np.linalg.solve(Jacobian, -R)
+            dx = p[:n]
+            dl = p[n:n+m]
+            dz = p[n+m:]
 
         x_new = x_old + alpha*dx
         lambda_new = lambda_old + beta*dl
@@ -82,6 +90,7 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='full'
         lambda_old = lambda_new
         z_old = z_new
         k = k + 1
+        print(x_new,lambda_new, z_new)
     
     conv = True
     if k == maxit:
