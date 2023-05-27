@@ -7,7 +7,7 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
 
 
     # Check if the starting point is in the feasible set
-    if any(constr(x0) > 0):
+    if any(constr(x0) < 0):
         print(f'Starting point x0 = {x0} is not feasible')
         return False
     
@@ -18,9 +18,12 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
     # Fix the seed to ensure reproducibility
     np.random.seed(seed=seed)
     # Initialize the parameter mu and the vectors lambda, z by using the uniform random distribution in [1e-16,1)
-    mu = np.random.uniform(low=1e-16, high=1.)
-    z_old = np.random.uniform(low=1e-16, high=1., size=m)
-    lambda_old = np.random.uniform(low=1e-16, high=1., size=m)
+    mu = np.random.uniform(low=1e-16, high=1e-4)
+    mu = 1e-2
+    z_old = np.random.uniform(low=1e-16, high= 1., size=m)
+    lambda_old = np.random.uniform(low=1e-16, high= 1., size=m)
+    # z_old = np.array([3.5,3.1,8.6])
+    # lambda_old = np.array([4.8, 1.8, 4.0])
 
     r1 = grad_func(x_old) - lambda_old @ grad_constr(x_old)
     r2 = constr(x_old) - z_old
@@ -64,11 +67,11 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
             dl = p[n:n+m]
             dz = p[n+m:]
 
-        x_new = x_old + alpha*dx
-        lambda_new = lambda_old + beta*dl
-        z_new = z_old + gamma*dz
+        x_new = x_old + a0*dx
+        lambda_new = lambda_old + b0*dl
+        z_new = z_old + g0*dz
 
-        while any(constr(x_new) > 0 ):
+        while any(constr(x_new) < 0 ):
             a0 = a0/2
             x_new = x_old + a0*dx
 
@@ -99,7 +102,7 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
     f_max = func(x_new)
     
     results = {'x_max' : x_new, 'f_max' : f_max, 'n_iter' : k ,'conv' : conv}
-
+    print(f'mu = {mu}')
     return results
 
 if __name__ == '__main__':
