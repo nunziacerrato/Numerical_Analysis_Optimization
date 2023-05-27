@@ -2,8 +2,8 @@ import numpy as np
 
 
 
-def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic', alpha=1., beta=1.,
-              gamma=1., mu=1e-12, tol=1e-12, maxit=100, seed=1):
+def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, method='basic', alpha=1., beta=1.,
+              gamma=1., mu=1e-12, tol=1e-12, maxit=100, l0='random', z0='random', seed=1):
     ''' aaa '''
 
 
@@ -19,10 +19,20 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
     # Fix the seed to ensure reproducibility
     np.random.seed(seed=seed)
     # Initialize the parameter mu and the vectors lambda, z by using the uniform random distribution in [1e-16,1)
-    z_old = np.random.uniform(low=1e-16, high= 1., size=m)
-    lambda_old = np.random.uniform(low=1e-16, high= 1., size=m)
-    # z_old = np.array([3.5,3.1,8.6])
-    # lambda_old = np.array([4.8, 1.8, 4.0])
+    if l0 == 'random':
+        lambda_old = np.random.uniform(low=1e-16, high= 10., size=m)
+    else:
+        lambda_old = l0
+    if z0 == 'random':
+        z_old = np.random.uniform(low=1e-16, high= 10., size=m)
+    else:
+        z_old = z0
+
+    
+    # z_old = np.array([3.8,1.7,8.9])
+    # lambda_old = np.array([5.3, 9.8, 8.7])
+    # z_old = np.array([5,5,5])
+    # lambda_old = np.array([5,5,5])
 
     r1 = grad_func(x_old) - lambda_old @ grad_constr(x_old)
     r2 = constr(x_old) - z_old
@@ -49,7 +59,10 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
 
         # Choose the method to compute dx, dl, dz
         if method == 'basic':
-            Jacobian = np.block([[ hess_f, - grad_c.T, np.zeros((n,m)) ],
+            hess_c = hess_constr(x_old)
+            K=0
+            # K = sum([lambda_old[i] * hess_c[:,i,:] for i in range(m)])
+            Jacobian = np.block([[ hess_f + K, - grad_c.T, np.zeros((n,m)) ],
                                  [ grad_c , np.zeros((m,m)), - np.eye(m)],
                                  [ np.zeros((m,n)), Z, Lambda ]])
             p = np.linalg.solve(Jacobian, -R)
@@ -118,8 +131,9 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
 
     f_min = func(x_new)
     
-    results = {'convergence' : conv, 'n_iter' : k , 'x_min' : x_new, 'f_min' : f_min, 'x_interm' : x_interm, 'mu' : mu}
-    print(f'mu = {mu}')
+    results = {'convergence' : conv, 'n_iter' : k , 'x_min' : x_new, 'f_min' : f_min,
+            'x_interm' : x_interm, 'lambda_interm' : lambda_interm, 'z_interm' : z_interm, 'mu' : mu}
+    # print(f'mu = {mu}')
     return results
 
 if __name__ == '__main__':

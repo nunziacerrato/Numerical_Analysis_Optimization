@@ -13,15 +13,16 @@ hess_a = lambda x : np.array([[2, 0],[0, 2]])
 
 c_a = lambda x : np.array([2 - x[0] - x[1], x[0], x[1]])
 grad_c_a = lambda x : np.array([[-1,-1],[1,0],[0,1]])
+hess_c_a = lambda x : np.zeros((2,3,2))
 
 x0 = np.array([0.1,0.1])
 
-method = 'first'
+method = 'basic'
 mu = 1e-12
 tol = 1e-12
 seed = 1
 
-results = int_point(func_a, grad_a, hess_a, c_a, grad_c_a, x0, method=method, alpha=1., beta=1.,
+results = int_point(func_a, grad_a, hess_a, c_a, grad_c_a, hess_c_a, x0, method=method, alpha=1., beta=1.,
                    gamma=1., mu=mu, tol=tol, maxit=100, seed=seed)
 k = results['n_iter']
 conv = results['convergence']
@@ -36,7 +37,7 @@ print(f'min value = {min_value}')
 
 # print(f'result={result}')
 
-plot = True
+plot = False
 if plot == True:
     ##################### PLOT #####################
     common_path = "Project_5"
@@ -53,6 +54,7 @@ if plot == True:
     Y = np.arange(-2.0, 2.0, delta)
     X, Y = np.meshgrid(X,Y)
     Z = (X - 4)**2 + Y**2
+    C = X + Y - 2
 
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"},figsize=(14,9))
     surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm,
