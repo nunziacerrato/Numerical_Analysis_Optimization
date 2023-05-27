@@ -1,0 +1,67 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subfig}
+\usepackage{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{amsthm}
+\usepackage{bbold}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage{booktabs}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[english]{babel}
+\usepackage{lipsum}
+\usepackage{setspace}
+%\usepackage{minted}
+\usepackage{xcolor}
+\newcommand{\R}{\mathbb{R}}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm}
+
+\begin{document}
+	\author{Catalano Giuseppe, Cerrato Nunzia}
+	\title{Numerical Linear Algebra Homework Project 5:\\Constrained Optimization}
+	\date{}
+	\maketitle
+
+In this project we would like to find the constrained minima of some test functions first analytically, by using the KKT theorem, and then numerically, by implementing the interior point method, using Python as programming language. 
+This report will be divided into two sections. In the first one we will report the code that we have used to find numerically the minimum points of the given functions. This code can be also found in the library ***Project\_5.py*** at the following link on GitHub. In the second section, we will consider the test functions and we will report the results found both analytically and numerically.
+
+\section{Algorithm}
+
+
+\section{Test functions}
+
+\subsection{Test function (a)}
+
+We would like to minimize of the function
+\begin{equation}
+	f(x_{1},x_{2}) = (x_{1}-4)^2 + x_{2}^{2}
+	\label{eq:func_a}
+\end{equation}
+subject to the constraints
+\begin{equation}
+	x_{1} + x_{2} \le 2, \quad x_{1} \ge 0, \quad x_{2} \ge 0.
+	\label{eq:constr_a}
+\end{equation}
+
+Since the function $f(x_{1},x_{2}) = f_{1}(x_{1}) + f_{2}(x_{2}) $, reported in Eq. \eqref{eq:func_a}, is convex and positive, as it is given by the sum of two independent and positive terms, it is possible to find its unique minimum by minimizing the two adding terms separately. In other words, the second term, namely $x^{2}$, is minimized for $x_{2}=0$, while the first one, namely $(x_{1}-4)^{2}$ is minimized for $x_{1}=4$. Therefore, the unconstrained minimum is given by the point $(4,0)$. However, this value is not compatible with the constraints in Eqs. \eqref{eq:constr_a}, since it is required that $x_{1} + x_{2} \le 2$.
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+\end{document}
