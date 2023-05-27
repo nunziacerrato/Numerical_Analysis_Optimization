@@ -11,8 +11,8 @@ func_a = lambda x : (x[0] - 4)**2 + x[1]**2
 grad_a = lambda x : np.array([2*(x[0]-4), 2*x[1]])
 hess_a = lambda x : np.array([[2, 0],[0, 2]])
 
-c_a = lambda x : -np.array([x[0] + x[1] - 2, -x[0], -x[1]])
-grad_c_a = lambda x : -np.array([[1,1],[-1,0],[0,-1]])
+c_a = lambda x : np.array([2 - x[0] - x[1], x[0], x[1]])
+grad_c_a = lambda x : np.array([[-1,-1],[1,0],[0,1]])
 
 x0 = np.array([0.1,0.1])
 
