@@ -2,7 +2,7 @@ import numpy as np
 
 
 
-def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic', alpha=1., beta=1., gamma=1., tol=1e-12, maxit=100, seed=1):
+def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic', alpha=1., beta=1., gamma=1., mu=1e-12, tol=1e-12, maxit=100, seed=1):
     ''' aaa '''
 
 
@@ -18,8 +18,6 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
     # Fix the seed to ensure reproducibility
     np.random.seed(seed=seed)
     # Initialize the parameter mu and the vectors lambda, z by using the uniform random distribution in [1e-16,1)
-    mu = np.random.uniform(low=1e-16, high=1e-4)
-    mu = 1e-2
     z_old = np.random.uniform(low=1e-16, high= 1., size=m)
     lambda_old = np.random.uniform(low=1e-16, high= 1., size=m)
     # z_old = np.array([3.5,3.1,8.6])
@@ -57,7 +55,7 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
             dz = - np.linalg.inv(Lambda) @ (r3 + np.diag(z_old) @ dl)
         
         if method == 'first':
-            pass
+            
         if method == 'basic':
             Jacobian = np.block([[ hess_func(x_old), - grad_c.T, np.zeros((n,m)) ],
                                  [ grad_c , np.zeros((m,m)), - np.eye(m)],
