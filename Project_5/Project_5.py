@@ -2,7 +2,8 @@ import numpy as np
 
 
 
-def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic', alpha=1., beta=1., gamma=1., mu=1e-12, tol=1e-12, maxit=100, seed=1):
+def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic', alpha=1., beta=1.,
+              gamma=1., mu=1e-12, tol=1e-12, maxit=100, seed=1):
     ''' aaa '''
 
 
@@ -29,6 +30,9 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
 
     R = np.array([*r1, *r2, *r3])
     k = 0
+    x_interm = []
+    lambda_interm = []
+    z_interm = []
     while(np.linalg.norm(R)>tol and k < maxit):
 
         a0 = alpha
@@ -36,15 +40,37 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
         g0 = gamma
 
         # Compute matrices and vectors entering the expression of the linear system
-        Z_inv = np.linalg.inv(np.diag(z_old))
+        Z = np.diag(z_old)
+        Z_inv = np.linalg.inv(Z)
         grad_c = grad_constr(x_old)
         Lambda = np.diag(lambda_old)
+        hess_f = hess_func(x_old)
 
 
         # Choose the method to compute dx, dl, dz
+        if method == 'basic':
+            Jacobian = np.block([[ hess_f, - grad_c.T, np.zeros((n,m)) ],
+                                 [ grad_c , np.zeros((m,m)), - np.eye(m)],
+                                 [ np.zeros((m,n)), Z, Lambda ]])
+            p = np.linalg.solve(Jacobian, -R)
+            dx = p[:n]
+            dl = p[n:n+m]
+            dz = p[n+m:]
+
+        if method == 'first':
+            Lambda_inv = np.linalg.inv(Lambda)
+            matrix = np.block([[hess_f, -(grad_c).T],
+                               [grad_c, Lambda_inv @ Z]])
+            vector = np.array([*r1, *(r2 + Lambda_inv @ r3)])
+
+            p = np.linalg.solve(matrix,-vector)
+            dx = p[:n]
+            dl = p[n:]
+            dz = - Lambda_inv @ (r3 + Z @ dl)
+
         if method == 'full':
             
-            matrix = hess_func(x_old) + (grad_c).T @ (Z_inv @ Lambda @ grad_c )
+            matrix = hess_f + (grad_c).T @ (Z_inv @ Lambda @ grad_c )
             vect = - r1 - (grad_c).T @ Z_inv @ (r3 + Lambda @ r2)
             
             # Solve the linear system to obtain dx
@@ -52,18 +78,7 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
 
             # Compute dl and dz
             dl = - Z_inv @ Lambda @ r2 - Z_inv @ r3 -Z_inv @ Lambda @ grad_c @ dx
-            dz = - np.linalg.inv(Lambda) @ (r3 + np.diag(z_old) @ dl)
-        
-        if method == 'first':
-            
-        if method == 'basic':
-            Jacobian = np.block([[ hess_func(x_old), - grad_c.T, np.zeros((n,m)) ],
-                                 [ grad_c , np.zeros((m,m)), - np.eye(m)],
-                                 [ np.zeros((m,n)), np.diag(z_old), Lambda ]])
-            p = np.linalg.solve(Jacobian, -R)
-            dx = p[:n]
-            dl = p[n:n+m]
-            dz = p[n+m:]
+            dz = - np.linalg.inv(Lambda) @ (r3 + Z @ dl)
 
         x_new = x_old + a0*dx
         lambda_new = lambda_old + b0*dl
@@ -81,6 +96,10 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
             g0 = g0/2
             z_new = z_old + g0*dz
 
+        x_interm.append(x_new)
+        lambda_interm.append(lambda_new)
+        z_interm.append(z_new)
+
         r1 = grad_func(x_new) - lambda_new @ grad_constr(x_new)
         r2 = constr(x_new) - z_new
         r3 = z_new*lambda_new - mu
@@ -91,15 +110,15 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, x0, method='basic
         lambda_old = lambda_new
         z_old = z_new
         k = k + 1
-        print(x_new,lambda_new, z_new)
+        # print(x_new,lambda_new, z_new)
     
     conv = True
     if k == maxit:
         conv = False
 
-    f_max = func(x_new)
+    f_min = func(x_new)
     
-    results = {'x_max' : x_new, 'f_max' : f_max, 'n_iter' : k ,'conv' : conv}
+    results = {'convergence' : conv, 'n_iter' : k , 'x_min' : x_new, 'f_min' : f_min, 'x_interm' : x_interm, 'mu' : mu}
     print(f'mu = {mu}')
     return results
 
