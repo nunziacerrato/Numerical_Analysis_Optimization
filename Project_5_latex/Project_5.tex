@@ -28,36 +28,90 @@
 	\date{}
 	\maketitle
 	
-\section{Test function (a)}
+\section{Function (a)}
 
 We want to minimize the function
 \begin{equation}
 	f_a(\textbf{x}) = (x_{1}-4)^2 + x_{2}^{2}
 	\label{eq:func_a}
 \end{equation}
-and the optimization is subject to the constraints
+subject to the constraints
 \begin{equation}
-	x_{1} + x_{2} \le 2, \quad x_{1} \ge 0, \quad x_{2} \ge 0
+	x_{1} + x_{2} \le 2, \quad x_{1} \ge 0, \quad x_{2} \ge 0,
 	\label{eq:constr_a}
 \end{equation}
-that identify the set $\mathcal{C}_a = \{ \textbf{x} \in \R^2 : x_{1} + x_{2} \le 2, \ x_{1} \ge 0, \ x_{2} \ge 0 \}$. In other words, we want to find 
+which identify the set $\mathcal{C}_a = \{ \textbf{x} \in \R^2 : x_{1} + x_{2} \le 2, \ x_{1} \ge 0, \ x_{2} \ge 0 \}$. In other words, we want to find 
 \begin{equation}
-	f_a(\textbf{x}^*) = \min_{\textbf{x} \in \mathcal{C}_a} f_a(\textbf{x})
+	f_a(\textbf{x}^*) = \min_{\textbf{x} \in \mathcal{C}_a} f_a(\textbf{x}).
 \end{equation}
-\noindent Since the function $f_a(\textbf{x})$, reported in Eq. \eqref{eq:func_a}, is convex and continuous and the optimization set $\mathcal{C}_a$ is convex, there exists a unique minimum. In particular, it can be seen that, since there are no mixed terms in $x_1 x_2$, the minimum can be found minimizing $(x_{1}-4)^2$ and $x_{2}^{2}$ separately. $x_{2}^{2}$ is minimized when $x_{2} = 0$, that is compatible with the constraint set, and $(x_{1}-4)^2$ is minimized when $ x_{1} = 4$, that is incompatible with the constraint set. Since it has to be $x_{1} + x_{2} \le 2$, the optimal choice of $x_1$ is $x_1 = 2$. Therefore we have:
-\begin{equation}\label{key}
+\noindent Since the function $f_a(\textbf{x})$, reported in Eq.~\eqref{eq:func_a}, is convex and continuous and the constraint set $\mathcal{C}_a$ is convex, there exists a unique minimum. In particular, it can be seen that, since there are no mixed terms in $x_1 x_2$, the minimum can be found minimizing $(x_{1}-4)^2$ and $x_{2}^{2}$ separately. $x_{2}^{2}$ is minimized when $x_{2} = 0$, which is compatible with the constraint set, and $(x_{1}-4)^2$ is minimized when $ x_{1} = 4$, which is incompatible with the constraint set. Since it has to be $x_{1} + x_{2} \le 2$, the optimal choice of $x_1$ is $x_1 = 2$. Therefore we have:
+\begin{equation}
 	\textbf{x}^* = (2,0),\qquad  f_a(\textbf{x}^*) = 4.
 \end{equation}
+\noindent Now we would like to find the minimum value both analytically and numerically.\\
+
 \noindent The Lagrangian of the problem is:
-\begin{equation}\label{key}
+\begin{equation}
 	\mathcal{L}_a(\textbf{x},\boldsymbol{\lambda}) = f_a(\textbf{x}) - \boldsymbol{\lambda}^T \textbf{c}_a(\textbf{x}), \quad \text{with } \textbf{c}_a(\textbf{x}) = \begin{bmatrix}
 		2 - x_1 - x_2\\
 		x_1\\
 		x_2
-	\end{bmatrix}
+	\end{bmatrix},
 \end{equation}
 where the constraints of the problem are satisfied when $c_i(\textbf{x})\ge 0\ \forall i = 1,2,3$. From this definition, it is possible to write the KKT conditions, namely:
  
+\begin{equation}
+	\begin{cases}
+	\begin{array}{c l}
+	\text{stationarity} & (2(x_{1}-4) + \lambda_{1} -\lambda_{2}, 2x_{2}+\lambda_{1}-\lambda_{3}) = (0,0) \\
+	\text{primal feasibility} &(2 - x_{1} -x_{2}, x_{1}, x_{2}) \ge (0,0,0) \\
+	\text{dual feasibility} & (\lambda_{1}, \lambda_{2}, \lambda_{3}) \ge (0,0,0) \\
+	\text{complementarity} &(\lambda_{1}(2-x_{1}-x_{2}), \lambda_{2}x_{1}, \lambda_{3}x_{2}) = (0,0,0)
+	\end{array}
+	\end{cases}
+	\label{eq:KKT system f_a}
+\end{equation}
+where the inequalities must be intended element-wise.\\
+
+\noindent The complementarity conditions can be satisfied in eight different cases, depending on the fact that each constraint can be active or not. We recall that a constraint $c_{i}(\textbf{x})$ is active if and only if $c_{i}(\textbf{x}^*)=0$. Note that, in terms of Lagrange multipliers, this definition requires that $\lambda_{i}^*>0$, while for a non active constraint one has $\lambda_{i}=0$. In the following, we identify each case with an array of $m$ entries, where $m$ is the number of constraints, and we assign to the i-th entry the label $A$ or $N$ depending on the fact that the i-th constraint is active or not. Associated to each case we report the possible solutions of the constrained minimization problem which are compatible with the corresponding complementarity condition.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		& $A/N$ constraints & Possible solutions $\textbf{x}^*$ \\
+		\hline
+		1 & $(A, N, N)$ & $\textbf{x}^* = (x_{1}^*,-x_{1}^*+2)$, with $x_{1}^*\in (0,2)$\\
+		2 & $(A, A, A)$ & $\nexists \ \textbf{x}^* \in \mathbb{R}^{2}$\\
+		3 & $(N, N, N)$ & $\textbf{x}^* \in \mathring{\mathcal{C}}$\\
+		4 & $(N, A, A)$ & $\textbf{x}^* = (0,0)$\\
+		5 & $(A, A, N)$ & $\textbf{x}^* = (0,2)$\\
+		6 & $(A, N, A)$ & $\textbf{x}^* = (2,0)$\\
+		7 & $(N, A, N)$ & $\textbf{x}^* = (0,x_{2}^*)$, with $x_{2}^* \in (0,2)$\\
+		8 & $(N, N, A)$ & $\textbf{x}^* = (x_{1}^*,0)$ with $x_{1}^* \in (0,2)$\\
+		\hline
+	\end{tabular}
+	\caption{Table of the cases satisfying the complementarity condition. The i-th row of the table contains the array of the active/non-active states of the constraints (second column) and the possible solutions $\textbf{x}^*$ of the constrained minimization problem which are compatible with that case (third column).}
+	\label{tab:complementarity conditions f_a}
+\end{table}
+\noindent We want to find the solutions to the KKT system \eqref{eq:KKT system f_a} by investigating if the conditions on Lagrange multipliers imposed by the constraint states and the range of possible solutions $\textbf{x}^*$ reported in Tab.~\ref*{tab:complementarity conditions f_a}, which came from the complementarity condition, are compatible with the other equations of the system.
+%More specifically, we set to zero the Lagrange multipliers associated with the non-active constraints and we replace all the values in the first two equations.
+The results that we find are reported below.
+\begin{enumerate}
+	\item From the case $(A,N,N)$ we have $\lambda_{1}^*>0,\ \lambda_{2}^*=\lambda_{3}^*=0$. This leads to $\lambda_{1}^*=2$ and $\textbf{x}^*=(3,-1)$, which is not compatible with the constraint set.
+	\item From the case $(A,A,A)$ we have $\lambda_{1}^*>0,\ \lambda_{2}^*>0,\ \lambda_{3}^*>0$. As can be seen from the second row of the Table \ref{tab:complementarity conditions f_a}, $\nexists \ \textbf{x}^* \in \mathbb{R}^{2}$ which represents a solution to the constrained minimization problem.
+	\item From the case $(N,N,N)$ we have $\lambda_{1}^*= \lambda_{2}^*= \lambda_{3}^*=0$. In this case one finds $\textbf{x}^* = (4,0)$, which is outside the feasible set.
+	\item From the case $(N,A,A)$ we have $\lambda_{1}^*=0,\ \lambda_{2}^*>0,\ \lambda_{3}^*>0$. From the complementarity condition we already have and $\textbf{x}^*=(0,0)$. From the stationarity condition, we find $\lambda_{2}^*=-8$, which is not allowed, and $\lambda_{3}^*=0$, which is not compatible with the state of the third constraint.
+	\item From the case $(A,A,N)$ we have $\lambda_{1}^*>0,\ \lambda_{2}^*>0,\ \lambda_{3}^*=0$. From the complementarity condition we already have and $\textbf{x}^*=(0,2)$. By inserting this value in the first equation of the KKT system we find $\lambda_{1}^*=-4$, $ \lambda_{2}^*=-12$, which are both not allowed values.
+	\item From the case $(A,N,A)$ we have $\lambda_{1}^*>0,\ \lambda_{2}^*=0,\ \lambda_{3}^*>0$. In this case, one has $\textbf{x}^*=(2,0)$ from the complementarity condition and $\lambda_{1}^*=4$, $\lambda_{3}^*=4$, which are both acceptable solutions. Note that this is the solution that we have already found heuristically.
+	\item From the case $(N, A, N)$ we have $\lambda_{1}^*=0,\ \lambda_{2}^*>0,\ \lambda_{3}^*=0$. In this case, we find $\lambda_{2}=-8$, which is not an acceptable solution. Note that one can also find $x_{2}^*=0$, which is not compatible with the state of the constraint.
+	\item From the case $(N, N, A)$ we have $\lambda_{1}^*=0,\ \lambda_{2}^*=0,\ \lambda_{3}^*>0$. In this case, we find $\lambda_{3}=0$ and $\textbf{x}^*=(4,0)$, which is outside the feasible set.
+\end{enumerate}
+
+As emerges from the study of the KKT system, the unique solution to the constrained minimization problem is $\textbf{x}^*=(2,0)$.
+
+\subsection{Function (b)}
+
 
 
 %
