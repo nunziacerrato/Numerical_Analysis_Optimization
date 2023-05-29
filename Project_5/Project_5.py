@@ -6,7 +6,6 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, 
               gamma=1., mu=1e-12, tol=1e-12, maxit=100, l0='random', z0='random', seed=1):
     ''' aaa '''
 
-
     # Check if the starting point is in the feasible set
     if any(constr(x0) < 0):
         print(f'Starting point x0 = {x0} is not feasible')
@@ -28,19 +27,13 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, 
     else:
         z_old = z0
 
-    
-    # z_old = np.array([3.8,1.7,8.9])
-    # lambda_old = np.array([5.3, 9.8, 8.7])
-    # z_old = np.array([5,5,5])
-    # lambda_old = np.array([5,5,5])
-
     r1 = grad_func(x_old) - lambda_old @ grad_constr(x_old)
     r2 = constr(x_old) - z_old
     r3 = z_old*lambda_old - mu
 
     R = np.array([*r1, *r2, *r3])
     k = 0
-    x_interm = []
+    x_interm = [x0]
     lambda_interm = []
     z_interm = []
     while(np.linalg.norm(R)>tol and k < maxit):
@@ -133,7 +126,6 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, 
     
     results = {'convergence' : conv, 'n_iter' : k , 'x_min' : x_new, 'f_min' : f_min,
             'x_interm' : x_interm, 'lambda_interm' : lambda_interm, 'z_interm' : z_interm, 'mu' : mu}
-    # print(f'mu = {mu}')
     return results
 
 if __name__ == '__main__':

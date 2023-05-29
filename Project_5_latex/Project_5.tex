@@ -27,31 +27,66 @@
 	\title{Numerical Linear Algebra Homework Project 5:\\Constrained Optimization}
 	\date{}
 	\maketitle
+	
+\section{Test function (a)}
 
-In this project we would like to find the constrained minima of some test functions first analytically, by using the KKT theorem, and then numerically, by implementing the interior point method, using Python as programming language. 
-This report will be divided into two sections. In the first one we will report the code that we have used to find numerically the minimum points of the given functions. This code can be also found in the library ***Project\_5.py*** at the following link on GitHub. In the second section, we will consider the test functions and we will report the results found both analytically and numerically.
-
-\section{Algorithm}
-
-
-\section{Test functions}
-
-\subsection{Test function (a)}
-
-We would like to minimize of the function
+We want to minimize the function
 \begin{equation}
-	f(x_{1},x_{2}) = (x_{1}-4)^2 + x_{2}^{2}
+	f_a(\textbf{x}) = (x_{1}-4)^2 + x_{2}^{2}
 	\label{eq:func_a}
 \end{equation}
-subject to the constraints
+and the optimization is subject to the constraints
 \begin{equation}
-	x_{1} + x_{2} \le 2, \quad x_{1} \ge 0, \quad x_{2} \ge 0.
+	x_{1} + x_{2} \le 2, \quad x_{1} \ge 0, \quad x_{2} \ge 0
 	\label{eq:constr_a}
 \end{equation}
+that identify the set $\mathcal{C}_a = \{ \textbf{x} \in \R^2 : x_{1} + x_{2} \le 2, \ x_{1} \ge 0, \ x_{2} \ge 0 \}$. In other words, we want to find 
+\begin{equation}
+	f_a(\textbf{x}^*) = \min_{\textbf{x} \in \mathcal{C}_a} f_a(\textbf{x})
+\end{equation}
+\noindent Since the function $f_a(\textbf{x})$, reported in Eq. \eqref{eq:func_a}, is convex and continuous and the optimization set $\mathcal{C}_a$ is convex, there exists a unique minimum. In particular, it can be seen that, since there are no mixed terms in $x_1 x_2$, the minimum can be found minimizing $(x_{1}-4)^2$ and $x_{2}^{2}$ separately. $x_{2}^{2}$ is minimized when $x_{2} = 0$, that is compatible with the constraint set, and $(x_{1}-4)^2$ is minimized when $ x_{1} = 4$, that is incompatible with the constraint set. Since it has to be $x_{1} + x_{2} \le 2$, the optimal choice of $x_1$ is $x_1 = 2$. Therefore we have:
+\begin{equation}\label{key}
+	\textbf{x}^* = (2,0),\qquad  f_a(\textbf{x}^*) = 4.
+\end{equation}
+\noindent The Lagrangian of the problem is:
+\begin{equation}\label{key}
+	\mathcal{L}_a(\textbf{x},\boldsymbol{\lambda}) = f_a(\textbf{x}) - \boldsymbol{\lambda}^T \textbf{c}_a(\textbf{x}), \quad \text{with } \textbf{c}_a(\textbf{x}) = \begin{bmatrix}
+		2 - x_1 - x_2\\
+		x_1\\
+		x_2
+	\end{bmatrix}
+\end{equation}
+where the constraints of the problem are satisfied when $c_i(\textbf{x})\ge 0\ \forall i = 1,2,3$. From this definition, it is possible to write the KKT conditions, namely:
+ 
 
-Since the function $f(x_{1},x_{2}) = f_{1}(x_{1}) + f_{2}(x_{2}) $, reported in Eq. \eqref{eq:func_a}, is convex and positive, as it is given by the sum of two independent and positive terms, it is possible to find its unique minimum by minimizing the two adding terms separately. In other words, the second term, namely $x^{2}$, is minimized for $x_{2}=0$, while the first one, namely $(x_{1}-4)^{2}$ is minimized for $x_{1}=4$. Therefore, the unconstrained minimum is given by the point $(4,0)$. However, this value is not compatible with the constraints in Eqs. \eqref{eq:constr_a}, since it is required that $x_{1} + x_{2} \le 2$.
-	
-	
+
+%
+%
+%	
+%In this project we would like to find the constrained minima of some test functions first analytically, by using the KKT theorem, and then numerically, by implementing the interior point method, using Python as programming language. 
+%This report will be divided into two sections. In the first one we will report the code that we have used to find numerically the minimum points of the given functions. This code can be also found in the library ***Project\_5.py*** at the following link on GitHub. In the second section, we will consider the test functions and we will report the results found both analytically and numerically.
+%
+%\section{Algorithm}
+%
+%
+%\section{Test functions}
+%
+%\subsection{Test function (a)}
+%
+%We would like to minimize of the function
+%\begin{equation}
+%	f(x_{1},x_{2}) = (x_{1}-4)^2 + x_{2}^{2}
+%	\label{eq:func_a}
+%\end{equation}
+%subject to the constraints
+%\begin{equation}
+%	x_{1} + x_{2} \le 2, \quad x_{1} \ge 0, \quad x_{2} \ge 0.
+%	\label{eq:constr_a}
+%\end{equation}
+%
+%Since the function $f(x_{1},x_{2}) = f_{1}(x_{1}) + f_{2}(x_{2}) $, reported in Eq. \eqref{eq:func_a}, is convex and positive, as it is given by the sum of two independent and positive terms, it is possible to find its unique minimum by minimizing the two adding terms separately. In other words, the second term, namely $x^{2}$, is minimized for $x_{2}=0$, while the first one, namely $(x_{1}-4)^{2}$ is minimized for $x_{1}=4$. Therefore, the unconstrained minimum is given by the point $(4,0)$. However, this value is not compatible with the constraints in Eqs. \eqref{eq:constr_a}, since it is required that $x_{1} + x_{2} \le 2$.
+%	
+%	
 	
 	
 	

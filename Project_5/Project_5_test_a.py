@@ -15,7 +15,7 @@ c_a = lambda x : np.array([2 - x[0] - x[1], x[0], x[1]])
 grad_c_a = lambda x : np.array([[-1,-1],[1,0],[0,1]])
 hess_c_a = lambda x : np.zeros((2,3,2))
 
-x0 = np.array([0.1,0.1])
+x0 = np.array([1.,1.])
 
 method = 'basic'
 mu = 1e-12
@@ -37,7 +37,7 @@ print(f'min value = {min_value}')
 
 # print(f'result={result}')
 
-plot = False
+plot = True
 if plot == True:
     ##################### PLOT #####################
     common_path = "Project_5"
