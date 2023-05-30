@@ -49,7 +49,6 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, 
         Lambda = np.diag(lambda_old)
         hess_f = hess_func(x_old)
 
-
         # Choose the method to compute dx, dl, dz
         if method == 'basic':
             hess_c = hess_constr(x_old)
@@ -128,10 +127,4 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, 
     return results
 
 if __name__ == '__main__':
-    constr = np.array([1,2,3])
-    z = np.array([2,-2,2])
-    ZZ = np.linalg.inv(np.diag(z))
-    vect = np.array([*constr, *z])
-    print(vect)
-    # if (z >0).any:
-    #     print(z>0)
+    pass
