@@ -43,13 +43,13 @@ which identify the set $\mathcal{C}_a = \{ \textbf{x} \in \R^2 : x_{1} + x_{2} \
 \begin{equation}
 	f_a(\textbf{x}^*) = \min_{\textbf{x} \in \mathcal{C}_a} f_a(\textbf{x}).
 \end{equation}
-\noindent Since the function $f_a(\textbf{x})$, reported in Eq.~\eqref{eq:func_a}, is convex and continuous and the constraint set $\mathcal{C}_a$ is convex, there exists a unique minimum. In particular, it can be seen that, since there are no mixed terms in $x_1 x_2$, the minimum can be found minimizing $(x_{1}-4)^2$ and $x_{2}^{2}$ separately. $x_{2}^{2}$ is minimized when $x_{2} = 0$, which is compatible with the constraint set, and $(x_{1}-4)^2$ is minimized when $ x_{1} = 4$, which is incompatible with the constraint set. Since it has to be $x_{1} + x_{2} \le 2$, the optimal choice of $x_1$ is $x_1 = 2$. Therefore we have:
+\noindent Since the function $f_a(\textbf{x})$, reported in Eq.~\eqref{eq:func_a}, is convex and continuous and the constraint set $\mathcal{C}_a$ is convex, there exists a unique minimum. In particular, it can be seen that, since there are no mixed terms in $x_1 x_2$ in the expression of the function, its minimum can be found by minimizing $(x_{1}-4)^2$ and $x_{2}^{2}$ separately. $x_{2}^{2}$ is minimized when $x_{2} = 0$, which is compatible with the constraint set, and $(x_{1}-4)^2$ is minimized when $ x_{1} = 4$, which is incompatible with the constraint set. Since it has to be $x_{1} + x_{2} \le 2$, the optimal choice of $x_1$ is $x_1 = 2$. Therefore we have:
 \begin{equation}
 	\textbf{x}^* = (2,0),\qquad  f_a(\textbf{x}^*) = 4.
 \end{equation}
-\noindent Now we would like to find the minimum value both analytically and numerically.\\
+\noindent We would like to find the minimum value both analytically, by solving the KKT system, and numerically, by using the interior point method.\\
 
-\noindent The Lagrangian of the problem is:
+\noindent The Lagrangian of the problem is the following:
 \begin{equation}
 	\mathcal{L}_a(\textbf{x},\boldsymbol{\lambda}) = f_a(\textbf{x}) - \boldsymbol{\lambda}^T \textbf{c}_a(\textbf{x}), \quad \text{with } \textbf{c}_a(\textbf{x}) = \begin{bmatrix}
 		2 - x_1 - x_2\\
@@ -74,7 +74,7 @@ where the inequalities must be intended element-wise.\\
 
 \noindent The complementarity conditions can be satisfied in eight different cases, depending on the fact that each constraint can be active or not. We recall that a constraint $c_{i}(\textbf{x})$ is active if and only if $c_{i}(\textbf{x}^*)=0$.
 %Note that, in terms of Lagrange multipliers, this definition requires that $\lambda_{i}^*>0$, while for a non active constraint one has $\lambda_{i}=0$.
-In the following, we identify each case with an array of $m$ entries, where $m$ is the number of constraints, and we assign to the i-th entry the label $A$ or $N$ depending on the fact that the i-th constraint is active or not. Associated to each case we report the possible solutions of the constrained minimization problem which are compatible with the corresponding complementarity condition.
+In the following, we identify each case with an array of $m$ entries, where $m$ is the number of constraints, and we assign to the i-th entry the label $A$ or $N$ depending on whether the i-th constraint is active or not. Associated to each case we report the possible solutions of the constrained minimization problem which are compatible with the corresponding complementarity condition.
 
 \begin{table}[H]
 	\centering
@@ -196,14 +196,79 @@ Consider the problem
 	\min f(\textbf{x}) - \mu \textbf{e}^{T}\log(\textbf{z}) \quad \text{s.t.} \quad \textbf{c}(\textbf{x})- \textbf{z} = \textbf{0},
 	\label{eq:pert_min_prob}
 \end{equation}
-where $f : \R^{n} \rightarrow \R$, is the function one wants to find the minimum, $\textbf{c} : \R^{n} \rightarrow \R^{m}$ is a vector defining the constraints, which are assumed to be $c_{i}(\textbf{x})\ge0, \ \forall i=1,\dots,m$, $\textbf{z}\, \in \R^{m}$ is called slack variable and, finally, $\textbf{e}^{T}=(1,\dots,1)\in \R^{m}$ and $\mu>0$. Due to the presence of the logarithmic term, this is a slightly perturbed version of a constrained minimization problem for sufficiently small values of the parameter $\mu$.\\
+where $f : \R^{n} \rightarrow \R$, is the function one wants to find the minimum, $\textbf{c} : \R^{n} \rightarrow \R^{m}$ is a vector defining the constraints, which are assumed to be $c_{i}(\textbf{x})\ge0, \ \forall i=1,\dots,m$, $\textbf{z}\, \in \R^{m}$ is called slack variable and, finally, $\textbf{e}^{T}=(1,\dots,1)\in \R^{m}$ and $\mu>0$. Due to the presence of the logarithmic term, for sufficiently small values of the parameter $\mu$ this represents a slightly perturbed version of a constrained minimization problem.\\
 
-\noindent We want to write down the Jacobian associated with the problem \eqref{eq:pert_min_prob} considering as functions and constraints the ones of the two previous problems.
+\noindent In this case, from the KKT theorem it is possible to find the following necessary conditions:
+\begin{align}
+	& \textbf{r}_{1} \coloneqq \nabla f(\textbf{x}) - \boldsymbol{\lambda}^{T}\nabla_{\textbf{x}}\textbf{c}(\textbf{x}) = \textbf{0} \\
+	& \textbf{r}_{2} \coloneqq \textbf{c}(\textbf{x}) - \textbf{z} = \textbf{0} \\
+	& \textbf{r}_{2} \coloneqq \textbf{z} \odot  \boldsymbol{\lambda} - \mu \textbf{e} = \textbf{0}.
+\end{align}
+In order to solve this system, it is necessary to update the variables $\textbf{x}$, $\boldsymbol{\lambda}$, $\textbf{z}$, which can define a new variable $\textbf{y} = [\textbf{x}, \boldsymbol{\lambda}, \textbf{z}]^{T}$. By denoting with $R(\textbf{x})$ the matrix with rows $\textbf{r}_{1}$, $\textbf{r}_{2}$, $\textbf{r}_{3}$, the updating step is
 
+\begin{equation}
+	\textbf{y}_{k+1} = \textbf{y}_{k} - \nabla R(\textbf{y}_{k})^{-1} R(\textbf{y}_{k}),
+\end{equation}
+where $\nabla R(\textbf{y})$ represents the Jacobian of the system, given by:
+\begin{equation}
+	\nabla R(\textbf{y}) = J(\textbf{x}, \boldsymbol{\lambda},\textbf{z}) =  
+	\begin{pmatrix}
+		H(\textbf{x}) + K(\textbf{x}, \boldsymbol{\lambda}) & -\nabla\textbf{c}(\textbf{x})^{T} & \textbf{0}_{n\times m}\\
+		\nabla\textbf{c}(\textbf{x}) & \textbf{0}_{m\times m} & -\mathbb{1}_{m}\\
+		\textbf{0}_{m\times n} & \text{diag}(\textbf{z}) & \text{diag}(\boldsymbol{\lambda})
+	\end{pmatrix},
+\end{equation}
+where $H(\textbf{x}) = \nabla^{2}f(\textbf{x})$, $K(\textbf{x},\boldsymbol{\lambda})=-\boldsymbol{\lambda}^{T}\nabla^{2}\textbf{c}(\textbf{x})$.\\
 
+\noindent We want to write down the Jacobian associated with the problem \eqref{eq:pert_min_prob} considering as functions and constraints the ones of the two previous exercises.
 
+\subsection*{Function $\boldmath{f_{a}}(\textbf{x})$}
+We recall the expression of the function $f_{a}(\textbf{x}) = (x_{1}-4)^2 + x_{2}^{2}$ and that of the constraints, which are written in the form $c_{i}(\textbf{x})\ge0$, and can be recast in the vector
+\begin{equation}
+	\textbf{c}_{a}(\textbf{x}) = 
+	\begin{bmatrix}
+		2 -x_{1} - x_2\\
+		x_1\\
+		x_2
+	\end{bmatrix}.
+\end{equation}
+In order to obtain the Jacobian, we have to compute the gradient and the Hessian of the function and the constraints. We report in the following their expressions.
 
-
+\begin{align}
+	& \nabla f_{a}(\textbf{x}) = [2(x_{1}-4),2x_{2}]^{T} \qquad H_{f_{a}}(\textbf{x}) = \begin{bmatrix}
+		2 & 0 \\
+		0 & 2
+	\end{bmatrix}, \\
+	& \nabla \textbf{c}_{a}(\textbf{x}) = \begin{bmatrix}
+		-1 & - 1\\
+		1 & 0 \\
+		0 & 1
+	\end{bmatrix} \qquad \qquad \nabla^{2}{\textbf{c}_{a}}(\textbf{x}) =  \left[\textbf{0}_{2\times2},\textbf{0}_{2\times2},\textbf{0}_{2\times2}\right]^{T}.
+\end{align}
+Therefore, $K_{a}(\textbf{x},\boldsymbol{\lambda})=\textbf{0}_{2\times 2}$ as expected, since all the constraints are linear.
+\subsection*{Function $\boldmath{f_{b}}(\textbf{x})$}
+As before, we recall the expression of the function $f_{b}(\textbf{x}) = 2x_{1} - x_{2}^{2}$ and that of the constraints, which are written also in this case in the form $c_{i}(\textbf{x})\ge0$, and can be recast in the vector
+\begin{equation}
+	\textbf{c}_{b}(\textbf{x}) = 
+	\begin{bmatrix}
+		1 -x_{1}^{2} - x_2^{2}\\
+		x_1\\
+		x_2
+	\end{bmatrix}.
+\end{equation}
+We report in the following the gradient and the Hessian of the function and the constraints:
+\begin{align}
+	& \nabla f_{b}(\textbf{x}) = [2, -2x_{2}]^{T} \qquad \qquad \qquad \ \ H_{f_{b}}(\textbf{x}) = \begin{bmatrix}
+		0 & 0 \\
+		0 & -2
+	\end{bmatrix}, \\
+	& \nabla \textbf{c}_{b}(\textbf{x}) = \begin{bmatrix}
+		-2x_{1} & - 2x_{2}\\
+		1 & 0 \\
+		0 & 1
+	\end{bmatrix} \qquad \qquad \nabla^{2}{\textbf{c}_{b}}(\textbf{x}) =  \left[\nabla^{2}[\textbf{c}_{b}]_{1},\textbf{0}_{2\times2},\textbf{0}_{2\times2}\right]^{T},
+\end{align}
+where $\nabla^{2}[\textbf{c}_{b}]_{1} = -\mathbb{1}_{2}$ and, therefore, $K_{b}(\textbf{x},\boldsymbol{\lambda})=\lambda_{1}\mathbb{1}_{2}$.
 %
 %
 %	
