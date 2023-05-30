@@ -6,9 +6,6 @@ from Project_5 import *
 func_b = lambda x : 2*x[0] - x[1]**2
 grad_b = lambda x : np.array([2, -2*x[1]])
 hess_b = lambda x : np.array([[0, 0],[0, -2]])
-# func_b = lambda x : 2*x[1] - x[0]**2
-# grad_b = lambda x : np.array([-2*x[0], 2])
-# hess_b = lambda x : np.array([[-2, 0],[0, 0]])
 
 c_b = lambda x : np.array([1 - x[0]**2 - x[1]**2 , x[0], x[1]])
 grad_c_b = lambda x : np.array([[-2*x[0],-2*x[1]],[1,0],[0,1]])
@@ -66,8 +63,8 @@ for x0 in x0_list:
     # plt.xticks(np.arange(start,max_val+1))
     # plt.yticks(np.arange(start,max_val+1))
     plt.colorbar()
-    fig.savefig(f'{common_path}_latex\\Plot\\func_a_method={method}_x0={x0}_mu={mu}.png', bbox_inches='tight', dpi = 500)
-    # plt.show()
+    fig.savefig(f'{common_path}_latex\\Plot\\func_b_with_K_method={method}_x0={x0}_mu={mu}.png', bbox_inches='tight', dpi = 500)
+plt.show()
 # conv = results['convergence']
 # # x0 = results['x0']
 # min_point = results['x_min']

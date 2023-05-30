@@ -53,8 +53,7 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, 
         # Choose the method to compute dx, dl, dz
         if method == 'basic':
             hess_c = hess_constr(x_old)
-            K=0
-            # K = sum([lambda_old[i] * hess_c[:,i,:] for i in range(m)])
+            K = - lambda_old @ hess_c
             Jacobian = np.block([[ hess_f + K, - grad_c.T, np.zeros((n,m)) ],
                                  [ grad_c , np.zeros((m,m)), - np.eye(m)],
                                  [ np.zeros((m,n)), Z, Lambda ]])
