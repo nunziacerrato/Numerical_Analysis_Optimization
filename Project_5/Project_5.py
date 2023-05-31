@@ -1,10 +1,11 @@
+''' This file serves as a library. It contains the function int_point which implements the interior
+    point method.'''
 import numpy as np
 
 
-
 def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, method='basic', alpha=1., beta=1.,
-              gamma=1., mu=1e-12, tol=1e-12, maxit=100, l0='random', z0='random', seed=1):
-    ''' aaa '''
+              gamma=1., mu=1e-12, tol=1e-12, maxit=100, l0='random', z0='random', curv = False, seed=1):
+    '''This function implements the interior point method. '''
 
     # Check if the starting point is in the feasible set
     if any(constr(x0) < 0):
@@ -34,8 +35,8 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, 
     R = np.array([*r1, *r2, *r3])
     k = 0
     x_interm = [x0]
-    lambda_interm = []
-    z_interm = []
+    lambda_interm = [lambda_old]
+    z_interm = [z_old]
     while(np.linalg.norm(R)>tol and k < maxit):
 
         a0 = alpha
@@ -52,7 +53,9 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, 
         # Choose the method to compute dx, dl, dz
         if method == 'basic':
             hess_c = hess_constr(x_old)
-            K = - lambda_old @ hess_c
+            K = 0
+            if curv == True:
+                K = - lambda_old @ hess_c
             Jacobian = np.block([[ hess_f + K, - grad_c.T, np.zeros((n,m)) ],
                                  [ grad_c , np.zeros((m,m)), - np.eye(m)],
                                  [ np.zeros((m,n)), Z, Lambda ]])
