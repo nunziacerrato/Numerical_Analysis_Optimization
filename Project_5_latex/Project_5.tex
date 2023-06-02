@@ -2,6 +2,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{subfig}
+\usepackage{subcaption}
 \usepackage{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{amsthm}
@@ -15,12 +16,12 @@
 \usepackage[english]{babel}
 \usepackage{lipsum}
 \usepackage{setspace}
-%\usepackage{minted}
+\usepackage{minted}
 \usepackage{xcolor}
 \newcommand{\R}{\mathbb{R}}
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,linkcolor=blue}
-\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2cm, right=2cm}
 
 \begin{document}
 	\author{Catalano Giuseppe, Cerrato Nunzia}
@@ -271,6 +272,296 @@ We report in the following the gradient and the Hessian of the function and the 
 where $\nabla^{2}[\textbf{c}_{b}]_{1} = -\mathbb{1}_{2}$ and, therefore, $K_{b}(\textbf{x},\boldsymbol{\lambda})=\lambda_{1}\mathbb{1}_{2}$.
 
 \section*{Exercise 4}
+We want to implement the interior point method to solve numerically the constrained minimization problems of Exercise 1 and Exercise 2. We used Python as programming language and we defined the function ***int\_point***, which can be found in the file Project\_5.py at this **link** on GitHub.\\
+
+\noindent In writing this function, we pass explicitly to the function the variable **method**, which allows one to choose which method to implement in order to compute the Newton step and we also gave the option to choose whether to consider or not the curvature term in the Jacobian. Moreover, for setting the starting values of $\boldsymbol{\lambda}$ and $\textbf{z}$, the function *** int\_point *** accepts both given arrays and the string 'random', in such case these arrays are randomly generated. To ensure reproducibility, we fixed the seed, still giving the possibility of changing it by passing a specific value to the corresponding keyword argument.  Finally, we chose as default values for the parameter $\mu$ of the logarithmic barrier the value $\mu = 10^{-12}$, as tolerance parameter the value $10^{-12}$, and $100$ as maximum number of iterations allowed. Note that these values can be user-changed as they are keyword argument of the function. All the other details can be found in the documentation. In the following, we report the code.
+
+
+\begin{minted}[mathescape, linenos, breaklines]{Python}
+def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, method='basic', alpha=1., beta=1., gamma=1., mu=1e-12, tol=1e-12, maxit=100, l0='random', z0='random', curv=False, seed=1):
+   '''This function implements the interior point method for constrained minimization problems.
+   Parameters
+   ----------
+   func : function
+      Function to be minimized. It must be :math:`f : \mathbb{R}^{n} \rightarrow \mathbb{R}`
+   grad_func : function
+      Gradient of the function. It returns a 1d-array (vector)
+   hess_func : function
+      Hessian of the function. It returns a 2d-array (matrix)
+   constr : function
+      Function of the constraints. It must be :math:`c : \mathbb{R}^{n} \rightarrow \mathbb{R}^{m}` and it must return a 1d-array (vector).
+   grad_constr : function
+      Gradient of the function of the constraints. It returns a 2d-array (matrix)
+   hess_constr : function
+      Hessian of the function of the constraints. It returns a 3d-array
+   x_0 : ndarray
+      Starting point
+   method : str
+      String to choose the method to perform the Newton step. Possible values are
+      - 'basic': to solve the full linear system
+      - 'first': to solve the first reduced linear system
+      - 'full': to solve the fully reduced linear system
+      Default value method='basic'.
+   alpha : float
+      Starting step-lenght for the parameter :math:`x`. Default value alpha=1.
+   beta : float
+      Starting step-lenght for the parameter :math:`\lambda`. Default value beta=1.
+   gamma : float
+      Starting step-lenght for the parameter :math:`z`. Default value gamma=1.
+   mu : float
+      Coefficient of the log barrier term
+   tol : float
+      Tolerance parameter for the stopping criterion. Default value tol=1e-12
+   maxit : int
+      Maximum number of iterations. Default value maxit=100
+   l0 : str or ndarray
+      Starting values of the Lagrange multipliers. Deafult value l0='random', to generate uniformly distributed random values in the interval [1e-16,10).
+   z0 : str or ndarray
+      Starting values of the slack variable. Deafult value z0='random', to generate uniformly distributed random values in the interval [1e-16,10).
+   curv : bool
+      Boolean value to choose whether to discard the curvature term in the expression of the Jacobian of the system. Default value curv=False.
+   seed : int
+      Parameter to fix the seed. Default value seed=1
+
+   Results
+   -------
+   results : dict
+      Dictionary of the results given by the function. It contains the following items:
+      - 'convergence' : (bool) True if the algorithm converges, False if it doesn't converge
+      - 'n_iter' : (int) progressive number of final iteration
+      - 'x_min' : (ndarray) computed point at which the minimum of the function is reached
+      - 'f_min' : (float) computed minimum value of the function
+      - 'x_interm' : (list) list of the intermediate points
+      - 'lambda_interm' : (list) list of the intermediate Lagrange multipliers
+      - 'z_interm' : (list) list of the intermediate slack variables
+   '''
+
+   # Check if the starting point is in the feasible set
+   if any(constr(x0) < 0):
+      print(f'Starting point x0 = {x0} is not feasible')
+      return False
+
+   # Assign initial values to the the variables x_old, lambda_old and z_old
+   x_old = x0
+   lambda_old, z_old = l0, z0
+   m, n = len(constr(x_old)), len(x_old)
+
+   # Fix the seed and initialize lambda_old and z_old by using the uniform random distribution if required 
+   np.random.seed(seed=seed)
+   if type(l0) == str and l0 == 'random':
+      lambda_old = np.random.uniform(low=1e-16, high= 10., size=m)
+   if type(z0) == str and z0 == 'random':
+      z_old = np.random.uniform(low=1e-16, high= 10., size=m)
+
+   # Compute the vector R
+   r1 = grad_func(x_old) - lambda_old @ grad_constr(x_old)
+   r2 = constr(x_old) - z_old
+   r3 = z_old*lambda_old - mu
+   R = np.array([*r1, *r2, *r3])
+
+   # Append the starting values of the variables to the corresponding lists
+   x_interm = [x0]
+   lambda_interm = [lambda_old]
+   z_interm = [z_old]
+
+   # Cycle until the stopping criterion is satisfied or k reaches the maximum number of iterations
+   k = 0
+   while(np.linalg.norm(R)>tol and k < maxit):
+      a0, b0, g0 = alpha, beta, gamma
+
+      # Compute matrices and vectors entering the expression of the linear system
+      Z = np.diag(z_old)
+      Z_inv = np.linalg.inv(Z)
+      grad_c = grad_constr(x_old)
+      Lambda = np.diag(lambda_old)
+      hess_f = hess_func(x_old)
+      K = 0
+      if curv == True:
+         hess_c = hess_constr(x_old)
+         K = - lambda_old @ hess_c
+
+      # Choose the method to perform the Newton step and compute dx, dl, dz
+      # Solve the full system
+      if method == 'basic':            
+         Jacobian = np.block([[ hess_f + K, - grad_c.T, np.zeros((n,m)) ],
+                              [ grad_c , np.zeros((m,m)), - np.eye(m)],
+                              [ np.zeros((m,n)), Z, Lambda ]])
+         p = np.linalg.solve(Jacobian, -R)
+         dx = p[:n]
+         dl = p[n:n+m]
+         dz = p[n+m:]
+
+      # Solve the first reduced system
+      if method == 'first':
+         Lambda_inv = np.linalg.inv(Lambda)
+         matrix = np.block([[hess_f + K, -(grad_c).T],
+                            [grad_c, Lambda_inv @ Z]])
+         vector = np.array([*r1, *(r2 + Lambda_inv @ r3)])
+
+         p = np.linalg.solve(matrix,-vector)
+         dx = p[:n]
+         dl = p[n:]
+         dz = - Lambda_inv @ (r3 + Z @ dl)
+
+      # Solve the fully reduced system
+      if method == 'full':            
+         matrix = hess_f + K + (grad_c).T @ (Z_inv @ Lambda @ grad_c )
+         vect = - r1 - (grad_c).T @ Z_inv @ (r3 + Lambda @ r2)
+
+         dx = np.linalg.solve(matrix,vect)
+         dl = - Z_inv @ Lambda @ r2 - Z_inv @ r3 -Z_inv @ Lambda @ grad_c @ dx
+         dz = - np.linalg.inv(Lambda) @ (r3 + Z @ dl)
+
+      # Update the values of the variables
+      x_new = x_old + a0*dx
+      lambda_new = lambda_old + b0*dl
+      z_new = z_old + g0*dz
+
+      # Check if the updated values satisfy the required conditions and re-update them until necessary
+      while any(constr(x_new) < 0 ):
+         a0 = a0/2
+         x_new = x_old + a0*dx
+
+      while any(lambda_new < 0 ):
+         b0 = b0/2
+         lambda_new = lambda_old + b0*dl
+
+      while any(z_new <= 0 ):
+         g0 = g0/2
+         z_new = z_old + g0*dz
+
+      # Append the new values of the variables to the corresponding lists
+      x_interm.append(x_new)
+      lambda_interm.append(lambda_new)
+      z_interm.append(z_new)
+
+      # Compute the new values of R
+      r1 = grad_func(x_new) - lambda_new @ grad_constr(x_new)
+      r2 = constr(x_new) - z_new
+      r3 = z_new*lambda_new - mu
+      R = np.array([*r1, *r2, *r3])
+
+      x_old = x_new
+      lambda_old = lambda_new
+      z_old = z_new
+      k = k + 1
+
+      # Check if the convergence is reached
+      conv = True
+      if k == maxit:
+          conv = False
+
+      f_min = func(x_new)
+
+      results = {'convergence' : conv, 'n_iter' : k , 'x_min' : x_new, 'f_min' : f_min, 'x_interm' : x_interm, 'lambda_interm' : lambda_interm, 'z_interm' : z_interm}
+      
+      return results
+\end{minted}
+
+\subsection*{Function (a)}
+First and foremost, after having chosen a representative starting point, i.e.~$x_{0}=(0.5,0.5)$, we run the function ** int\_point ** with the three different methods to compute the Newton step, namely \textit{basic} which solve the complete linear system, \textit{first} which solve the first reduced linear system, and \textit{full} which solve the fully reduced linear system. We report in the following the results that we obtain by choosing the component of $\boldsymbol{\lambda}_{0}$ and $\textbf{z}_{0}$ as uniformly distributed in the interval $\left[10^{-16},10\right)$.
+\begin{minted}{text}
+convergence = True, with 12 steps and method = basic
+starting point = (0.5, 0.5)
+mu = 1e-12, lambda_0 = (7.8, 3.1, 1.7), z_0 = (6.5, 8.2, 1.2)
+min point = (1.999999999999499, 2.500564859342358e-13)
+min value = 4.000000000002004
+
+convergence = True, with 12 steps and method = first
+starting point = (0.5, 0.5)
+mu = 1e-12, lambda_0 = (7.8, 3.1, 1.7), z_0 = (6.5, 8.2, 1.2)
+min point = (1.999999999999499, 2.500569196151048e-13)
+min value = 4.000000000002004
+
+convergence = True, with 12 steps and method = full
+starting point = (0.5, 0.5)
+mu = 1e-12, lambda_0 = (7.8, 3.1, 1.7), z_0 = (6.5, 8.2, 1.2)
+min point = (1.999999999999499, 2.500565493176935e-13)
+min value = 4.000000000002004
+\end{minted}
+
+\noindent We can observe that the three methods converge to the solution with the same number of steps, as expected since they solve equivalent linear systems. The difference between them may be in the time they take to arrive at the solution, due to the fact that they solve systems of different dimensionalities. However, in this case, this difference has not been appreciable as the system that we solve is already of small size.\\
+
+\noindent After this first analysis, we decided to use the method 'basic' as this should be the most stable one. We analyze different starting points $\textbf{x}_{0}$ as well as different  values of $\boldsymbol{\lambda}_{0}$ and $\textbf{z}_{0}$. 
+In order to present the obtained results, we first consider a fixed starting point and a fixed $\mu$ value, while varying $\boldsymbol{\lambda}_{0}$ and $\textbf{z}_{0}$. Then, for a fixed triad of values $\textbf{x}_{0}$, $\boldsymbol{\lambda}_{0}$, and $\textbf{z}_{0}$ , we compare the number of iterations towards convergence for two different $\mu$ values. In all the plots we report the intermediate points as they reach the constrained minimum point.
+\begin{figure}[H]
+	\centering
+	\subfloat[\label{fig:panel_a}]{\includegraphics[scale=0.28]{Plot/func_a_method=basic_x0=[0.3 0.7]_mu=1e-12_seed=5.png}}
+	\subfloat[\label{fig:panel_b}]{\includegraphics[scale=0.28]{Plot/func_a_method=basic_x0=[0.3 0.7]_mu=1e-12_seed=10.png}}
+	\caption{Contour plot of the function $f_{a}(x_{1},x_{2})$ with $\mu=10^{-12}$, for fixed $\textbf{x}_{0}$ and different values of $\boldsymbol{\lambda}_{0}$, and $\textbf{z}_{0}$, reported in the title of the plots. The constrained set is represented by the triangle in blue. In red is the constrained minimum point the interior point algorithm converges to.}
+	\label{Fig:func_a}
+\end{figure}
+
+\noindent It can be noted that different choices of the initial values of $\boldsymbol{\lambda}$ and $\textbf{z}$ imply, as expected, a different path towards convergence since the descent direction depend on them. On the other hand, we also expect that, for a fixed value of $\boldsymbol{\lambda}$ and $\textbf{z}$, when considering different values of the parameter $\mu$, the path remains approximatively the same while the number of iterations needed to reach convergence changes, decreasing as $\mu$ increases. Below we report the plots obtained when considering as values of $\boldsymbol{\lambda}_{0}$ and $\textbf{z}_{0}$ the ones reported in Fig.~\ref{fig:panel_a}.
+%This happens because the term $\mu$ of the logarithmic barrier enters the system as a small perturbation, therefore one might expect the descent direction to be unmodified but also to lose precision in the computation of the minimum point.
+\begin{figure}[H]
+	\centering
+	\subfloat[][]{\includegraphics[scale=0.28]{Plot/func_a_method=basic_x0=[0.3 0.7]_mu=1e-12_seed=5.png}} \
+	\subfloat[][]{\includegraphics[scale=0.28]{Plot/func_a_method=basic_x0=[0.3 0.7]_mu=0.001_seed=5.png}}
+	\caption{Contour plot of the function $f_{a}(x_{1},x_{2})$ with $\mu=10^{-12}$ (Panel (a)) and $\mu=10^{-3}$ (Panel (b)), together with the constrained set, in blue. Values of $\textbf{x}_{0}$, $\boldsymbol{\lambda}_{0}$, and $\textbf{z}_{0}$ in the title of the plots. In red is the constrained minimum point the interior point algorithm converges to.}
+	\label{Fig:func_a_diff_mu}
+\end{figure}
+
+
+\begin{minted}{text}
+x_0 = (0.3, 0.7), lambda_0 = (3.3, 3.6, 0.4), z_0 = (3.0, 5.8, 3.2)
+
+mu = 0.001
+min point = (1.9995002185977582, 0.0002498750975605184)
+min value = 4.001999437827982
+lambda* = (4.0014996877813, 0.0005001249768169601, 4.001999437976421)
+z* = (0.0002499063046813427, 1.9995002185977582, 0.0002498750975605184)
+
+mu = 1e-12
+min point = (1.9999999999994307, 2.626380016246266e-13)
+min value = 4.000000000002277
+lambda* = (4.000000000001556, 4.174412551738449e-13, 4.000000000002081)
+z* = (3.065889841752647e-13, 1.9999999999994307, 2.626387608486303e-13)
+\end{minted}
+
+\noindent As we can see from these results, for $\mu=10^{-12}$ the algorithm returns a constrained minimum point that is much closer to the exact value with respect to the case with small $\mu$, and the same holds for the values of $\boldsymbol{\lambda}^*$ and $z^*$ which are, respectively, the Lagrange multiplier and the slack variable computed in correspondence with the minimum point.\\
+
+\noindent For demonstration purposes, we report in the following other convergence paths emerging from the consideration of different initial points and different values of $\boldsymbol{\lambda}_{0}$ and $\textbf{z}_{0}$. In this case, we fixed $\mu=10^{-12}$.
+\begin{figure}[H]
+	\centering
+	\subfloat[][]{\includegraphics[scale=0.28]{Plot/func_a_method=basic_x0=[0.2 1.5]_mu=1e-12_seed=1.png}} \
+	\subfloat[][]{\includegraphics[scale=0.28]{Plot/func_a_method=basic_x0=[1. 1.]_mu=1e-12_seed=20.png}}
+	\caption{Contour plot of the function $f_{a}(x_{1},x_{2})$ with $\mu=10^{-12}$ and different values of $\textbf{x}_{0}$, $\boldsymbol{\lambda}_{0}$, and $\textbf{z}_{0}$, reported in the title of the plots. The constrained set is represented by the triangle in blue. In red is the constrained minimum point the interior point algorithm converges to.}
+	\label{Fig:func_a_diff_x0}
+\end{figure}
+
+\subsection*{Function (b)}
+In this case, from the previous analysis, we know that the KKT system has two solutions, namely $\textbf{x}^*_{1}=(0,1)$, which we know is the unique constrained minimum, and $\textbf{x}^*_{2}=(0,0)$. For this reason, we expect that the interior point algorithm may not always converge at the point $\textbf{x}^*_{1}$ and that, sometimes, depending on the values of the input vectors $\textbf{x}_{0}$, $\boldsymbol{\lambda}_{0}$, and $\textbf{z}_{0}$, it will also converge at the point $\textbf{x}^*_{2}$\\
+
+\noindent We report in the following the plots that we obtained when considering different initial values of the involved vectors, fixing $\mu=10^{-12}$.
+\begin{figure}[H]
+	\centering
+	\subfloat[][]{\includegraphics[scale=0.28]{Plot/func_b/contourplot/func_b_method=basic_x0=[0.9 0.1]_mu=1e-12_seed=1.png}} \
+	\subfloat[][]{\includegraphics[scale=0.28]{Plot/func_b/contourplot/func_b_method=basic_x0=[0.7 0.3]_mu=1e-12_seed=2}} \\
+	\subfloat[][]{\includegraphics[scale=0.28]{Plot/func_b/contourplot/func_b_method=basic_x0=[0.5 0.5]_mu=1e-12_seed=12}} \
+	\subfloat[][]{\includegraphics[scale=0.28]{Plot/func_b/contourplot/func_b_method=basic_x0=[0.2 0.6]_mu=1e-12_seed=12}}
+	\caption{Contour plot of the function $f_{b}(x_{1},x_{2})$ with $\mu=10^{-12}$ and different values of $\textbf{x}_{0}$, $\boldsymbol{\lambda}_{0}$, and $\textbf{z}_{0}$, reported in the title of the plots. The constrained set is represented in blue. In red is the constrained minimum point the interior point algorithm converges to.}
+	\label{Fig:func_b_diff_x0}
+\end{figure}
+
+\noindent In all these cases, the algorithm converges to the real constrained minimum point $\textbf{x}^*=(0,1)$. However, we also observed situations in which the algorithm converges to the point $\textbf{x}=(0,0)$, which is the other solution of the KKT system. We report an example below.
+
+\begin{figure}[H]
+	\centering
+	\subfloat[][]{\includegraphics[scale=0.28]{Plot/func_b/contourplot/func_b_method=basic_x0=[0.1 0.1]_mu=1e-12_seed=10}} \
+	\subfloat[][]{\includegraphics[scale=0.28]{Plot/func_b/contourplot/func_b_method=basic_x0=[0.25 0.25]_mu=1e-12_seed=10}} \\
+	\caption{Contour plot of the function $f_{b}(x_{1},x_{2})$ with $\mu=10^{-12}$ and different values of $\textbf{x}_{0}$, $\boldsymbol{\lambda}_{0}$, and $\textbf{z}_{0}$, reported in the title of the plots. The constrained set is represented in blue. In red is the constrained minimum point the interior point algorithm converges to.}
+	\label{Fig:func_b_diff_x0_non_conv}
+\end{figure}
+
+
+
+2 punti x0 che convergono al punto giusto: 0.9,0.1 seed 1
+
+1 punto che converge al punto sbagliato
+
+efficienza convergenza
+
 %
 %
 %	

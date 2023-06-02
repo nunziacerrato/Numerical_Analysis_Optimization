@@ -18,7 +18,7 @@ def hess_c_b(x):
 method = 'basic'
 mu = 1e-5
 tol = 1e-12
-seed = 10
+seed = 14
 common_path = "Project_5"
 
 max_val = 10
@@ -33,9 +33,10 @@ tol_x = 1e-1
 
 mu_list = [0,1e-12,1e-3]
 x0_list = [np.array([0.1,0.1]),np.array([0.1,0.9]),np.array([0.9,0.1]),np.array([0.3,0.7]),
-        np.array([0.7,0.3]),np.array([0.5,0.5]),np.array([0,0]),np.array([1,0]),np.array([0,1])]
+        np.array([0.7,0.3]),np.array([0.5,0.5]),np.array([0.25,0.25]),np.array([1,0])]
 
-colorplot = True
+colorplot = False
+x0_list = [np.array([0.1,0.9])]
 ###### COLORPLOT #######
 if colorplot == True:
     curv = True
@@ -53,7 +54,8 @@ if colorplot == True:
                     min_val = results['x_min']
                     min_exact = np.array([0.,1.])
                     min_err = np.array([0.,0.])
-                    if np.linalg.norm(min_val-min_exact) > tol_x and np.linalg.norm(min_val-min_err) < tol_x:
+                    if (abs(min_val-min_err)).all() < 1e-12:
+                    # if np.linalg.norm(min_val-min_exact) > tol_x and np.linalg.norm(min_val-min_err) < tol_x:
                         k = 150
                     l_index = l_array.index(l_int)
                     z_index = z_array.index(z_int)
@@ -67,22 +69,23 @@ if colorplot == True:
             plt.ylabel("z")
             plt.colorbar()
             if curv == True:
-                fig.savefig(f'{common_path}_latex\\Plot\\func_b\\colorplot\\func_b_with_K_method={method}_x0={x0}_mu={mu}.png', bbox_inches='tight', dpi = 500)
+                fig.savefig(f'{common_path}_latex\\Plot\\func_b\\colorplot\\func_b_with_K_method={method}_x0={x0}_mu={mu}_2.png', bbox_inches='tight', dpi = 500)
             else:
-                fig.savefig(f'{common_path}_latex\\Plot\\func_b\\colorplot\\func_b_method={method}_x0={x0}_mu={mu}.png', bbox_inches='tight', dpi = 500)
-            
+                fig.savefig(f'{common_path}_latex\\Plot\\func_b\\colorplot\\func_b_method={method}_x0={x0}_mu={mu}_2.png', bbox_inches='tight', dpi = 500)
 
+x0_list = [np.array([0.1,0.9])]
+l0 = np.array([9.2,9.2,9.2])
+z0 = np.array([0.1,0.1,0.1])
 ###### CONTOURPLOT ######
-if False:
+if True:
     for x0 in x0_list:
         for mu in mu_list:
             results = int_point(func_b, grad_b, hess_b, c_b, grad_c_b, hess_c_b, x0, method=method, alpha=1., beta=1.,
-                            gamma=1., mu=mu, tol=tol, maxit=100, curv=True, seed=seed)
+                            gamma=1., mu=mu, l0=l0, z0=z0, tol=tol, maxit=100, curv=True, seed=seed)
             k = results['n_iter']
             conv = results['convergence']
             min_point = results['x_min']
             min_value = results['f_min']
-            mu = results['mu']
             lambda0 = tuple(np.round(results['lambda_interm'][0],1))
             z0 = tuple(np.round(results['z_interm'][0],1))
             print(f'convergence = {conv}, with {k} steps')
@@ -132,8 +135,7 @@ if False:
             ax.set_ylabel(r'$x_{2}$', fontsize=xylabel_size, labelpad=10)
             ax.set_title(fr'$x_0$={tuple(x0)}, $\lambda_0$={lambda0}, $z_0$={z0}, $\mu$ = {mu}, iter = {k}', fontsize = title_size)
 
-            fig.savefig(f'{common_path}_latex\\Plot\\func_b\\contourplot\\func_b_method={method}_x0\
-            ={x0}_mu={mu}_seed={seed}.png', bbox_inches='tight')
+            # fig.savefig(f'{common_path}_latex\\Plot\\func_b\\contourplot\\func_b_method={method}_x0={x0}_mu={mu}_seed={seed}.png', bbox_inches='tight')
 
             # plt.show()
 
