@@ -1,0 +1,180 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{def} \PYG{n+nf}{int\PYGZus{}point}\PYG{p}{(}\PYG{n}{func}\PYG{p}{,} \PYG{n}{grad\PYGZus{}func}\PYG{p}{,} \PYG{n}{hess\PYGZus{}func}\PYG{p}{,} \PYG{n}{constr}\PYG{p}{,} \PYG{n}{grad\PYGZus{}constr}\PYG{p}{,} \PYG{n}{hess\PYGZus{}constr}\PYG{p}{,} \PYG{n}{x0}\PYG{p}{,} \PYG{n}{method}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}basic\PYGZsq{}}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{1.}\PYG{p}{,} \PYG{n}{beta}\PYG{o}{=}\PYG{l+m+mf}{1.}\PYG{p}{,} \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{1.}\PYG{p}{,} \PYG{n}{mu}\PYG{o}{=}\PYG{l+m+mf}{1e\PYGZhy{}12}\PYG{p}{,} \PYG{n}{tol}\PYG{o}{=}\PYG{l+m+mf}{1e\PYGZhy{}12}\PYG{p}{,} \PYG{n}{maxit}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{l0}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}random\PYGZsq{}}\PYG{p}{,} \PYG{n}{z0}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}random\PYGZsq{}}\PYG{p}{,} \PYG{n}{curv}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{):}
+   \PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}This function implements the interior point method for constrained minimization problems.}
+\PYG{l+s+sd}{   Parameters}
+\PYG{l+s+sd}{   \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{   func : function}
+\PYG{l+s+sd}{      Function to be minimized.}
+\PYG{l+s+sd}{   grad\PYGZus{}func : function}
+\PYG{l+s+sd}{      Gradient of the function. It returns a 1d\PYGZhy{}array (vector)}
+\PYG{l+s+sd}{   hess\PYGZus{}func : function}
+\PYG{l+s+sd}{      Hessian of the function. It returns a 2d\PYGZhy{}array (matrix)}
+\PYG{l+s+sd}{   constr : function}
+\PYG{l+s+sd}{      Function of the constraints. It returns a 1d\PYGZhy{}array (vector).}
+\PYG{l+s+sd}{   grad\PYGZus{}constr : function}
+\PYG{l+s+sd}{      Gradient of the function of the constraints. It returns a 2d\PYGZhy{}array (matrix)}
+\PYG{l+s+sd}{   hess\PYGZus{}constr : function}
+\PYG{l+s+sd}{      Hessian of the function of the constraints. It returns a 3d\PYGZhy{}array}
+\PYG{l+s+sd}{   x\PYGZus{}0 : ndarray}
+\PYG{l+s+sd}{      Starting point}
+\PYG{l+s+sd}{   method : str}
+\PYG{l+s+sd}{      String to choose the method to perform the Newton step. Possible values are}
+\PYG{l+s+sd}{      \PYGZhy{} \PYGZsq{}basic\PYGZsq{}: to solve the full linear system}
+\PYG{l+s+sd}{      \PYGZhy{} \PYGZsq{}first\PYGZsq{}: to solve the first reduced linear system}
+\PYG{l+s+sd}{      \PYGZhy{} \PYGZsq{}full\PYGZsq{}: to solve the fully reduced linear system}
+\PYG{l+s+sd}{      Default value method=\PYGZsq{}basic\PYGZsq{}.}
+\PYG{l+s+sd}{   alpha : float}
+\PYG{l+s+sd}{      Starting step\PYGZhy{}lenght for the parameter x. Default value alpha=1.}
+\PYG{l+s+sd}{   beta : float}
+\PYG{l+s+sd}{      Starting step\PYGZhy{}lenght for the parameter lambda. Default value beta=1.}
+\PYG{l+s+sd}{   gamma : float}
+\PYG{l+s+sd}{      Starting step\PYGZhy{}lenght for the parameter z. Default value gamma=1.}
+\PYG{l+s+sd}{   mu : float}
+\PYG{l+s+sd}{      Coefficient of the log barrier term}
+\PYG{l+s+sd}{   tol : float}
+\PYG{l+s+sd}{      Tolerance parameter for the stopping criterion. Default value tol=1e\PYGZhy{}12}
+\PYG{l+s+sd}{   maxit : int}
+\PYG{l+s+sd}{      Maximum number of iterations. Default value maxit=100}
+\PYG{l+s+sd}{   l0 : str or ndarray}
+\PYG{l+s+sd}{      Starting value of the Lagrange multipliers. Deafult value l0=\PYGZsq{}random\PYGZsq{}, to generate uniformly distributed random values in the interval [1e\PYGZhy{}16,10).}
+\PYG{l+s+sd}{   z0 : str or ndarray}
+\PYG{l+s+sd}{      Starting value of the slack variable. Deafult value z0=\PYGZsq{}random\PYGZsq{}, to generate uniformly distributed random values in the interval [1e\PYGZhy{}16,10).}
+\PYG{l+s+sd}{   curv : bool}
+\PYG{l+s+sd}{      Boolean value to choose whether to discard (curv=False) or not (curve=True) the curvature term in the expression of the Jacobian of the system. Default value curv=False.}
+\PYG{l+s+sd}{   seed : int}
+\PYG{l+s+sd}{      Parameter to fix the seed. Default value seed=1}
+
+\PYG{l+s+sd}{   Results}
+\PYG{l+s+sd}{   \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{   results : dict}
+\PYG{l+s+sd}{      Dictionary of the results given by the function. It contains the following items:}
+\PYG{l+s+sd}{      \PYGZhy{} \PYGZsq{}convergence\PYGZsq{} : (bool) True if the algorithm converges, False if it doesn\PYGZsq{}t converge}
+\PYG{l+s+sd}{      \PYGZhy{} \PYGZsq{}n\PYGZus{}iter\PYGZsq{} : (int) progressive number of final iteration}
+\PYG{l+s+sd}{      \PYGZhy{} \PYGZsq{}x\PYGZus{}min\PYGZsq{} : (ndarray) computed point at which the minimum of the function is reached}
+\PYG{l+s+sd}{      \PYGZhy{} \PYGZsq{}f\PYGZus{}min\PYGZsq{} : (float) computed minimum value of the function}
+\PYG{l+s+sd}{      \PYGZhy{} \PYGZsq{}x\PYGZus{}interm\PYGZsq{} : (list) list of the intermediate points}
+\PYG{l+s+sd}{      \PYGZhy{} \PYGZsq{}lambda\PYGZus{}interm\PYGZsq{} : (list) list of the intermediate Lagrange multipliers}
+\PYG{l+s+sd}{      \PYGZhy{} \PYGZsq{}z\PYGZus{}interm\PYGZsq{} : (list) list of the intermediate slack variables}
+\PYG{l+s+sd}{   \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+
+   \PYG{c+c1}{\PYGZsh{} Check if the starting point is in the feasible set}
+   \PYG{k}{if} \PYG{n+nb}{any}\PYG{p}{(}\PYG{n}{constr}\PYG{p}{(}\PYG{n}{x0}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{):}
+      \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}Starting point x0 = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{x0}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{ is not feasible\PYGZsq{}}\PYG{p}{)}
+      \PYG{k}{return} \PYG{k+kc}{False}
+
+   \PYG{c+c1}{\PYGZsh{} Assign initial values to the the variables x\PYGZus{}old, lambda\PYGZus{}old and z\PYGZus{}old}
+   \PYG{n}{x\PYGZus{}old} \PYG{o}{=} \PYG{n}{x0}
+   \PYG{n}{lambda\PYGZus{}old}\PYG{p}{,} \PYG{n}{z\PYGZus{}old} \PYG{o}{=} \PYG{n}{l0}\PYG{p}{,} \PYG{n}{z0}
+   \PYG{n}{m}\PYG{p}{,} \PYG{n}{n} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{constr}\PYG{p}{(}\PYG{n}{x\PYGZus{}old}\PYG{p}{)),} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{x\PYGZus{}old}\PYG{p}{)}
+
+   \PYG{c+c1}{\PYGZsh{} Fix the seed and initialize lambda\PYGZus{}old and z\PYGZus{}old by using the uniform random distribution if required}
+   \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{seed}\PYG{p}{(}\PYG{n}{seed}\PYG{o}{=}\PYG{n}{seed}\PYG{p}{)}
+   \PYG{k}{if} \PYG{n+nb}{type}\PYG{p}{(}\PYG{n}{l0}\PYG{p}{)} \PYG{o}{==} \PYG{n+nb}{str} \PYG{o+ow}{and} \PYG{n}{l0} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}random\PYGZsq{}}\PYG{p}{:}
+      \PYG{n}{lambda\PYGZus{}old} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{uniform}\PYG{p}{(}\PYG{n}{low}\PYG{o}{=}\PYG{l+m+mf}{1e\PYGZhy{}16}\PYG{p}{,} \PYG{n}{high}\PYG{o}{=} \PYG{l+m+mf}{10.}\PYG{p}{,} \PYG{n}{size}\PYG{o}{=}\PYG{n}{m}\PYG{p}{)}
+   \PYG{k}{if} \PYG{n+nb}{type}\PYG{p}{(}\PYG{n}{z0}\PYG{p}{)} \PYG{o}{==} \PYG{n+nb}{str} \PYG{o+ow}{and} \PYG{n}{z0} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}random\PYGZsq{}}\PYG{p}{:}
+      \PYG{n}{z\PYGZus{}old} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{uniform}\PYG{p}{(}\PYG{n}{low}\PYG{o}{=}\PYG{l+m+mf}{1e\PYGZhy{}16}\PYG{p}{,} \PYG{n}{high}\PYG{o}{=} \PYG{l+m+mf}{10.}\PYG{p}{,} \PYG{n}{size}\PYG{o}{=}\PYG{n}{m}\PYG{p}{)}
+
+   \PYG{c+c1}{\PYGZsh{} Compute the vector R}
+   \PYG{n}{r1} \PYG{o}{=} \PYG{n}{grad\PYGZus{}func}\PYG{p}{(}\PYG{n}{x\PYGZus{}old}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{lambda\PYGZus{}old} \PYG{o}{@} \PYG{n}{grad\PYGZus{}constr}\PYG{p}{(}\PYG{n}{x\PYGZus{}old}\PYG{p}{)}
+   \PYG{n}{r2} \PYG{o}{=} \PYG{n}{constr}\PYG{p}{(}\PYG{n}{x\PYGZus{}old}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{z\PYGZus{}old}
+   \PYG{n}{r3} \PYG{o}{=} \PYG{n}{z\PYGZus{}old}\PYG{o}{*}\PYG{n}{lambda\PYGZus{}old} \PYG{o}{\PYGZhy{}} \PYG{n}{mu}
+   \PYG{n}{R} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{([}\PYG{o}{*}\PYG{n}{r1}\PYG{p}{,} \PYG{o}{*}\PYG{n}{r2}\PYG{p}{,} \PYG{o}{*}\PYG{n}{r3}\PYG{p}{])}
+
+   \PYG{c+c1}{\PYGZsh{} Append the starting values of the variables to the corresponding lists}
+   \PYG{n}{x\PYGZus{}interm} \PYG{o}{=} \PYG{p}{[}\PYG{n}{x0}\PYG{p}{]}
+   \PYG{n}{lambda\PYGZus{}interm} \PYG{o}{=} \PYG{p}{[}\PYG{n}{lambda\PYGZus{}old}\PYG{p}{]}
+   \PYG{n}{z\PYGZus{}interm} \PYG{o}{=} \PYG{p}{[}\PYG{n}{z\PYGZus{}old}\PYG{p}{]}
+
+   \PYG{c+c1}{\PYGZsh{} Cycle until the stopping criterion is satisfied or k reaches the maximum number of iterations}
+   \PYG{n}{k} \PYG{o}{=} \PYG{l+m+mi}{0}
+   \PYG{k}{while}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{R}\PYG{p}{)}\PYG{o}{\PYGZgt{}}\PYG{n}{tol} \PYG{o+ow}{and} \PYG{n}{k} \PYG{o}{\PYGZlt{}} \PYG{n}{maxit}\PYG{p}{):}
+      \PYG{n}{a0}\PYG{p}{,} \PYG{n}{b0}\PYG{p}{,} \PYG{n}{g0} \PYG{o}{=} \PYG{n}{alpha}\PYG{p}{,} \PYG{n}{beta}\PYG{p}{,} \PYG{n}{gamma}
+
+      \PYG{c+c1}{\PYGZsh{} Compute matrices and vectors entering the expression of the linear system}
+      \PYG{n}{Z} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{diag}\PYG{p}{(}\PYG{n}{z\PYGZus{}old}\PYG{p}{)}
+      \PYG{n}{Z\PYGZus{}inv} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{inv}\PYG{p}{(}\PYG{n}{Z}\PYG{p}{)}
+      \PYG{n}{grad\PYGZus{}c} \PYG{o}{=} \PYG{n}{grad\PYGZus{}constr}\PYG{p}{(}\PYG{n}{x\PYGZus{}old}\PYG{p}{)}
+      \PYG{n}{Lambda} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{diag}\PYG{p}{(}\PYG{n}{lambda\PYGZus{}old}\PYG{p}{)}
+      \PYG{n}{hess\PYGZus{}f} \PYG{o}{=} \PYG{n}{hess\PYGZus{}func}\PYG{p}{(}\PYG{n}{x\PYGZus{}old}\PYG{p}{)}
+      \PYG{n}{K} \PYG{o}{=} \PYG{l+m+mi}{0}
+      \PYG{k}{if} \PYG{n}{curv} \PYG{o}{==} \PYG{k+kc}{True}\PYG{p}{:}
+         \PYG{n}{hess\PYGZus{}c} \PYG{o}{=} \PYG{n}{hess\PYGZus{}constr}\PYG{p}{(}\PYG{n}{x\PYGZus{}old}\PYG{p}{)}
+         \PYG{n}{K} \PYG{o}{=} \PYG{o}{\PYGZhy{}} \PYG{n}{lambda\PYGZus{}old} \PYG{o}{@} \PYG{n}{hess\PYGZus{}c}
+
+      \PYG{c+c1}{\PYGZsh{} Choose the method to perform the Newton step and compute dx, dl, dz}
+      \PYG{c+c1}{\PYGZsh{} Solve the full system}
+      \PYG{k}{if} \PYG{n}{method} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}basic\PYGZsq{}}\PYG{p}{:}
+         \PYG{n}{Jacobian} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{block}\PYG{p}{([[} \PYG{n}{hess\PYGZus{}f} \PYG{o}{+} \PYG{n}{K}\PYG{p}{,} \PYG{o}{\PYGZhy{}} \PYG{n}{grad\PYGZus{}c}\PYG{o}{.}\PYG{n}{T}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{n}\PYG{p}{,}\PYG{n}{m}\PYG{p}{))} \PYG{p}{],}
+                              \PYG{p}{[} \PYG{n}{grad\PYGZus{}c} \PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{m}\PYG{p}{,}\PYG{n}{m}\PYG{p}{)),} \PYG{o}{\PYGZhy{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{eye}\PYG{p}{(}\PYG{n}{m}\PYG{p}{)],}
+                              \PYG{p}{[} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{m}\PYG{p}{,}\PYG{n}{n}\PYG{p}{)),} \PYG{n}{Z}\PYG{p}{,} \PYG{n}{Lambda} \PYG{p}{]])}
+         \PYG{n}{p} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{solve}\PYG{p}{(}\PYG{n}{Jacobian}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{n}{R}\PYG{p}{)}
+         \PYG{n}{dx} \PYG{o}{=} \PYG{n}{p}\PYG{p}{[:}\PYG{n}{n}\PYG{p}{]}
+         \PYG{n}{dl} \PYG{o}{=} \PYG{n}{p}\PYG{p}{[}\PYG{n}{n}\PYG{p}{:}\PYG{n}{n}\PYG{o}{+}\PYG{n}{m}\PYG{p}{]}
+         \PYG{n}{dz} \PYG{o}{=} \PYG{n}{p}\PYG{p}{[}\PYG{n}{n}\PYG{o}{+}\PYG{n}{m}\PYG{p}{:]}
+
+      \PYG{c+c1}{\PYGZsh{} Solve the first reduced system}
+      \PYG{k}{if} \PYG{n}{method} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}first\PYGZsq{}}\PYG{p}{:}
+         \PYG{n}{Lambda\PYGZus{}inv} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{inv}\PYG{p}{(}\PYG{n}{Lambda}\PYG{p}{)}
+         \PYG{n}{matrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{block}\PYG{p}{([[}\PYG{n}{hess\PYGZus{}f} \PYG{o}{+} \PYG{n}{K}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{p}{(}\PYG{n}{grad\PYGZus{}c}\PYG{p}{)}\PYG{o}{.}\PYG{n}{T}\PYG{p}{],}
+                            \PYG{p}{[}\PYG{n}{grad\PYGZus{}c}\PYG{p}{,} \PYG{n}{Lambda\PYGZus{}inv} \PYG{o}{@} \PYG{n}{Z}\PYG{p}{]])}
+         \PYG{n}{vector} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{([}\PYG{o}{*}\PYG{n}{r1}\PYG{p}{,} \PYG{o}{*}\PYG{p}{(}\PYG{n}{r2} \PYG{o}{+} \PYG{n}{Lambda\PYGZus{}inv} \PYG{o}{@} \PYG{n}{r3}\PYG{p}{)])}
+
+         \PYG{n}{p} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{solve}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{,}\PYG{o}{\PYGZhy{}}\PYG{n}{vector}\PYG{p}{)}
+         \PYG{n}{dx} \PYG{o}{=} \PYG{n}{p}\PYG{p}{[:}\PYG{n}{n}\PYG{p}{]}
+         \PYG{n}{dl} \PYG{o}{=} \PYG{n}{p}\PYG{p}{[}\PYG{n}{n}\PYG{p}{:]}
+         \PYG{n}{dz} \PYG{o}{=} \PYG{o}{\PYGZhy{}} \PYG{n}{Lambda\PYGZus{}inv} \PYG{o}{@} \PYG{p}{(}\PYG{n}{r3} \PYG{o}{+} \PYG{n}{Z} \PYG{o}{@} \PYG{n}{dl}\PYG{p}{)}
+
+      \PYG{c+c1}{\PYGZsh{} Solve the fully reduced system}
+      \PYG{k}{if} \PYG{n}{method} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}full\PYGZsq{}}\PYG{p}{:}
+         \PYG{n}{matrix} \PYG{o}{=} \PYG{n}{hess\PYGZus{}f} \PYG{o}{+} \PYG{n}{K} \PYG{o}{+} \PYG{p}{(}\PYG{n}{grad\PYGZus{}c}\PYG{p}{)}\PYG{o}{.}\PYG{n}{T} \PYG{o}{@} \PYG{p}{(}\PYG{n}{Z\PYGZus{}inv} \PYG{o}{@} \PYG{n}{Lambda} \PYG{o}{@} \PYG{n}{grad\PYGZus{}c} \PYG{p}{)}
+         \PYG{n}{vect} \PYG{o}{=} \PYG{o}{\PYGZhy{}} \PYG{n}{r1} \PYG{o}{\PYGZhy{}} \PYG{p}{(}\PYG{n}{grad\PYGZus{}c}\PYG{p}{)}\PYG{o}{.}\PYG{n}{T} \PYG{o}{@} \PYG{n}{Z\PYGZus{}inv} \PYG{o}{@} \PYG{p}{(}\PYG{n}{r3} \PYG{o}{+} \PYG{n}{Lambda} \PYG{o}{@} \PYG{n}{r2}\PYG{p}{)}
+
+         \PYG{n}{dx} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{solve}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{,}\PYG{n}{vect}\PYG{p}{)}
+         \PYG{n}{dl} \PYG{o}{=} \PYG{o}{\PYGZhy{}} \PYG{n}{Z\PYGZus{}inv} \PYG{o}{@} \PYG{n}{Lambda} \PYG{o}{@} \PYG{n}{r2} \PYG{o}{\PYGZhy{}} \PYG{n}{Z\PYGZus{}inv} \PYG{o}{@} \PYG{n}{r3} \PYG{o}{\PYGZhy{}}\PYG{n}{Z\PYGZus{}inv} \PYG{o}{@} \PYG{n}{Lambda} \PYG{o}{@} \PYG{n}{grad\PYGZus{}c} \PYG{o}{@} \PYG{n}{dx}
+         \PYG{n}{dz} \PYG{o}{=} \PYG{o}{\PYGZhy{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{inv}\PYG{p}{(}\PYG{n}{Lambda}\PYG{p}{)} \PYG{o}{@} \PYG{p}{(}\PYG{n}{r3} \PYG{o}{+} \PYG{n}{Z} \PYG{o}{@} \PYG{n}{dl}\PYG{p}{)}
+
+      \PYG{c+c1}{\PYGZsh{} Update the values of the variables}
+      \PYG{n}{x\PYGZus{}new} \PYG{o}{=} \PYG{n}{x\PYGZus{}old} \PYG{o}{+} \PYG{n}{a0}\PYG{o}{*}\PYG{n}{dx}
+      \PYG{n}{lambda\PYGZus{}new} \PYG{o}{=} \PYG{n}{lambda\PYGZus{}old} \PYG{o}{+} \PYG{n}{b0}\PYG{o}{*}\PYG{n}{dl}
+      \PYG{n}{z\PYGZus{}new} \PYG{o}{=} \PYG{n}{z\PYGZus{}old} \PYG{o}{+} \PYG{n}{g0}\PYG{o}{*}\PYG{n}{dz}
+
+      \PYG{c+c1}{\PYGZsh{} Check if the updated values satisfy the required conditions and re\PYGZhy{}update them until necessary}
+      \PYG{k}{while} \PYG{n+nb}{any}\PYG{p}{(}\PYG{n}{constr}\PYG{p}{(}\PYG{n}{x\PYGZus{}new}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0} \PYG{p}{):}
+         \PYG{n}{a0} \PYG{o}{=} \PYG{n}{a0}\PYG{o}{/}\PYG{l+m+mi}{2}
+         \PYG{n}{x\PYGZus{}new} \PYG{o}{=} \PYG{n}{x\PYGZus{}old} \PYG{o}{+} \PYG{n}{a0}\PYG{o}{*}\PYG{n}{dx}
+
+      \PYG{k}{while} \PYG{n+nb}{any}\PYG{p}{(}\PYG{n}{lambda\PYGZus{}new} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0} \PYG{p}{):}
+         \PYG{n}{b0} \PYG{o}{=} \PYG{n}{b0}\PYG{o}{/}\PYG{l+m+mi}{2}
+         \PYG{n}{lambda\PYGZus{}new} \PYG{o}{=} \PYG{n}{lambda\PYGZus{}old} \PYG{o}{+} \PYG{n}{b0}\PYG{o}{*}\PYG{n}{dl}
+
+      \PYG{k}{while} \PYG{n+nb}{any}\PYG{p}{(}\PYG{n}{z\PYGZus{}new} \PYG{o}{\PYGZlt{}=} \PYG{l+m+mi}{0} \PYG{p}{):}
+         \PYG{n}{g0} \PYG{o}{=} \PYG{n}{g0}\PYG{o}{/}\PYG{l+m+mi}{2}
+         \PYG{n}{z\PYGZus{}new} \PYG{o}{=} \PYG{n}{z\PYGZus{}old} \PYG{o}{+} \PYG{n}{g0}\PYG{o}{*}\PYG{n}{dz}
+
+      \PYG{c+c1}{\PYGZsh{} Append the new values of the variables to the corresponding lists}
+      \PYG{n}{x\PYGZus{}interm}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{x\PYGZus{}new}\PYG{p}{)}
+      \PYG{n}{lambda\PYGZus{}interm}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{lambda\PYGZus{}new}\PYG{p}{)}
+      \PYG{n}{z\PYGZus{}interm}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{z\PYGZus{}new}\PYG{p}{)}
+
+      \PYG{c+c1}{\PYGZsh{} Compute the new values of R}
+      \PYG{n}{r1} \PYG{o}{=} \PYG{n}{grad\PYGZus{}func}\PYG{p}{(}\PYG{n}{x\PYGZus{}new}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{lambda\PYGZus{}new} \PYG{o}{@} \PYG{n}{grad\PYGZus{}constr}\PYG{p}{(}\PYG{n}{x\PYGZus{}new}\PYG{p}{)}
+      \PYG{n}{r2} \PYG{o}{=} \PYG{n}{constr}\PYG{p}{(}\PYG{n}{x\PYGZus{}new}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{z\PYGZus{}new}
+      \PYG{n}{r3} \PYG{o}{=} \PYG{n}{z\PYGZus{}new}\PYG{o}{*}\PYG{n}{lambda\PYGZus{}new} \PYG{o}{\PYGZhy{}} \PYG{n}{mu}
+      \PYG{n}{R} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{([}\PYG{o}{*}\PYG{n}{r1}\PYG{p}{,} \PYG{o}{*}\PYG{n}{r2}\PYG{p}{,} \PYG{o}{*}\PYG{n}{r3}\PYG{p}{])}
+
+      \PYG{n}{x\PYGZus{}old} \PYG{o}{=} \PYG{n}{x\PYGZus{}new}
+      \PYG{n}{lambda\PYGZus{}old} \PYG{o}{=} \PYG{n}{lambda\PYGZus{}new}
+      \PYG{n}{z\PYGZus{}old} \PYG{o}{=} \PYG{n}{z\PYGZus{}new}
+      \PYG{n}{k} \PYG{o}{=} \PYG{n}{k} \PYG{o}{+} \PYG{l+m+mi}{1}
+
+      \PYG{c+c1}{\PYGZsh{} Check if the convergence is reached}
+      \PYG{n}{conv} \PYG{o}{=} \PYG{k+kc}{True}
+      \PYG{k}{if} \PYG{n}{k} \PYG{o}{==} \PYG{n}{maxit}\PYG{p}{:}
+          \PYG{n}{conv} \PYG{o}{=} \PYG{k+kc}{False}
+
+      \PYG{n}{f\PYGZus{}min} \PYG{o}{=} \PYG{n}{func}\PYG{p}{(}\PYG{n}{x\PYGZus{}new}\PYG{p}{)}
+
+      \PYG{n}{results} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}convergence\PYGZsq{}} \PYG{p}{:} \PYG{n}{conv}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}n\PYGZus{}iter\PYGZsq{}} \PYG{p}{:} \PYG{n}{k} \PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}x\PYGZus{}min\PYGZsq{}} \PYG{p}{:} \PYG{n}{x\PYGZus{}new}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}f\PYGZus{}min\PYGZsq{}} \PYG{p}{:} \PYG{n}{f\PYGZus{}min}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}x\PYGZus{}interm\PYGZsq{}} \PYG{p}{:} \PYG{n}{x\PYGZus{}interm}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}lambda\PYGZus{}interm\PYGZsq{}} \PYG{p}{:} \PYG{n}{lambda\PYGZus{}interm}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}z\PYGZus{}interm\PYGZsq{}} \PYG{p}{:} \PYG{n}{z\PYGZus{}interm}\PYG{p}{\PYGZcb{}}
+
+      \PYG{k}{return} \PYG{n}{results}
+\end{Verbatim}

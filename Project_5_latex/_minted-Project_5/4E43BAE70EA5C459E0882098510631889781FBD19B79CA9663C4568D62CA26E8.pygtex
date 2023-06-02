@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+convergence = False, with 100 steps and method = basic
+starting point = (0.1, 0.1)
+mu = 1e\PYGZhy{}12, lambda\PYGZus{}0 = (7.7, 0.2, 6.3), z\PYGZus{}0 = (7.5, 5.0, 2.2)
+min point = (5e\PYGZhy{}13, 5.717234610811308e\PYGZhy{}07)
+min value = 6.731322840494127e\PYGZhy{}13
+lambda\PYGZus{}fin = (9.999999999948479e\PYGZhy{}13, 2.0, 1.2049499133358223e\PYGZhy{}06)
+z\PYGZus{}fin = (1.0000000000019542, 5e\PYGZhy{}13, 5.717234610811308e\PYGZhy{}07)
+\end{Verbatim}

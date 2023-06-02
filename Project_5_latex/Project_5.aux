@@ -25,7 +25,7 @@
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Table of the cases satisfying the complementarity condition. The i-th row of the table contains the array of the active/non-active states of the constraints (second column) and the possible solutions $\textbf  {x}^*$ of the constrained minimization problem which are compatible with that case (third column).\relax }}{2}{table.caption.2}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{tab:complementarity conditions f_a}{{1}{2}{Table of the cases satisfying the complementarity condition. The i-th row of the table contains the array of the active/non-active states of the constraints (second column) and the possible solutions $\textbf {x}^*$ of the constrained minimization problem which are compatible with that case (third column).\relax }{table.caption.2}{}}
-\newlabel{eq:func_b}{{7}{3}{Exercise 2}{equation.0.7}{}}
+\newlabel{eq:func_b}{{7}{2}{Exercise 2}{equation.0.7}{}}
 \newlabel{eq:constr_b}{{8}{3}{Exercise 2}{equation.0.8}{}}
 \newlabel{eq:min_prob_func_b}{{9}{3}{Exercise 2}{equation.0.9}{}}
 \newlabel{eq:KKT system f_b}{{12}{3}{Exercise 2}{equation.0.12}{}}
@@ -40,17 +40,53 @@
 \newlabel{Fig:func_a}{{1}{11}{Contour plot of the function $f_{a}(x_{1},x_{2})$ with $\mu =10^{-12}$, for fixed $\textbf {x}_{0}$ and different values of $\boldsymbol {\lambda }_{0}$, and $\textbf {z}_{0}$, reported in the title of the plots. The constrained set is represented by the triangle in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }{figure.caption.10}{}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {}}}{11}{subfigure.1.1}\protected@file@percent }
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {}}}{11}{subfigure.1.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Contour plot of the function $f_{a}(x_{1},x_{2})$ with $\mu =10^{-12}$ (Panel (a)) and $\mu =10^{-3}$ (Panel (b)), together with the constrained set, in blue. Values of $\textbf  {x}_{0}$, $\boldsymbol  {\lambda }_{0}$, and $\textbf  {z}_{0}$ in the title of the plots. In red is the constrained minimum point the interior point algorithm converges to.\relax }}{11}{figure.caption.11}\protected@file@percent }
-\newlabel{Fig:func_a_diff_mu}{{2}{11}{Contour plot of the function $f_{a}(x_{1},x_{2})$ with $\mu =10^{-12}$ (Panel (a)) and $\mu =10^{-3}$ (Panel (b)), together with the constrained set, in blue. Values of $\textbf {x}_{0}$, $\boldsymbol {\lambda }_{0}$, and $\textbf {z}_{0}$ in the title of the plots. In red is the constrained minimum point the interior point algorithm converges to.\relax }{figure.caption.11}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Contour plot of the function $f_{a}(x_{1},x_{2})$ with $\mu =10^{-12}$ and different values of $\textbf  {x}_{0}$, $\boldsymbol  {\lambda }_{0}$, and $\textbf  {z}_{0}$, reported in the title of the plots. The constrained set is represented by the triangle in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }}{12}{figure.caption.12}\protected@file@percent }
-\newlabel{Fig:func_a_diff_x0}{{3}{12}{Contour plot of the function $f_{a}(x_{1},x_{2})$ with $\mu =10^{-12}$ and different values of $\textbf {x}_{0}$, $\boldsymbol {\lambda }_{0}$, and $\textbf {z}_{0}$, reported in the title of the plots. The constrained set is represented by the triangle in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }{figure.caption.12}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Contour plot of the function $f_{b}(x_{1},x_{2})$ with $\mu =10^{-12}$ and different values of $\textbf  {x}_{0}$, $\boldsymbol  {\lambda }_{0}$, and $\textbf  {z}_{0}$, reported in the title of the plots. The constrained set is represented in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }}{13}{figure.caption.14}\protected@file@percent }
-\newlabel{Fig:func_b_diff_x0}{{4}{13}{Contour plot of the function $f_{b}(x_{1},x_{2})$ with $\mu =10^{-12}$ and different values of $\textbf {x}_{0}$, $\boldsymbol {\lambda }_{0}$, and $\textbf {z}_{0}$, reported in the title of the plots. The constrained set is represented in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }{figure.caption.14}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Contour plot of the function $f_{a}(x_{1},x_{2})$ with $\mu =10^{-12}$ (Panel (a)) and $\mu =10^{-3}$ (Panel (b)), together with the constrained set, in blue. Values of $\textbf  {x}_{0}$, $\boldsymbol  {\lambda }_{0}$, and $\textbf  {z}_{0}$ in the titles of the plots. In red is the constrained minimum point the interior point algorithm converges to.\relax }}{11}{figure.caption.11}\protected@file@percent }
+\newlabel{Fig:func_a_diff_mu}{{2}{11}{Contour plot of the function $f_{a}(x_{1},x_{2})$ with $\mu =10^{-12}$ (Panel (a)) and $\mu =10^{-3}$ (Panel (b)), together with the constrained set, in blue. Values of $\textbf {x}_{0}$, $\boldsymbol {\lambda }_{0}$, and $\textbf {z}_{0}$ in the titles of the plots. In red is the constrained minimum point the interior point algorithm converges to.\relax }{figure.caption.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Scatter plot of the number of iterations until convergence as a function of $\qopname  \relax o{log}_{10}(\mu )$, for the triad of vectors $\textbf  {x}_{0}$, $\boldsymbol  {\lambda }_{0}$, and $\textbf  {z}_{0}$ reported in the title of the plot.\relax }}{12}{figure.caption.12}\protected@file@percent }
+\newlabel{Fig:func_a_number_iter}{{3}{12}{Scatter plot of the number of iterations until convergence as a function of $\log _{10}(\mu )$, for the triad of vectors $\textbf {x}_{0}$, $\boldsymbol {\lambda }_{0}$, and $\textbf {z}_{0}$ reported in the title of the plot.\relax }{figure.caption.12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Contour plot of the function $f_{a}(x_{1},x_{2})$ with $\mu =10^{-12}$ and different values of $\textbf  {x}_{0}$, $\boldsymbol  {\lambda }_{0}$, and $\textbf  {z}_{0}$, reported in the title of the plots. The constrained set is represented by the triangle in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }}{13}{figure.caption.13}\protected@file@percent }
+\newlabel{Fig:func_a_diff_x0}{{4}{13}{Contour plot of the function $f_{a}(x_{1},x_{2})$ with $\mu =10^{-12}$ and different values of $\textbf {x}_{0}$, $\boldsymbol {\lambda }_{0}$, and $\textbf {z}_{0}$, reported in the title of the plots. The constrained set is represented by the triangle in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }{figure.caption.13}{}}
+\newlabel{fig:func_b_05_05}{{5a}{14}{Subfigure 5a}{subfigure.5.1}{}}
+\newlabel{sub@fig:func_b_05_05}{{(a)}{a}{Subfigure 5a\relax }{subfigure.5.1}{}}
+\newlabel{fig:func_b_07_03}{{5b}{14}{Subfigure 5b}{subfigure.5.2}{}}
+\newlabel{sub@fig:func_b_07_03}{{(b)}{b}{Subfigure 5b\relax }{subfigure.5.2}{}}
+\newlabel{fig:func_b_09_01}{{5c}{14}{Subfigure 5c}{subfigure.5.3}{}}
+\newlabel{sub@fig:func_b_09_01}{{(c)}{c}{Subfigure 5c\relax }{subfigure.5.3}{}}
+\newlabel{fig:func_b_02_06}{{5d}{14}{Subfigure 5d}{subfigure.5.4}{}}
+\newlabel{sub@fig:func_b_02_06}{{(d)}{d}{Subfigure 5d\relax }{subfigure.5.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Contour plot of the function $f_{b}(x_{1},x_{2})$ with $\mu =10^{-12}$ and different values of $\textbf  {x}_{0}$, $\boldsymbol  {\lambda }_{0}$, and $\textbf  {z}_{0}$, reported in the title of the plots. The constrained set is represented in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }}{14}{figure.caption.15}\protected@file@percent }
+\newlabel{Fig:func_b_diff_x0}{{5}{14}{Contour plot of the function $f_{b}(x_{1},x_{2})$ with $\mu =10^{-12}$ and different values of $\textbf {x}_{0}$, $\boldsymbol {\lambda }_{0}$, and $\textbf {z}_{0}$, reported in the title of the plots. The constrained set is represented in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }{figure.caption.15}{}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {}}}{14}{subfigure.5.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {}}}{14}{subfigure.5.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {}}}{14}{subfigure.5.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(d)}{\ignorespaces {}}}{14}{subfigure.5.4}\protected@file@percent }
+\newlabel{fig:func_b_01_01}{{6a}{15}{Subfigure 6a}{subfigure.6.1}{}}
+\newlabel{sub@fig:func_b_01_01}{{(a)}{a}{Subfigure 6a\relax }{subfigure.6.1}{}}
+\newlabel{fig:func_b_025_025}{{6b}{15}{Subfigure 6b}{subfigure.6.2}{}}
+\newlabel{sub@fig:func_b_025_025}{{(b)}{b}{Subfigure 6b\relax }{subfigure.6.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Contour plot of the function $f_{b}(x_{1},x_{2})$ with $\mu =10^{-12}$ and different values of $\textbf  {x}_{0}$, $\boldsymbol  {\lambda }_{0}$, and $\textbf  {z}_{0}$, reported in the title of the plots. The constrained set is represented in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }}{15}{figure.caption.16}\protected@file@percent }
+\newlabel{Fig:func_b_diff_x0_non_conv}{{6}{15}{Contour plot of the function $f_{b}(x_{1},x_{2})$ with $\mu =10^{-12}$ and different values of $\textbf {x}_{0}$, $\boldsymbol {\lambda }_{0}$, and $\textbf {z}_{0}$, reported in the title of the plots. The constrained set is represented in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }{figure.caption.16}{}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {}}}{15}{subfigure.6.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {}}}{15}{subfigure.6.2}\protected@file@percent }
 \gdef\minted@oldcachelist{,
   default.pygstyle,
-  BA0983A4620A9E4BA56F7053DF41E6F945D8A591078C463BC0065BF66D295F2B.pygtex,
-  78B35C92B794F0F7E1FD9DFB225350A69781FBD19B79CA9663C4568D62CA26E8.pygtex,
-  74EDE7AB4547A3B9BBA74F15E44781EE9781FBD19B79CA9663C4568D62CA26E8.pygtex}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Contour plot of the function $f_{b}(x_{1},x_{2})$ with $\mu =10^{-12}$ and different values of $\textbf  {x}_{0}$, $\boldsymbol  {\lambda }_{0}$, and $\textbf  {z}_{0}$, reported in the title of the plots. The constrained set is represented in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }}{14}{figure.caption.15}\protected@file@percent }
-\newlabel{Fig:func_b_diff_x0_non_conv}{{5}{14}{Contour plot of the function $f_{b}(x_{1},x_{2})$ with $\mu =10^{-12}$ and different values of $\textbf {x}_{0}$, $\boldsymbol {\lambda }_{0}$, and $\textbf {z}_{0}$, reported in the title of the plots. The constrained set is represented in blue. In red is the constrained minimum point the interior point algorithm converges to.\relax }{figure.caption.15}{}}
-\gdef \@abspage@last{14}
+  1B294D85FEE700575A6D55C24CC0A9A97164A43BAFA4005DA57E8839BEA16BF9.pygtex,
+  8E88B8B18A44C69379327274FC83F3817164A43BAFA4005DA57E8839BEA16BF9.pygtex,
+  3A6FD3EF9394EFD432419B31043896837164A43BAFA4005DA57E8839BEA16BF9.pygtex,
+  8E88B8B18A44C69379327274FC83F3817164A43BAFA4005DA57E8839BEA16BF9.pygtex,
+  B468AE545A81C0C9D2C3FEAF925D27F37164A43BAFA4005DA57E8839BEA16BF9.pygtex,
+  F49B05A2146C9D28F314581B2BAAAB2445D8A591078C463BC0065BF66D295F2B.pygtex,
+  8E88B8B18A44C69379327274FC83F3817164A43BAFA4005DA57E8839BEA16BF9.pygtex,
+  5A2862E9F4D75FEEE66D61241A76D6B17164A43BAFA4005DA57E8839BEA16BF9.pygtex,
+  F58E68D20DBE096A24AEB7AF47B593DE7164A43BAFA4005DA57E8839BEA16BF9.pygtex,
+  DB821570CA735D7003692B260A6422B77164A43BAFA4005DA57E8839BEA16BF9.pygtex,
+  FD02A69F1479DB94BADBC093CF5F3DCF9781FBD19B79CA9663C4568D62CA26E8.pygtex,
+  5A2862E9F4D75FEEE66D61241A76D6B17164A43BAFA4005DA57E8839BEA16BF9.pygtex,
+  7D7688B8FF8D5D6B495A77B90CBE8A929781FBD19B79CA9663C4568D62CA26E8.pygtex,
+  5A2862E9F4D75FEEE66D61241A76D6B17164A43BAFA4005DA57E8839BEA16BF9.pygtex,
+  4E3F271B3C30E6D8EF2084D915485BF87164A43BAFA4005DA57E8839BEA16BF9.pygtex,
+  A0981C2F18F6B129F9062A45DDF502749781FBD19B79CA9663C4568D62CA26E8.pygtex,
+  4E43BAE70EA5C459E0882098510631889781FBD19B79CA9663C4568D62CA26E8.pygtex}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Colorplot of the number of iterations until convergence for the function $f_{b}(\textbf  {x})$, with $\mu =10^{-12}$ and different values of $\textbf  {x}_{0}$, reported in the title of the plots. The parameter curv = True indicates the presence of the curvature term in the expression of the Jacobian of the system.\relax }}{16}{figure.caption.17}\protected@file@percent }
+\newlabel{Fig:func_b_colorplot}{{7}{16}{Colorplot of the number of iterations until convergence for the function $f_{b}(\textbf {x})$, with $\mu =10^{-12}$ and different values of $\textbf {x}_{0}$, reported in the title of the plots. The parameter curv = True indicates the presence of the curvature term in the expression of the Jacobian of the system.\relax }{figure.caption.17}{}}
+\gdef \@abspage@last{16}

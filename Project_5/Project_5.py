@@ -1,7 +1,7 @@
 ''' This file serves as a library. It contains the function int_point which implements the interior
-    point method for constrained minimization problems.'''
+    point method for constrained minimization problems.
+'''
 import numpy as np
-import scipy.linalg
 
 
 def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, method='basic',
@@ -189,6 +189,3 @@ def int_point(func, grad_func, hess_func, constr, grad_constr, hess_constr, x0, 
     results = {'convergence' : conv, 'n_iter' : k , 'x_min' : x_new, 'f_min' : f_min,
             'x_interm' : x_interm, 'lambda_interm' : lambda_interm, 'z_interm' : z_interm}
     return results
-
-if __name__ == '__main__':
-    pass

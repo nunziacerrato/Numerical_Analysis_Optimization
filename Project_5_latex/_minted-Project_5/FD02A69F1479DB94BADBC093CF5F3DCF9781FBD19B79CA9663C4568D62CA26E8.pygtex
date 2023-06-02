@@ -1,0 +1,25 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+convergence = True, with 9 steps and method = basic
+starting point = (0.5, 0.5)
+mu = 1e\PYGZhy{}12, lambda\PYGZus{}0 = (6.2, 1.4, 3.3), z\PYGZus{}0 = (2.8, 5.9, 5.5)
+min point = (1.99999999999948, 2.5768276401549883e\PYGZhy{}13)
+min value = 4.00000000000208
+lambda\PYGZus{}fin = (4.0000000000015214, 4.818155423247372e\PYGZhy{}13, 4.0000000000020375)
+z\PYGZus{}fin = (2.6239080128549816e\PYGZhy{}13, 1.99999999999948, 2.576828630208037e\PYGZhy{}13)
+
+convergence = True, with 9 steps and method = first
+starting point = (0.5, 0.5)
+mu = 1e\PYGZhy{}12, lambda\PYGZus{}0 = (6.2, 1.4, 3.3), z\PYGZus{}0 = (2.8, 5.9, 5.5)
+min point = (1.99999999999948, 2.5768276401549883e\PYGZhy{}13)
+min value = 4.00000000000208
+lambda\PYGZus{}fin = (4.0000000000015214, 4.818148918034337e\PYGZhy{}13, 4.0000000000020375)
+z\PYGZus{}fin = (2.623908012854933e\PYGZhy{}13, 1.9999999999994804, 2.576828630208021e\PYGZhy{}13)
+
+convergence = True, with 9 steps and method = full
+starting point = (0.5, 0.5)
+mu = 1e\PYGZhy{}12, lambda\PYGZus{}0 = (6.2, 1.4, 3.3), z\PYGZus{}0 = (2.8, 5.9, 5.5)
+min point = (1.99999999999948, 2.576828630208037e\PYGZhy{}13)
+min value = 4.00000000000208
+lambda\PYGZus{}fin = (4.000000000001522, 4.818155423247372e\PYGZhy{}13, 4.000000000002037)
+z\PYGZus{}fin = (2.623908012854933e\PYGZhy{}13, 1.9999999999994802, 2.576828630208037e\PYGZhy{}13)
+\end{Verbatim}
